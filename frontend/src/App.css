@@ -1,0 +1,64 @@
+.main-bg {
+  height: 400px;
+  background-image: url(./bg.png);
+  background-size: cover;
+  background-position: center;
+}
+
+.text-box {
+  line-height: 3;       /* 줄 간격 설정 */
+  margin: 20px;           /* 박스 주위 여백 설정 */
+  font-size: 20px;        /* 폰트 크기 설정 (선택 사항) */
+}
+
+.image-button {
+  background-image: url('./start_btn.png'); /* 이미지 파일 경로 수정 */
+  background-size: cover;    /* 이미지 크기 맞춤 */
+  background-repeat: no-repeat;
+  width: 200px;              /* 버튼 너비 설정 */
+  height: 50px;              /* 버튼 높이 설정 */
+  border: none;              /* 기본 버튼 테두리 제거 */
+  cursor: pointer;           /* 마우스 커서 변경 */
+
+}
+
+
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
