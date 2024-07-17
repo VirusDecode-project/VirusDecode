@@ -1,0 +1,27 @@
+.google-login-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.google-login-button {
+    cursor: pointer;
+    width: 50%; /* 이미지 크기를 조정하고 싶으면 이 값을 변경하세요 */
+    max-width: 300px; /* 최대 너비를 설정하여 큰 화면에서도 적절하게 보이도록 합니다 */
+}
+
+.modal-body-centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .google-login-button-container {
+    margin-top: 20px;
+  }
+  
+  .google-login-button {
+    cursor: pointer;
+  }
+  
