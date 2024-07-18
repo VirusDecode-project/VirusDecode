@@ -5,6 +5,7 @@ import './inputSeq.css';
 import googleLoginBtn from './googleloginbtn.png';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { useNavigate } from 'react-router-dom';
+import GoogleLoginButton from '../GoogleLoginButton.js'; 
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
@@ -36,12 +37,7 @@ function InputSeq() {
                     Log in to get your<br />
                     virus analysis records.
                     <div className="google-login-button-container">
-                        <img
-                            src={googleLoginBtn}
-                            alt="Google Login Button"
-                            className="google-login-button"
-                            onClick={() => { /* 구글 로그인 함수 호출 */ }}
-                        />
+                        <GoogleLoginButton/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
