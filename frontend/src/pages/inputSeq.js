@@ -4,10 +4,13 @@ import Modal from 'react-bootstrap/Modal';
 import './inputSeq.css';
 import googleLoginBtn from './googleloginbtn.png';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
     const [showOffcanvas, setShowOffcanvas] = useState(false);
+
+    const navigate = useNavigate(); // useNavigate 초기화
 
     const handleCloseModal = () => setShowModal(false);
     const handleShowModal = () => setShowModal(true);
@@ -19,6 +22,9 @@ function InputSeq() {
         // 컴포넌트가 마운트될 때 모달을 표시합니다.
         setShowModal(true);
     }, []);
+
+
+
 
     return (
         <div>
@@ -51,6 +57,7 @@ function InputSeq() {
                 히스토리
             </Button>
 
+
             <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
                 <Offcanvas.Header closeButton>
                     <Offcanvas.Title>Offcanvas</Offcanvas.Title>
@@ -60,6 +67,10 @@ function InputSeq() {
                     have chosen. Like, text, images, lists, etc.
                 </Offcanvas.Body>
             </Offcanvas>
+            <button className="next-page" onClick={() => { navigate('/analysis') }}>NEXT</button>
+
+
+
         </div>
     );
 }
