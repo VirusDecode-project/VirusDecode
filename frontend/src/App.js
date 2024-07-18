@@ -46,20 +46,8 @@ function App() {
           <button className="image-button" onClick={() => { navigate('inputSeq') }}></button>
         </div>} />
 
-
-        {/* <Route path='/inputSeq' element={<InputSeq />} /> */}
-        <Route
-          path="/inputSeq"
-          element={
-            <InputSeq />
-          }
-        />
-        <Route
-          path="/analysis"
-          element={
-            <Analysis />
-          }
-        />
+        <Route path="/inputSeq" element={<InputSeq />}/>
+        <Route path="/analysis" element={<Analysis />}/>
 
       </Routes>
 

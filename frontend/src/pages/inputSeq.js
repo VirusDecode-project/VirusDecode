@@ -54,7 +54,7 @@ function InputSeq() {
             </Modal>
 
             <Button variant="primary" onClick={handleShowOffcanvas}>
-                히스토리
+                사이드바
             </Button>
 
 
