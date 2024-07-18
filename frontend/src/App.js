@@ -18,7 +18,7 @@ function App() {
   return (
     <div className="App">
 
-      <Navbar className="bg-body-tertiary">
+      <Navbar bg="white" data-bs-theme="white">
         <Container>
           <Navbar.Brand onClick={() => {
             navigate('/')
