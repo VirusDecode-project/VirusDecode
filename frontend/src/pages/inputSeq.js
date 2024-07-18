@@ -4,7 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import './inputSeq.css';
 import googleLoginBtn from './googleloginbtn.png';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
@@ -23,12 +23,10 @@ function InputSeq() {
         setShowModal(true);
     }, []);
 
-
-
-
     return (
-        <div>
-            <div>시컨스를 입력하세요!</div>
+        <div className="next-page-container">
+            <div>Reference Sequence ID<br/><input/><button>DONE</button></div>
+            <h4>Variance Sequence<br/>추후 수정 예정</h4>
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -57,20 +55,23 @@ function InputSeq() {
                 사이드바
             </Button>
 
-
             <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas}>
                 <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+                    <Offcanvas.Title>History</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    Some text as placeholder. In real life you can have the elements you
-                    have chosen. Like, text, images, lists, etc.
+                    <div>yesterday</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <br />
+                    <div>previous 7 day</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
                 </Offcanvas.Body>
             </Offcanvas>
+
             <button className="next-page" onClick={() => { navigate('/analysis') }}>NEXT</button>
-
-
-
         </div>
     );
 }

@@ -24,4 +24,29 @@
   .google-login-button {
     cursor: pointer;
   }
+
+  /* 기존 CSS 내용 */
+
+/* NEXT 버튼을 오른쪽 아래로 배치하는 CSS */
+.next-page-container {
+  position: relative;
+  height: 100vh; /* 부모 요소의 높이를 100vh로 설정하여 전체 화면 높이를 차지하게 함 */
+}
+
+.next-page {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.next-page:hover {
+  background-color: #0056b3;
+}
+
   
