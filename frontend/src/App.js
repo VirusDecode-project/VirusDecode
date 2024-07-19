@@ -20,7 +20,7 @@ function App() {
 
       <Navbar bg="white" data-bs-theme="white">
         <Container>
-          <Navbar.Brand onClick={() => {
+          <Navbar.Brand style={{ cursor: 'pointer' }} onClick={() => {
             navigate('/')
           }}>
             <img
@@ -30,7 +30,7 @@ function App() {
               height="30"
               className="d-inline-block align-top"
             />{' '}
-            VirusDecode
+            <span className="ibm-plex-mono-regular">VirusDecode</span>
           </Navbar.Brand>
         </Container>
       </Navbar>

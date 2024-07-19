@@ -1,52 +1,76 @@
 .google-login-button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .google-login-button {
-    cursor: pointer;
-    width: 50%; /* 이미지 크기를 조정하고 싶으면 이 값을 변경하세요 */
-    max-width: 300px; /* 최대 너비를 설정하여 큰 화면에서도 적절하게 보이도록 합니다 */
+  cursor: pointer;
+  width: 50%;
+  max-width: 300px;
 }
 
 .modal-body-centered {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .google-login-button-container {
-    margin-top: 20px;
-  }
-  
-  .google-login-button {
-    cursor: pointer;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 
-  /* 기존 CSS 내용 */
+.google-login-button-container {
+  margin-top: 20px;
+}
 
-/* NEXT 버튼을 오른쪽 아래로 배치하는 CSS */
+.google-login-button {
+  cursor: pointer;
+}
+
 .next-page-container {
   position: relative;
-  height: 100vh; /* 부모 요소의 높이를 100vh로 설정하여 전체 화면 높이를 차지하게 함 */
+  height: 100vh;
+  transition: padding-left 0.3s ease;
+  padding-left: 0px;
+}
+
+.next-page-container.shrink {
+  padding-left: 300px;
 }
 
 .next-page {
   position: absolute;
-  bottom: 20px;
+  bottom: 100px;
   right: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  color: black;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .next-page:hover {
-  background-color: #0056b3;
+  background-color: #0fb9af;
 }
 
-  
+.upload-box {
+  border: 2px dashed #ccc;
+  padding: 20px;
+  text-align: center;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #5cb85c;
+}
+
+h4 {
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+}
+
+button {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+body {
+  font-family: "IBM Plex Mono", monospace;
+}
