@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import './inputSeq.css';
-import Offcanvas from 'react-bootstrap/Offcanvas';
+import { Button, Modal, Form, Offcanvas } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import GoogleLoginButton from '../GoogleLoginButton.js';
+import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
+import './inputSeq.css';
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
@@ -36,8 +34,28 @@ function InputSeq() {
 
     return (
         <div className={`next-page-container ${showOffcanvas ? 'shrink' : ''}`}>
-            <div>Reference Sequence ID<br/><input/><button>DONE</button></div>
-            <h4>Variance Sequence<br/>추후 수정 예정</h4>
+            <div className="container mt-4">
+                <Form>
+                    <Form.Group controlId="referenceSequenceId">
+                        <Form.Label>Reference Sequence ID</Form.Label>
+                        <Form.Control type="text" placeholder="Enter sequence ID" />
+                    </Form.Group>
+                    <Button variant="primary" className="mt-3" >DONE</Button>
+
+                    <h4 className="mt-5">Variant Sequence</h4>
+                    <Form.Group controlId="formFile" className="mb-3">
+                        <Form.Label>Upload File</Form.Label>
+                        <div className="upload-box">
+                            <Form.Control type="file" label="Drag your FASTA files here" custom />
+                        </div>
+                    </Form.Group>
+                    <Form.Group controlId="pasteSequence">
+                        <Form.Label>Paste Sequence</Form.Label>
+                        <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                    </Form.Group>
+                    <Button variant="link" className="mt-3">+ Add Sequence</Button>
+                </Form>
+            </div>
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
@@ -57,7 +75,7 @@ function InputSeq() {
                 </Modal.Footer>
             </Modal>
 
-            <Button variant="primary" onClick={handleShowOffcanvas}>
+            <Button variant="primary" onClick={handleShowOffcanvas} className="mt-4">
                 사이드바
             </Button>
 
