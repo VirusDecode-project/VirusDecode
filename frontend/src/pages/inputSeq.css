@@ -1,45 +1,51 @@
 .google-login-button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
 .google-login-button {
-    cursor: pointer;
-    width: 50%; /* 이미지 크기를 조정하고 싶으면 이 값을 변경하세요 */
-    max-width: 300px; /* 최대 너비를 설정하여 큰 화면에서도 적절하게 보이도록 합니다 */
+  cursor: pointer;
+  width: 50%; /* 이미지 크기를 조정하고 싶으면 이 값을 변경하세요 */
+  max-width: 300px; /* 최대 너비를 설정하여 큰 화면에서도 적절하게 보이도록 합니다 */
 }
 
 .modal-body-centered {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  .google-login-button-container {
-    margin-top: 20px;
-  }
-  
-  .google-login-button {
-    cursor: pointer;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
 
-  /* 기존 CSS 내용 */
+.google-login-button-container {
+  margin-top: 20px;
+}
+
+.google-login-button {
+  cursor: pointer;
+}
+
+/* 기존 CSS 내용 */
 
 /* NEXT 버튼을 오른쪽 아래로 배치하는 CSS */
 .next-page-container {
   position: relative;
   height: 100vh; /* 부모 요소의 높이를 100vh로 설정하여 전체 화면 높이를 차지하게 함 */
+  transition: padding-left 0.3s ease; /* 애니메이션 추가 */
+  padding-left: 0px; /* 기본 padding-left */
+}
+
+.next-page-container.shrink {
+  padding-left: 300px; /* 사이드바가 열릴 때 padding-left 조정 */
 }
 
 .next-page {
   position: absolute;
-  bottom: 20px;
+  bottom: 100px;
   right: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  /* background-color: #007bff; */
+  color: black;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -48,5 +54,3 @@
 .next-page:hover {
   background-color: #0056b3;
 }
-
-  
