@@ -3,6 +3,7 @@ import { Button, Modal, Form, Offcanvas } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
+import historyIcon from './history.png';
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
