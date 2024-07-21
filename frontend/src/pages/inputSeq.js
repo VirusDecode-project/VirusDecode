@@ -8,14 +8,13 @@ import editIcon from './edit.png';
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
-    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    const [showOffcanvas, setShowOffcanvas] = useState(true);
 
-    const navigate = useNavigate();
+    let navigate = useNavigate();
 
     const handleCloseModal = () => setShowModal(false);
-    const handleShowModal = () => setShowModal(true);
 
-    const handleCloseOffcanvas = () => setShowOffcanvas(false);
+    let handleCloseOffcanvas = () => setShowOffcanvas(false);
     const handleShowOffcanvas = () => {
         setShowOffcanvas(true);
         document.body.style.overflow = 'hidden';  // 오버플로우 숨김
@@ -37,13 +36,13 @@ function InputSeq() {
     return (
         <div className={`next-page-container ${showOffcanvas ? 'shrink' : ''}`}>
             <div className="header-bar">
-            {!showOffcanvas && (
-                <>
-                    <img onClick={handleShowOffcanvas} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
-                    <img src={editIcon} alt="Edit" className="edit-icon" />
+                {!showOffcanvas && (
+                    <>
+                        <img onClick={handleShowOffcanvas} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+                        <img src={editIcon} alt="Edit" className="edit-icon" />
                     </>
                 )}
-            <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
+                <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
             </div>
             <div className="container mt-4">
                 <Form>
@@ -68,8 +67,8 @@ function InputSeq() {
                 </Form>
             </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header >
+            <Modal show={showModal} onHide={handleCloseModal} centered>
+                <Modal.Header className="modal-body-centered">
                     <Modal.Title>Welcome to VirusDecode!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="modal-body-centered">
@@ -79,17 +78,27 @@ function InputSeq() {
                         <GoogleLoginButton />
                     </div>
                 </Modal.Body>
+
+                <Modal.Footer className="modal-body-centered">
+                    <div>
+                        New to VirusDecode?<br />
+                        Sign up now!</div>
+                    <div className="google-login-button-container">
+                        <GoogleLoginButton />
+                    </div>
+
+                </Modal.Footer>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleCloseModal}>
+                    <p className='logged-out' onClick={handleCloseModal}>
                         Stay logged out
-                    </Button>
+                    </p>
                 </Modal.Footer>
             </Modal>
 
             <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
-            <Offcanvas.Header>
+                <Offcanvas.Header>
                     <Offcanvas.Title>
-                        <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }}/>
+                        <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }} />
                     </Offcanvas.Title>
                     <img src={editIcon} alt="Edit" className="edit-icon" />
                 </Offcanvas.Header>
