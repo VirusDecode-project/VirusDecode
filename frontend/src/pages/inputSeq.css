@@ -110,7 +110,6 @@
   padding: 0;
   margin-top: 10px;
 }
-
 .file-list li {
   background-color: #f1f1f1;
   padding: 5px;
@@ -118,6 +117,21 @@
   border-radius: 3px;
   text-align: left;
 }
+.seq-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+}
+.seq-list li {
+  background-color: 'white';
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 3px;
+  text-align: left;
+  max-width: 500px;
+}
+
+
 
 
 /* _______________ */
