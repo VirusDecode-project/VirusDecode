@@ -110,3 +110,15 @@ body {
 .logo-text {
   margin-left: 15px;
 }
+
+.logged-out {
+  color: darkgray;
+  text-align: center;
+  text-decoration: underline;
+  cursor: pointer;  /* 마우스 커서를 포인터로 변경 */
+  margin: 0 auto;  /* 중앙 정렬 */
+}
+
+.logged-out:hover {
+  color: gray;  /* 마우스 올렸을 때 색깔 조금 진하게 */
+}

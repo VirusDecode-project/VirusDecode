@@ -1,12 +1,31 @@
-import { Nav } from 'react-bootstrap';
+import { Nav, Offcanvas} from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import loadingImage from './loading.png';
 import './analysis.css';
+import historyIcon from './history.png';
+import editIcon from './edit.png';
 
 function Analysis() {
     let [tab, setTab] = useState(0)
     let [isLoading, setIsLoading] = useState(true);
     let [loadingText, setLoadingText] = useState('Analyzing');
+
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    let navigate = useNavigate();
+
+
+    const handleShowOffcanvas = () => {
+        setShowOffcanvas(true);
+        document.body.style.overflow = 'hidden';  // 오버플로우 숨김
+    };
+    let handleCloseOffcanvas = () => setShowOffcanvas(false);
+
+    useEffect(() => {
+        if (!showOffcanvas) {
+            document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
+        }
+    }, [showOffcanvas]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -32,9 +51,17 @@ function Analysis() {
                     <div className="loading-text">{loadingText}</div>
                 </div>
             ) : (
-                
+
                 <>
-                    <h1>히스토리 로고 + 헤드바 컴포넌트</h1>
+                    <div className="header-bar">
+                        {!showOffcanvas && (
+                            <>
+                                <img onClick={handleShowOffcanvas} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+                                <img src={editIcon} alt="Edit" className="edit-icon" />
+                            </>
+                        )}
+                        <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
+                    </div>
                     <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
                         <Nav.Item>
                             <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
@@ -52,10 +79,31 @@ function Analysis() {
                             <Nav.Link eventKey="link4" onClick={() => setTab(4)}>Analyze</Nav.Link>
                         </Nav.Item>
                     </Nav>
-                    
+
                     <Tab tab={tab} />
                 </>
             )}
+
+            <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
+                <Offcanvas.Header>
+                    <Offcanvas.Title>
+                        <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }} />
+                    </Offcanvas.Title>
+                    <img src={editIcon} alt="Edit" className="edit-icon" />
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                    <div>Yesterday</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference2</div>
+                    <br />
+                    <div>Previous 7 day</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+
+                </Offcanvas.Body>
+            </Offcanvas>
         </div>
 
     );
