@@ -16,7 +16,7 @@ function InputSeq() {
     const [showModal, setShowModal] = useState(false);
     const handleCloseModal = () => setShowModal(false);
 
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(true);
     // const [showOffcanvas, setShowOffcanvas] = useState(true);
 
     // let handleCloseOffcanvas = () => setShowOffcanvas(false);
@@ -133,11 +133,20 @@ function InputSeq() {
 
             <div className={`sidebar ${show ? 'show' : ''}`}>
                 <div className="sidebar-header">
-                    <h2>Sidebar</h2>
-                    <button className="close-btn" onClick={handleClose}>X</button>
+                    
+                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }}/>
+                    <img src={editIcon} alt="Edit" className="edit-icon" />
                 </div>
                 <div className="sidebar-body">
                     <div>Today</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <br/>
+                    <div>Previous 7 days</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+
                 </div>
             </div>
 

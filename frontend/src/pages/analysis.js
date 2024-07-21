@@ -1,4 +1,4 @@
-import { Nav, Offcanvas} from 'react-bootstrap';
+import { Nav, Offcanvas } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import loadingImage from './loading.png';
@@ -11,18 +11,20 @@ function Analysis() {
     let [isLoading, setIsLoading] = useState(true);
     let [loadingText, setLoadingText] = useState('Analyzing');
 
-    const [showOffcanvas, setShowOffcanvas] = useState(false);
+    // const [showOffcanvas, setShowOffcanvas] = useState(false);
     let navigate = useNavigate();
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const [show, setShow] = useState(false);
+    // let handleShowOffcanvas = () => setShowOffcanvas(true);
+    // let handleCloseOffcanvas = () => setShowOffcanvas(false);
 
-    let handleShowOffcanvas = () => setShowOffcanvas(true);
-    let handleCloseOffcanvas = () => setShowOffcanvas(false);
-
-    useEffect(() => {
-        if (!showOffcanvas) {
-            document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
-        }
-    }, [showOffcanvas]);
+    // useEffect(() => {
+    //     if (!showOffcanvas) {
+    //         document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
+    //     }
+    // }, [showOffcanvas]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -49,60 +51,63 @@ function Analysis() {
                 </div>
             ) : (
 
-                <div className={`analysis-container ${showOffcanvas ? 'shrink' : ''}`}>
-                <>
-                    <div className="header-bar">
-                        {!showOffcanvas && (
-                            <>
-                                <img onClick={handleShowOffcanvas} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
-                                <img src={editIcon} alt="Edit" className="edit-icon" />
-                            </>
-                        )}
-                        <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
-                    </div>
-                    <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
-                        <Nav.Item>
-                            <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="link1" onClick={() => setTab(1)}>Gene</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="link2" onClick={() => setTab(2)}>Mutation</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="link3" onClick={() => setTab(3)}>Pathogenecity</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link eventKey="link4" onClick={() => setTab(4)}>Analyze</Nav.Link>
-                        </Nav.Item>
-                    </Nav>
+                <div className={`analysis-container ${show ? 'shrink' : ''}`}>
+                    <>
+                        <div className="header-bar">
+                            {!show && (
+                                <>
+                                    <img onClick={handleShow} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+                                    <img src={editIcon} alt="Edit" className="edit-icon" />
+                                </>
+                            )}
+                            <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
+                        </div>
+                        <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
+                            <Nav.Item>
+                                <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="link1" onClick={() => setTab(1)}>Gene</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="link2" onClick={() => setTab(2)}>Mutation</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="link3" onClick={() => setTab(3)}>Pathogenecity</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="link4" onClick={() => setTab(4)}>Analyze</Nav.Link>
+                            </Nav.Item>
+                        </Nav>
 
-                    <Tab tab={tab} />
-                </>
+                        <Tab tab={tab} />
+                    </>
                 </div>
             )}
 
-            <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
-                <Offcanvas.Header>
-                    <Offcanvas.Title>
-                        <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }} />
-                    </Offcanvas.Title>
+
+
+            <div className={`sidebar ${show ? 'show' : ''}`}>
+                <div className="sidebar-header">
+
+                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }} />
                     <img src={editIcon} alt="Edit" className="edit-icon" />
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <div>Yesterday</div>
+                </div>
+                <div className="sidebar-body">
+                    <div>Today</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
-                    <div>Reference2</div>
                     <br />
-                    <div>Previous 7 day</div>
+                    <div>Previous 7 days</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
                     <div>Reference3</div>
 
-                </Offcanvas.Body>
-            </Offcanvas>
+                </div>
+            </div>
+
+
+
         </div>
 
     );
