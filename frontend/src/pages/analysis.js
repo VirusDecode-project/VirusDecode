@@ -15,10 +15,7 @@ function Analysis() {
     let navigate = useNavigate();
 
 
-    const handleShowOffcanvas = () => {
-        setShowOffcanvas(true);
-        document.body.style.overflow = 'hidden';  // 오버플로우 숨김
-    };
+    let handleShowOffcanvas = () => setShowOffcanvas(true);
     let handleCloseOffcanvas = () => setShowOffcanvas(false);
 
     useEffect(() => {
@@ -52,6 +49,7 @@ function Analysis() {
                 </div>
             ) : (
 
+                <div className={`analysis-container ${showOffcanvas ? 'shrink' : ''}`}>
                 <>
                     <div className="header-bar">
                         {!showOffcanvas && (
@@ -82,6 +80,7 @@ function Analysis() {
 
                     <Tab tab={tab} />
                 </>
+                </div>
             )}
 
             <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
