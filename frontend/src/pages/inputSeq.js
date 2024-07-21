@@ -1,24 +1,22 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Form, Offcanvas } from 'react-bootstrap';
+import { Button, Modal, Form, Offcanvas, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
 import historyIcon from './history.png';
+import editIcon from './edit.png';
 
 function InputSeq() {
+    let navigate = useNavigate();
+
+    
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const [showModal, setShowModal] = useState(false);
-    const [showOffcanvas, setShowOffcanvas] = useState(false);
-
-    const navigate = useNavigate();
-
     const handleCloseModal = () => setShowModal(false);
-    const handleShowModal = () => setShowModal(true);
 
-    const handleCloseOffcanvas = () => setShowOffcanvas(false);
-    const handleShowOffcanvas = () => {
-        setShowOffcanvas(true);
-        document.body.style.overflow = 'hidden';  // 오버플로우 숨김
-    };
+    const [show, setShow] = useState(true);
 
     useEffect(() => {
         setShowModal(true);
@@ -27,39 +25,77 @@ function InputSeq() {
         };
     }, []);
 
-    useEffect(() => {
-        if (!showOffcanvas) {
-            document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
-        }
-    }, [showOffcanvas]);
 
     return (
-        <div className={`next-page-container ${showOffcanvas ? 'shrink' : ''}`}>
-            <div className="container mt-4">
-                <Form>
-                    <Form.Group controlId="referenceSequenceId">
-                        <Form.Label>Reference Sequence ID</Form.Label>
-                        <Form.Control type="text" placeholder="Enter sequence ID" />
-                    </Form.Group>
-                    <Button variant="primary" className="mt-3" >DONE</Button>
+        <div className={`next-page-container ${show ? 'shrink' : ''}`}>
+            <div className="header-bar">
+                {!show && (
+                    <>
+                        <img onClick={handleShow} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+                        <img src={editIcon} alt="Edit" className="edit-icon" />
+                    </>
+                )}
+                <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
+            </div>
 
-                    <h4 className="mt-5">Variant Sequence</h4>
+
+            <div className="container mt-4" style={{ marginLeft: '75px' }}>
+
+
+                <Form>
+
+                    <h5 className="RS-id">Reference Sequence ID</h5>
+                    <Row className="align-items-center">
+                        <Col md={6}>
+                            <Form.Group controlId="referenceSequenceId">
+                                <Form.Control type="text" placeholder="Enter sequence ID" className="input-field" />
+                            </Form.Group>
+                        </Col>
+                        <Col md={1} className="d-flex justify-content-end align-items-center">
+                            <Button variant="primary" className="done-button">DONE</Button>
+                        </Col>
+                    </Row>
+
+                </Form>
+
+                <Form>
+
+                    <div className="mb-5"></div>
+
+                    <h5 className="RS-id">Variant Sequence</h5>
+
+
                     <Form.Group controlId="formFile" className="mb-3">
                         <Form.Label>Upload File</Form.Label>
-                        <div className="upload-box">
-                            <Form.Control type="file" label="Drag your FASTA files here" custom />
-                        </div>
+                        <Col md={6}>
+                            <div className="upload-box">
+                                <Form.Control type="file" label="Drag your FASTA files here" custom />
+                            </div>
+                        </Col>
                     </Form.Group>
+
+
                     <Form.Group controlId="pasteSequence">
                         <Form.Label>Paste Sequence</Form.Label>
-                        <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                        <Col md={9}>
+                            <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                        </Col>
                     </Form.Group>
-                    <Button variant="link" className="mt-3">+ Add Sequence</Button>
+
+                    <Row>
+                        <Col md={9} className="d-flex justify-content-start">
+                            <Button variant="link" className="mt-3">+ Add Sequence</Button>
+                        </Col>
+                    </Row>
+
+
+
+
                 </Form>
             </div>
 
-            <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
+            <Modal show={showModal} onHide={handleCloseModal} centered>
+                <Modal.Header className="modal-body-centered">
                     <Modal.Title>Welcome to VirusDecode!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="modal-body-centered">
@@ -69,32 +105,41 @@ function InputSeq() {
                         <GoogleLoginButton />
                     </div>
                 </Modal.Body>
+
+                <Modal.Footer className="modal-body-centered">
+                    <div>
+                        New to VirusDecode?<br />
+                        Sign up now!</div>
+                    <div className="google-login-button-container">
+                        <GoogleLoginButton />
+                    </div>
+
+                </Modal.Footer>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleCloseModal}>
+                    <p className='logged-out' onClick={handleCloseModal}>
                         Stay logged out
-                    </Button>
+                    </p>
                 </Modal.Footer>
             </Modal>
 
-            <Button variant="primary" onClick={handleShowOffcanvas} className="mt-4">
-                사이드바
-            </Button>
-
-            <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '300px' }}>
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>History</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                    <div>yesterday</div>
+            <div className={`sidebar ${show ? 'show' : ''}`}>
+                <div className="sidebar-header">
+                    
+                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }}/>
+                    <img src={editIcon} alt="Edit" className="edit-icon" />
+                </div>
+                <div className="sidebar-body">
+                    <div>Today</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
-                    <br />
-                    <div>previous 7 day</div>
+                    <br/>
+                    <div>Previous 7 days</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
                     <div>Reference3</div>
-                </Offcanvas.Body>
-            </Offcanvas>
+
+                </div>
+            </div>
 
             <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
         </div>
