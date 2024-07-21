@@ -17,10 +17,6 @@ function InputSeq() {
     const handleCloseModal = () => setShowModal(false);
 
     const [show, setShow] = useState(true);
-    // const [showOffcanvas, setShowOffcanvas] = useState(true);
-
-    // let handleCloseOffcanvas = () => setShowOffcanvas(false);
-    // let handleShowOffcanvas = () => setShowOffcanvas(true);
 
     useEffect(() => {
         setShowModal(true);
@@ -29,11 +25,6 @@ function InputSeq() {
         };
     }, []);
 
-    // useEffect(() => {
-    //     if (!showOffcanvas) {
-    //         document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
-    //     }
-    // }, [showOffcanvas]);
 
     return (
         <div className={`next-page-container ${show ? 'shrink' : ''}`}>
@@ -48,7 +39,7 @@ function InputSeq() {
             </div>
 
 
-            <div className="container mt-4" style={{ marginLeft: '30px' }}>
+            <div className="container mt-4" style={{ marginLeft: '75px' }}>
 
 
                 <Form>
@@ -149,22 +140,6 @@ function InputSeq() {
 
                 </div>
             </div>
-
-
-
-            {/* <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
-                <Offcanvas.Header>
-                    <Offcanvas.Title>
-                        <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }} />
-                    </Offcanvas.Title>
-                    <img src={editIcon} alt="Edit" className="edit-icon" />
-                </Offcanvas.Header>
-
-                <Offcanvas.Body>
-                    <div>Today</div>
-
-                </Offcanvas.Body>
-            </Offcanvas> */}
 
             <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
         </div>

@@ -11,20 +11,11 @@ function Analysis() {
     let [isLoading, setIsLoading] = useState(true);
     let [loadingText, setLoadingText] = useState('Analyzing');
 
-    // const [showOffcanvas, setShowOffcanvas] = useState(false);
     let navigate = useNavigate();
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [show, setShow] = useState(false);
-    // let handleShowOffcanvas = () => setShowOffcanvas(true);
-    // let handleCloseOffcanvas = () => setShowOffcanvas(false);
-
-    // useEffect(() => {
-    //     if (!showOffcanvas) {
-    //         document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
-    //     }
-    // }, [showOffcanvas]);
 
     useEffect(() => {
         const interval = setInterval(() => {
