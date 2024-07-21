@@ -16,6 +16,15 @@ function InputSeq() {
         setUploadedFiles((prevFiles) => [...prevFiles, ...files.map(file => file.name)]);
     };
 
+    const [pastedSequences, setPastedSequences] = useState([]);
+    const [currentSequence, setCurrentSequence] = useState('');
+    const handleAddSequence = () => {
+        if (currentSequence.trim() !== '') {
+            setPastedSequences((prevSequences) => [...prevSequences, currentSequence]);
+            setCurrentSequence('');
+        }
+    };
+
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -93,23 +102,33 @@ function InputSeq() {
 
                     <Form.Group controlId="pasteSequence">
                         <Form.Label>Paste Sequence</Form.Label>
+                        {pastedSequences.length > 0 && (
+                            <ul className="seq-list">
+                                {pastedSequences.map((sequence, index) => (
+                                    <li key={index}>{sequence}</li>
+                                ))}
+                            </ul>
+                        )}
                         <Col md={9}>
-                            <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                            <Form.Control as="textarea" rows={3} value={currentSequence} onChange={(e) => setCurrentSequence(e.target.value)} placeholder="sequence1" />
                         </Col>
                     </Form.Group>
 
+
+
                     <Row>
                         <Col md={9} className="d-flex justify-content-start">
-                            <Button variant="link" className="mt-3">+ Add Sequence</Button>
+                            <Button variant="link" className="mt-3" onClick={handleAddSequence}>+ Add Sequence</Button>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col md={10} className="d-flex justify-content-end">
 
-                        <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
+                    <Row>
+                        <Col className="d-flex justify-content-end">
+
+                            <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
                         </Col>
                     </Row>
-     
+
 
 
 
