@@ -19,7 +19,7 @@ function Analysis() {
         setTimeout(() => {
             setIsLoading(false);
             clearInterval(interval); // 로딩 완료 시 인터벌 정리
-        }, 5000); // 페이지가 처음 로딩될 때 3초 동안 로딩 이미지 표시
+        }, 1000); // 페이지가 처음 로딩될 때 3초 동안 로딩 이미지 표시
 
         return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 정리
     }, []);
@@ -32,7 +32,9 @@ function Analysis() {
                     <div className="loading-text">{loadingText}</div>
                 </div>
             ) : (
+                
                 <>
+                    <h1>히스토리 로고 + 헤드바 컴포넌트</h1>
                     <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
                         <Nav.Item>
                             <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
@@ -50,6 +52,7 @@ function Analysis() {
                             <Nav.Link eventKey="link4" onClick={() => setTab(4)}>Analyze</Nav.Link>
                         </Nav.Item>
                     </Nav>
+                    
                     <Tab tab={tab} />
                 </>
             )}

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
 import historyIcon from './history.png';
+import editIcon from './edit.png';
 
 function InputSeq() {
     const [showModal, setShowModal] = useState(false);
@@ -35,6 +36,15 @@ function InputSeq() {
 
     return (
         <div className={`next-page-container ${showOffcanvas ? 'shrink' : ''}`}>
+            <div className="header-bar">
+            {!showOffcanvas && (
+                <>
+                    <img onClick={handleShowOffcanvas} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+                    <img src={editIcon} alt="Edit" className="edit-icon" />
+                    </>
+                )}
+            <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
+            </div>
             <div className="container mt-4">
                 <Form>
                     <Form.Group controlId="referenceSequenceId">
@@ -59,7 +69,7 @@ function InputSeq() {
             </div>
 
             <Modal show={showModal} onHide={handleCloseModal}>
-                <Modal.Header closeButton>
+                <Modal.Header >
                     <Modal.Title>Welcome to VirusDecode!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="modal-body-centered">
@@ -76,20 +86,57 @@ function InputSeq() {
                 </Modal.Footer>
             </Modal>
 
-            <Button variant="primary" onClick={handleShowOffcanvas} className="mt-4">
-                사이드바
-            </Button>
-
-            <Offcanvas show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '300px' }}>
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>History</Offcanvas.Title>
+            <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
+            <Offcanvas.Header>
+                    <Offcanvas.Title>
+                        <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }}/>
+                    </Offcanvas.Title>
+                    <img src={editIcon} alt="Edit" className="edit-icon" />
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                    <div>yesterday</div>
+                    <div>Today</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+                    <br />
+                    <div>Yesterday</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+
+                    <div>Reference1</div>
+                    <div>Reference2</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
                     <br />
-                    <div>previous 7 day</div>
+                    <div>Previous 7 day</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
+                    <div>Reference1</div>
+                    <div>Reference2</div>
+                    <div>Reference3</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
                     <div>Reference3</div>
