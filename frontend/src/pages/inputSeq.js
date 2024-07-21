@@ -7,18 +7,15 @@ import historyIcon from './history.png';
 import editIcon from './edit.png';
 
 function InputSeq() {
-    const [showModal, setShowModal] = useState(false);
-    const [showOffcanvas, setShowOffcanvas] = useState(true);
-
     let navigate = useNavigate();
 
+    const [showModal, setShowModal] = useState(false);
     const handleCloseModal = () => setShowModal(false);
 
+    const [showOffcanvas, setShowOffcanvas] = useState(true);
+
     let handleCloseOffcanvas = () => setShowOffcanvas(false);
-    const handleShowOffcanvas = () => {
-        setShowOffcanvas(true);
-        document.body.style.overflow = 'hidden';  // 오버플로우 숨김
-    };
+    let handleShowOffcanvas = () => setShowOffcanvas(true);
 
     useEffect(() => {
         setShowModal(true);
@@ -47,6 +44,7 @@ function InputSeq() {
 
 
             <div className="container mt-4" style={{ marginLeft: '30px' }}>
+                
                 
                 <Form>
                     
