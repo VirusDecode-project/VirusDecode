@@ -33,12 +33,12 @@
 }
 
 .next-page-container.shrink {
-  padding-left: 300px;
+  padding-left: 260px;
 }
 
 .next-page {
   position: absolute;
-  bottom: 100px;
+  bottom: 20px;
   right: 20px;
   padding: 10px 20px;
   color: black;
@@ -73,4 +73,40 @@ button {
 
 body {
   font-family: "IBM Plex Mono", monospace;
+}
+
+.header-bar {
+  height: 60px; /* Set the height to 50px */
+  display: flex;
+  align-items: center; /* Center items vertically */
+  justify-content: flex-start; /* Center items horizontally */
+  font-size: 1.25rem; /* Optional: Adjust the font size */
+  padding-left: 15px;
+}
+
+.history-icon {
+  margin-right: 10px; /* Adjust the margin to create space between the icon and text */
+  height: 24px; /* Adjust the height of the icon */
+  width: auto; /* Maintain the aspect ratio */
+}
+
+.edit-icon {
+  margin-right: 0px; /* Adjust the margin to create space between the icon and text */
+  height: 24px; /* Adjust the height of the icon */
+  width: auto; /* Maintain the aspect ratio */
+}
+
+/* Custom offcanvas style */
+.custom-offcanvas .offcanvas-body {
+  background-color: #f0f0f0; /* Set your desired background color */
+}
+
+.custom-offcanvas .offcanvas-header {
+  background-color: #f0f0f0; /* Set your desired background color */
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo-text {
+  margin-left: 15px;
 }
