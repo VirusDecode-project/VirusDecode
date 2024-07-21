@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Form, Offcanvas } from 'react-bootstrap';
+import { Button, Modal, Form, Offcanvas, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
@@ -44,26 +44,59 @@ function InputSeq() {
                 )}
                 <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
             </div>
-            <div className="container mt-4">
-                <Form>
-                    <Form.Group controlId="referenceSequenceId">
-                        <Form.Label>Reference Sequence ID</Form.Label>
-                        <Form.Control type="text" placeholder="Enter sequence ID" />
-                    </Form.Group>
-                    <Button variant="primary" className="mt-3" >DONE</Button>
 
-                    <h4 className="mt-5">Variant Sequence</h4>
+
+            <div className="container mt-4" style={{ marginLeft: '30px' }}>
+                
+                <Form>
+                    
+                    <h5 className="RS-id">Reference Sequence ID</h5>
+                    <Row className="align-items-center">
+                        <Col md={6}>
+                            <Form.Group controlId="referenceSequenceId">
+                                <Form.Control type="text" placeholder="Enter sequence ID" className="input-field" />
+                            </Form.Group>
+                        </Col>
+                        <Col md={1} className="d-flex justify-content-end align-items-center">
+                            <Button variant="primary" className="done-button">DONE</Button>
+                        </Col>
+                    </Row>
+
+                </Form>
+
+                <Form>
+
+                    <div className="mb-5"></div>
+
+                    <h5 className="RS-id">Variant Sequence</h5>
+
+
                     <Form.Group controlId="formFile" className="mb-3">
                         <Form.Label>Upload File</Form.Label>
-                        <div className="upload-box">
-                            <Form.Control type="file" label="Drag your FASTA files here" custom />
-                        </div>
+                        <Col md={6}>
+                            <div className="upload-box">
+                                <Form.Control type="file" label="Drag your FASTA files here" custom />
+                            </div>
+                        </Col>
                     </Form.Group>
+
+
                     <Form.Group controlId="pasteSequence">
                         <Form.Label>Paste Sequence</Form.Label>
-                        <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                        <Col md={9}>
+                            <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                        </Col>
                     </Form.Group>
-                    <Button variant="link" className="mt-3">+ Add Sequence</Button>
+
+                    <Row>
+                        <Col md={9} className="d-flex justify-content-start">
+                            <Button variant="link" className="mt-3">+ Add Sequence</Button>
+                        </Col>
+                    </Row>
+
+
+
+
                 </Form>
             </div>
 
@@ -104,51 +137,7 @@ function InputSeq() {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                     <div>Today</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <br />
-                    <div>Yesterday</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
 
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <br />
-                    <div>Previous 7 day</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
                 </Offcanvas.Body>
             </Offcanvas>
 

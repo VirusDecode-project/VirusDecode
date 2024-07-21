@@ -55,6 +55,8 @@
   border: 2px dashed #ccc;
   padding: 20px;
   text-align: center;
+  /* width: 600px;
+  height: 200px; */
 }
 
 .form-control:focus {
@@ -97,6 +99,9 @@ body {
 }
 
 /* Custom offcanvas style */
+
+
+
 .custom-offcanvas .offcanvas-body {
   background-color: #f0f0f0; /* Set your desired background color */
 }
@@ -122,3 +127,34 @@ body {
 .logged-out:hover {
   color: gray;  /* 마우스 올렸을 때 색깔 조금 진하게 */
 }
+
+.RS-id {
+  text-align: left; /* 좌측 정렬 설정 */
+}
+
+.done-button {
+  background-color: #0fb9af;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  width: 150px;
+  height: 38px; /* 높이를 입력 필드와 동일하게 설정 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-field {
+  height: 38px; /* 높이를 버튼과 동일하게 설정 */
+}
+
+.done-button:hover {
+  background-color: #0c9e94;
+}
+
+.form-label {
+  text-align: left; /* 좌측 정렬 설정 */
+  display: block; /* 기본적으로 form-label은 inline 요소이므로 block으로 설정 */
+}
+
