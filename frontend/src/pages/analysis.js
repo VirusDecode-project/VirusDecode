@@ -28,7 +28,7 @@ function Analysis() {
         setTimeout(() => {
             setIsLoading(false);
             clearInterval(interval); // 로딩 완료 시 인터벌 정리
-        }, 1000); // 페이지가 처음 로딩될 때 3초 동안 로딩 이미지 표시
+        }, 3000); // 페이지가 처음 로딩될 때 3초 동안 로딩 이미지 표시
 
         return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 정리
     }, []);
