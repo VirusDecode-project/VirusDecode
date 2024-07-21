@@ -5,11 +5,27 @@ import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
 import historyIcon from './history.png';
 import editIcon from './edit.png';
+import uploadIcon from './upload_icon.png';
 
 function InputSeq() {
     let navigate = useNavigate();
 
-    
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const handleFileChange = (event) => {
+        const files = Array.from(event.target.files);
+        setUploadedFiles((prevFiles) => [...prevFiles, ...files.map(file => file.name)]);
+    };
+
+    const [pastedSequences, setPastedSequences] = useState([]);
+    const [currentSequence, setCurrentSequence] = useState('');
+    const handleAddSequence = () => {
+        if (currentSequence.trim() !== '') {
+            setPastedSequences((prevSequences) => [...prevSequences, currentSequence]);
+            setCurrentSequence('');
+        }
+    };
+
+
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -64,27 +80,52 @@ function InputSeq() {
 
                     <h5 className="RS-id">Variant Sequence</h5>
 
-
                     <Form.Group controlId="formFile" className="mb-3">
                         <Form.Label>Upload File</Form.Label>
                         <Col md={6}>
                             <div className="upload-box">
-                                <Form.Control type="file" label="Drag your FASTA files here" custom />
+                                <Form.Control type="file" className="file-input" onChange={handleFileChange} multiple />
+                                <label className="file-label" htmlFor="formFile">
+                                    <img src={uploadIcon} alt="Upload Icon" className="upload-icon" />
+                                    <span>Drag your FASTA files here</span>
+                                </label>
                             </div>
+                            {uploadedFiles.length > 0 && (
+                                <ul className="file-list">
+                                    {uploadedFiles.map((fileName, index) => (
+                                        <li key={index}>{fileName}</li>
+                                    ))}
+                                </ul>
+                            )}
                         </Col>
                     </Form.Group>
-
 
                     <Form.Group controlId="pasteSequence">
                         <Form.Label>Paste Sequence</Form.Label>
+                        {pastedSequences.length > 0 && (
+                            <ul className="seq-list">
+                                {pastedSequences.map((sequence, index) => (
+                                    <li key={index}>{sequence}</li>
+                                ))}
+                            </ul>
+                        )}
                         <Col md={9}>
-                            <Form.Control as="textarea" rows={3} placeholder="sequence1" />
+                            <Form.Control as="textarea" rows={3} value={currentSequence} onChange={(e) => setCurrentSequence(e.target.value)} placeholder="sequence1" />
                         </Col>
                     </Form.Group>
 
+
+
                     <Row>
                         <Col md={9} className="d-flex justify-content-start">
-                            <Button variant="link" className="mt-3">+ Add Sequence</Button>
+                            <Button variant="link" className="mt-3" onClick={handleAddSequence}>+ Add Sequence</Button>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col className="d-flex justify-content-end">
+
+                            <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
                         </Col>
                     </Row>
 
@@ -124,15 +165,15 @@ function InputSeq() {
 
             <div className={`sidebar ${show ? 'show' : ''}`}>
                 <div className="sidebar-header">
-                    
-                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }}/>
+
+                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }} />
                     <img src={editIcon} alt="Edit" className="edit-icon" />
                 </div>
                 <div className="sidebar-body">
                     <div>Today</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
-                    <br/>
+                    <br />
                     <div>Previous 7 days</div>
                     <div>Reference1</div>
                     <div>Reference2</div>
@@ -141,7 +182,7 @@ function InputSeq() {
                 </div>
             </div>
 
-            <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
+            {/* <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4> */}
         </div>
     );
 }
