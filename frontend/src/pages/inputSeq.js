@@ -9,13 +9,18 @@ import editIcon from './edit.png';
 function InputSeq() {
     let navigate = useNavigate();
 
+    
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const [showModal, setShowModal] = useState(false);
     const handleCloseModal = () => setShowModal(false);
 
-    const [showOffcanvas, setShowOffcanvas] = useState(true);
+    const [show, setShow] = useState(false);
+    // const [showOffcanvas, setShowOffcanvas] = useState(true);
 
-    let handleCloseOffcanvas = () => setShowOffcanvas(false);
-    let handleShowOffcanvas = () => setShowOffcanvas(true);
+    // let handleCloseOffcanvas = () => setShowOffcanvas(false);
+    // let handleShowOffcanvas = () => setShowOffcanvas(true);
 
     useEffect(() => {
         setShowModal(true);
@@ -24,18 +29,18 @@ function InputSeq() {
         };
     }, []);
 
-    useEffect(() => {
-        if (!showOffcanvas) {
-            document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
-        }
-    }, [showOffcanvas]);
+    // useEffect(() => {
+    //     if (!showOffcanvas) {
+    //         document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
+    //     }
+    // }, [showOffcanvas]);
 
     return (
-        <div className={`next-page-container ${showOffcanvas ? 'shrink' : ''}`}>
+        <div className={`next-page-container ${show ? 'shrink' : ''}`}>
             <div className="header-bar">
-                {!showOffcanvas && (
+                {!show && (
                     <>
-                        <img onClick={handleShowOffcanvas} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+                        <img onClick={handleShow} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
                         <img src={editIcon} alt="Edit" className="edit-icon" />
                     </>
                 )}
@@ -44,10 +49,10 @@ function InputSeq() {
 
 
             <div className="container mt-4" style={{ marginLeft: '30px' }}>
-                
-                
+
+
                 <Form>
-                    
+
                     <h5 className="RS-id">Reference Sequence ID</h5>
                     <Row className="align-items-center">
                         <Col md={6}>
@@ -126,18 +131,31 @@ function InputSeq() {
                 </Modal.Footer>
             </Modal>
 
-            <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
+            <div className={`sidebar ${show ? 'show' : ''}`}>
+                <div className="sidebar-header">
+                    <h2>Sidebar</h2>
+                    <button className="close-btn" onClick={handleClose}>X</button>
+                </div>
+                <div className="sidebar-body">
+                    <div>Today</div>
+                </div>
+            </div>
+
+
+
+            {/* <Offcanvas className="custom-offcanvas" show={showOffcanvas} onHide={handleCloseOffcanvas} backdrop={false} style={{ width: '260px' }}>
                 <Offcanvas.Header>
                     <Offcanvas.Title>
                         <img onClick={handleCloseOffcanvas} src={historyIcon} alt="History" className="history-icon" style={{ cursor: 'pointer' }} />
                     </Offcanvas.Title>
                     <img src={editIcon} alt="Edit" className="edit-icon" />
                 </Offcanvas.Header>
+
                 <Offcanvas.Body>
                     <div>Today</div>
 
                 </Offcanvas.Body>
-            </Offcanvas>
+            </Offcanvas> */}
 
             <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
         </div>
