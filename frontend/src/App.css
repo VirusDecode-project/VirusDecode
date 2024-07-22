@@ -1,3 +1,13 @@
+.content-container.shrink {
+  padding-left: 260px;
+}
+
+.content-container {
+  position: relative;
+  height: 100vh;
+  transition: padding-left 0.3s ease;
+  padding-left: 0px;
+}
 .ibm-plex-mono-regular {
   font-family: "IBM Plex Mono", monospace;
   font-weight: 400;
@@ -22,7 +32,7 @@
 
 .text-box {
   line-height: 3;  
-  width: 350px;
+  width: 420px;
   margin: 30px auto; /* 수평 가운데 정렬 */
 }
 
