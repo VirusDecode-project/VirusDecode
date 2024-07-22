@@ -25,7 +25,7 @@
   cursor: pointer;
 }
 
-.next-page-container {
+/* .next-page-container {
   position: relative;
   height: 100vh;
   transition: padding-left 0.3s ease;
@@ -34,7 +34,7 @@
 
 .next-page-container.shrink {
   padding-left: 260px;
-}
+} */
 
 .next-page {
   margin-top: 80px;

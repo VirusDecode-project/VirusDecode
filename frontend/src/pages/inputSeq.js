@@ -3,8 +3,8 @@ import { Button, Modal, Form, Offcanvas, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
-import historyIcon from './history.png';
-import editIcon from './edit.png';
+// import historyIcon from './history.png';
+// import editIcon from './edit.png';
 import uploadIcon from './upload_icon.png';
 
 function InputSeq() {
@@ -26,13 +26,13 @@ function InputSeq() {
     };
 
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    // const handleClose = () => setShow(false);
+    // const handleShow = () => setShow(true);
 
     const [showModal, setShowModal] = useState(false);
     const handleCloseModal = () => setShowModal(false);
 
-    const [show, setShow] = useState(true);
+    // const [show, setShow] = useState(true);
 
     useEffect(() => {
         setShowModal(true);
@@ -43,16 +43,9 @@ function InputSeq() {
 
 
     return (
-        <div className={`next-page-container ${show ? 'shrink' : ''}`}>
-            <div className="header-bar">
-                {!show && (
-                    <>
-                        <img onClick={handleShow} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
-                        <img src={editIcon} alt="Edit" className="edit-icon" />
-                    </>
-                )}
-                <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
-            </div>
+
+            <div>
+
 
 
             <div className="container mt-4" style={{ marginLeft: '75px' }}>
@@ -147,15 +140,6 @@ function InputSeq() {
                     </div>
                 </Modal.Body>
 
-                <Modal.Footer className="modal-body-centered">
-                    <div>
-                        New to VirusDecode?<br />
-                        Sign up now!</div>
-                    <div className="google-login-button-container">
-                        <GoogleLoginButton />
-                    </div>
-
-                </Modal.Footer>
                 <Modal.Footer>
                     <p className='logged-out' onClick={handleCloseModal}>
                         Stay logged out
@@ -163,26 +147,7 @@ function InputSeq() {
                 </Modal.Footer>
             </Modal>
 
-            <div className={`sidebar ${show ? 'show' : ''}`}>
-                <div className="sidebar-header">
 
-                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }} />
-                    <img src={editIcon} alt="Edit" className="edit-icon" />
-                </div>
-                <div className="sidebar-body">
-                    <div>Today</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <br />
-                    <div>Previous 7 days</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-
-                </div>
-            </div>
-
-            {/* <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4> */}
         </div>
     );
 }
