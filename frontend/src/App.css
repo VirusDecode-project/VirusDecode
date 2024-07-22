@@ -66,3 +66,58 @@
   padding-left: 0;
   padding-right: 0;
 }
+
+.sidebar-toggle {
+  margin: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100%;
+  background-color: #f0f0f0;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  /* overflow-y: auto; */
+  display: flex;
+  flex-direction: column; /* Flexbox 레이아웃 추가 */
+}
+
+
+.sidebar.show {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.sidebar-body {
+  flex-grow: 1; /* Flex-grow로 남은 공간 차지 */
+  overflow-y: auto;
+  text-align: left;
+}
