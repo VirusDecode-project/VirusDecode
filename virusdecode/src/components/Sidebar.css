@@ -1,0 +1,72 @@
+/* Sidebar.css */
+
+.sidebar {
+  width: 250px;
+  height: 100vh;
+  background-color: #f7f7f7;
+  color: #515151;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  transition: transform 0.3s ease; /* Smooth transition */
+  transform: translateX(-100%); /* Initially hidden */
+}
+
+.sidebar.open {
+  transform: translateX(0); /* Show sidebar */
+}
+
+.sidebar.closed {
+  transform: translateX(-100%); /* Hide sidebar */
+}
+
+.sidebar-content {
+  padding: 20px;
+}
+
+.sidebar-content ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar-content li {
+  color: #bcbcbc;
+  margin: 10px 0;
+  text-decoration: none;
+}
+
+.sidebar-content a {
+  color: #515151;
+  text-decoration: none;
+}
+
+
+.toggle-button-opened {
+  height: 20px;
+  border: none;
+  background-color:#f7f7f7;
+  color: #515151;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.side-top {
+  position: sticky;
+  top: 0;
+  background-color: #f7f7f7;
+  z-index: 1; /* 다른 요소들 위에 표시되도록 설정 */
+  padding: 20px 10px 10px 15px; /* Adjusted padding */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new-input {
+  margin-top: 5px;
+  border: none;
+  background-color: #f7f7f7;
+  color: #515151;
+  cursor: pointer;
+  font-size: 18px;
+}

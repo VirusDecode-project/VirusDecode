@@ -1,0 +1,23 @@
+/* src/App.css */
+.App {
+    display: flex;
+  }
+  
+  .content-container {
+    flex-grow: 1;
+    transition: margin-left 0.3s ease; /* Smooth transition */
+  }
+  
+  .content-container.shifted {
+    margin-left: 250px; /* Shifted when sidebar is open */
+  }
+  
+  .main-content {
+    margin-left: 0;
+    margin-top: 60px; /* Height of the navigation bar */
+    padding: 20px;
+    height: calc(100vh - 60px); /* Adjust height according to the navigation bar */
+    overflow-y: auto;
+    position: relative;
+  }
+
