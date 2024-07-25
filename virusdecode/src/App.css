@@ -1,23 +1,21 @@
-/* src/App.css */
 .App {
     display: flex;
   }
   
   .content-container {
     flex-grow: 1;
-    transition: margin-left 0.3s ease; /* Smooth transition */
+    transition: margin-left 0.3s ease; 
   }
   
   .content-container.shifted {
-    margin-left: 250px; /* Shifted when sidebar is open */
+    margin-left: 250px; 
   }
   
   .main-content {
     margin-left: 0;
-    margin-top: 60px; /* Height of the navigation bar */
+    margin-top: 60px;
     padding: 20px;
-    height: calc(100vh - 60px); /* Adjust height according to the navigation bar */
+    height: calc(100vh - 60px); 
     overflow-y: auto;
-    position: relative;
   }
 

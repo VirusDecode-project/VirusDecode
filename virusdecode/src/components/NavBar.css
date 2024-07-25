@@ -1,36 +1,36 @@
-@import url(https://fonts.googleapis.com/css?family=IBM+Plex+Mono:100,100italic,200,200italic,300,300italic,regular,italic,500,500italic,600,600italic,700,700italic);
-
 .navigation-bar {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    color: #333;
-    padding: 10px 10px 10px 7px;
-    width: 100%;
-    z-index: 10;
-    position: fixed
+  display: flex;
+  align-items: center;
+  background-color: white;
+  color: #333;
+  padding: 18px 10px 18px 15px;
+  width: 100%;
+  z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: margin-left 0.3s ease; 
+}
 
-  }
-  
-  .nav-title {
-    font-size: 24px;
-    font-family:'IBM Plex Mono';
-    letter-spacing: -2px;
-    font-weight: 400;
-    text-decoration: none; 
-    color: inherit; 
-    padding-left: 10px;
-  }
+.navigation-bar.shifted {
+  margin-left: 250px;
+}
 
+.nav-title {
+  font-size: 24px;
+  font-family: 'IBM Plex Mono';
+  letter-spacing: -2px;
+  font-weight: 400;
+  text-decoration: none;
+  color: inherit;
+  padding-left: 10px;
+}
 
-  .toggle-button {
-    background-color: #fff;
-    height: 20px;
-    border: none;
-    color: #333;
-    cursor: pointer;
-    font-size: 20px;
-  }
-
-
-  
+.toggle-button {
+  background-color: #fff;
+  height: 20px;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 20px;
+}
