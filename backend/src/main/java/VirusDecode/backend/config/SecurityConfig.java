@@ -30,12 +30,14 @@ public class SecurityConfig{
                 .httpBasic(AbstractHttpConfigurer::disable);
         http
                 .oauth2Login((oauth2)->oauth2
+                        .defaultSuccessUrl("http://localhost:3000/login-success", true)  // 로그인 성공시 ( response 로 전달 )
+                        .failureUrl("http://localhost:3000/login-failure")  // 로그인 실패시
                         .userInfoEndpoint((userInfoEndpointConfig ->
                                 userInfoEndpointConfig.userService(customOAuth2UserService))));
         http
                 .authorizeHttpRequests((auth)->auth
                         .requestMatchers("/", "/oauth2/**","/login/**").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().authenticated());   // request 에 대해 모두 인증(로그인)이 필요함
 
 
         return http.build();
