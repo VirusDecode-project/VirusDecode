@@ -272,9 +272,23 @@ body {
   color: rgb(55, 55, 55);
 }
 
+textarea {
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  width: 70%;
+  height: 85px;
+  padding: 5px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  resize: none; 
+  overflow: auto; 
+  font-family:'Roboto';
+}
+
 textarea::placeholder {
-  padding: 3px;
-  color: #92929d; /* placeholder 색상 변경 */
+padding: 3px;
+color: #92929d; /* placeholder 색상 변경 */
 }
 
 .text-left {
