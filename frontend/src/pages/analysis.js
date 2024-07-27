@@ -1,10 +1,8 @@
-import { Nav, Offcanvas } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import loadingImage from './loading.png';
 import './analysis.css';
-import historyIcon from './history.png';
-import editIcon from './edit.png';
 
 function Analysis() {
     let [tab, setTab] = useState(0)
@@ -44,15 +42,7 @@ function Analysis() {
 
                 <div className={`analysis-container ${show ? 'shrink' : ''}`}>
                     <>
-                        <div className="header-bar">
-                            {!show && (
-                                <>
-                                    <img onClick={handleShow} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
-                                    <img src={editIcon} alt="Edit" className="edit-icon" />
-                                </>
-                            )}
-                            <span className='logo-text' onClick={() => { navigate('/') }} style={{ cursor: 'pointer' }}>VirusDecode</span>
-                        </div>
+                        
                         <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
                             <Nav.Item>
                                 <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
@@ -78,24 +68,6 @@ function Analysis() {
 
 
 
-            <div className={`sidebar ${show ? 'show' : ''}`}>
-                <div className="sidebar-header">
-
-                    <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }} />
-                    <img src={editIcon} alt="Edit" className="edit-icon" />
-                </div>
-                <div className="sidebar-body">
-                    <div>Today</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <br />
-                    <div>Previous 7 days</div>
-                    <div>Reference1</div>
-                    <div>Reference2</div>
-                    <div>Reference3</div>
-
-                </div>
-            </div>
 
 
 
