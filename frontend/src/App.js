@@ -1,12 +1,9 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Container } from 'react-bootstrap';
-import logo from './logo.png';//이거 퍼블릭 폴더에 넣기
+import logo from './logo.png';
 import { Routes, Route, useNavigate, useLocation} from 'react-router-dom'
-
 import InputSeq from './pages/inputSeq.js'
 import Analysis from './pages/analysis.js'
-
 import { React, useState, useEffect } from 'react';
 import historyIcon from './history.png';
 import editIcon from './edit.png';
@@ -52,51 +49,32 @@ function App() {
           <div>Today</div>
           <div>Reference1</div>
           <div>Reference2</div>
+          <div>Reference3</div>
           <br />
-          <div>Previous 7 days</div>
+          <div>Yesterday</div>
           <div>Reference1</div>
           <div>Reference2</div>
           <div>Reference3</div>
-          <div>Today</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
+          <div>Reference4</div>
+          <div>Reference5</div>
+          <div>Reference6</div>
+          <div>Reference7</div>
+
           <br />
-          <div>Previous 7 days</div>
+          <div>Previous 7days</div>
           <div>Reference1</div>
           <div>Reference2</div>
           <div>Reference3</div>
-          <div>Today</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <br />
-          <div>Previous 7 days</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <div>Reference3</div>
-          <div>Today</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <br />
-          <div>Previous 7 days</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <div>Reference3</div>
-          <div>Today</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <br />
-          <div>Previous 7 days</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <div>Reference3</div>
-          <div>Today</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <br />
-          <div>Previous 7 days</div>
-          <div>Reference1</div>
-          <div>Reference2</div>
-          <div>Reference3</div>
+          <div>Reference4</div>
+          <div>Reference5</div>
+          <div>Reference6</div>
+          <div>Reference7</div>
+          <div>Reference8</div>
+          <div>Reference9</div>
+          <div>Referencea</div>
+          <div>Referenceb</div>
+          <div>Referencec</div>
+
 
 
         </div>

@@ -1,38 +1,33 @@
 import { useState, useEffect } from 'react';
-import { Button, Modal, Form, Offcanvas, Row, Col } from 'react-bootstrap';
+import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFile, faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 import uploadIcon from './upload_icon.png';
 
 function InputSeq() {
   let navigate = useNavigate();
 
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
-    setUploadedFiles((prevFiles) => [...prevFiles, ...files.map(file => file.name)]);
-  };
+  //const [uploadedFiles, setUploadedFiles] = useState([]);
+  // const handleFileChange = (event) => {
+  //   const files = Array.from(event.target.files);
+  //   setUploadedFiles((prevFiles) => [...prevFiles, ...files.map(file => file.name)]);
+  // };
 
-  const [pastedSequences, setPastedSequences] = useState([]);
-  const [currentSequence, setCurrentSequence] = useState('');
-  const handleAddSequence = () => {
-    if (currentSequence.trim() !== '') {
-      setPastedSequences((prevSequences) => [...prevSequences, currentSequence]);
-      setCurrentSequence('');
-    }
-  };
-
-
-  // const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
+  // const [pastedSequences, setPastedSequences] = useState([]);
+  // const [currentSequence, setCurrentSequence] = useState('');
+  // const handleAddSequence = () => {
+  //   if (currentSequence.trim() !== '') {
+  //     setPastedSequences((prevSequences) => [...prevSequences, currentSequence]);
+  //     setCurrentSequence('');
+  //   }
+  // };
 
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
 
-  // const [show, setShow] = useState(true);
 
   useEffect(() => {
     setShowModal(true);
@@ -43,7 +38,7 @@ function InputSeq() {
 
   /*-----------다솔님 코드 구현 함수, 변수---------------*/
   const [editingFileIndex, setEditingFileIndex] = useState(null);
-  // const [uploadedFiles, setUploadedFiles] = useState([]);   이미 있음
+  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [sequences, setSequences] = useState([{ id: 1, name: 'Sequence 1', value: '', visible: true }]);
   const [editingId, setEditingId] = useState(null);
   const [nextId, setNextId] = useState(2);
@@ -247,7 +242,7 @@ function InputSeq() {
           <Modal.Title>Welcome to VirusDecode!</Modal.Title>
         </Modal.Header>
         <Modal.Body className="modal-body-centered">
-          Log in to get your<br />
+          Log in/ Sign up to get your<br />
           virus analysis records.
           <div className="google-login-button-container">
             <GoogleLoginButton />

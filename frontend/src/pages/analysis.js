@@ -1,10 +1,8 @@
-import { Nav, Offcanvas } from 'react-bootstrap';
+import { Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import loadingImage from './loading.png';
 import './analysis.css';
-import historyIcon from './history.png';
-import editIcon from './edit.png';
 
 function Analysis() {
     let [tab, setTab] = useState(0)
