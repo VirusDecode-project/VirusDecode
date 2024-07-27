@@ -121,4 +121,5 @@
   flex-grow: 1; /* Flex-grow로 남은 공간 차지 */
   overflow-y: auto;
   text-align: left;
+  line-height: 2.2;
 }
