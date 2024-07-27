@@ -44,6 +44,9 @@ function InputSeq() {
   /*-----------다솔님 코드 구현 함수, 변수---------------*/
   const [editingFileIndex, setEditingFileIndex] = useState(null);
   // const [uploadedFiles, setUploadedFiles] = useState([]);   이미 있음
+  const [sequences, setSequences] = useState([{ id: 1, name: 'Sequence 1', value: '', visible: true }]);
+  const [editingId, setEditingId] = useState(null);
+  const [nextId, setNextId] = useState(2);
 
 
   const handleFileUpload = (event) => {
@@ -61,6 +64,26 @@ function InputSeq() {
 
   const deleteUploadedFile = (index) => {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+  };
+  const toggleVisibility = (id) => {
+    setSequences(sequences.map(seq => seq.id === id ? { ...seq, visible: !seq.visible } : seq));
+  };
+
+  const handleNameChange = (id, name) => {
+    setSequences(sequences.map(seq => seq.id === id ? { ...seq, name } : seq));
+  };
+
+  const deleteSequence = (id) => {
+    setSequences(sequences.filter(seq => seq.id !== id));
+  };
+
+  const handleSequenceChange = (id, value) => {
+    setSequences(sequences.map(seq => seq.id === id ? { ...seq, value } : seq));
+  };
+  const addSequence = (event) => {
+    event.preventDefault();
+    setSequences([...sequences, { id: nextId, name: `Sequence ${nextId}`, value: '', visible: true }]);
+    setNextId(nextId + 1);
   };
 
 
@@ -116,32 +139,36 @@ function InputSeq() {
               )}
             </Col> */}
             {/* ------------다솔님 업로드 박스--------시작------- */}
-            <div className="upload-box2">
-              <input type="file" className="file-input" accept=".fasta" multiple onChange={handleFileUpload} />
-              <div className="upload-text"><img src={uploadIcon} alt="Upload Icon" className="upload-icon" /><p />Drag your FASTA files here</div>
-            </div>
-            {uploadedFiles.map((uploadedFile, index) => (
-              <div key={index} className="uploaded-file">
-                {editingFileIndex === index ? (
-                  <input
-                    type="text"
-                    value={uploadedFile.name}
-                    onChange={(e) => handleFileNameChange(index, e.target.value)}
-                    onBlur={() => setEditingFileIndex(null)}
-                    className="edit-file-name-input"
-                    autoFocus
-                  />
-                ) : (
-                  <span onClick={() => setEditingFileIndex(index)}>{uploadedFile.name}</span>
-                )}
-                <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => deleteUploadedFile(index)} />
-              </div>
-            ))}
+            <Row className="align-items-center">
+              <Col md={6}>
+                <div className="upload-box">
+                  <input type="file" className="file-input" accept=".fasta" multiple onChange={handleFileUpload} />
+                  <div className="upload-text"><img src={uploadIcon} alt="Upload Icon" className="upload-icon" /><p>Drag your FASTA files here</p></div>
+                </div>
+                {uploadedFiles.map((uploadedFile, index) => (
+                  <div key={index} className="uploaded-file">
+                    {editingFileIndex === index ? (
+                      <input
+                        type="text"
+                        value={uploadedFile.name}
+                        onChange={(e) => handleFileNameChange(index, e.target.value)}
+                        onBlur={() => setEditingFileIndex(null)}
+                        className="edit-file-name-input"
+                        autoFocus
+                      />
+                    ) : (
+                      <span onClick={() => setEditingFileIndex(index)}>{uploadedFile.name}</span>
+                    )}
+                    <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => deleteUploadedFile(index)} />
+                  </div>
+                ))}
+              </Col>
+            </Row>
             {/* ------------다솔님 업로드 박스--------끝------- */}
           </Form.Group>
 
 
-          <Form.Group controlId="pasteSequence">
+          {/* <Form.Group controlId="pasteSequence">
             <Form.Label>Paste Sequence</Form.Label>
             {pastedSequences.length > 0 && (
               <ul className="seq-list">
@@ -153,15 +180,54 @@ function InputSeq() {
             <Col md={9}>
               <Form.Control as="textarea" rows={3} value={currentSequence} onChange={(e) => setCurrentSequence(e.target.value)} placeholder="sequence1" />
             </Col>
+          </Form.Group> */}
+          {/* -----------------다솔님 Paste Sequence ------------시작---- */}
+          <Form.Group>
+            <Form.Label>Paste Sequence</Form.Label>
+            <Row>
+              <Col md={9} className="text-left">
+                {sequences.map(seq => (
+                  <div key={seq.id} className="form-group">
+                    <div className="sequence-header d-flex align-items-center justify-content-start"> {/* justify-content-start 클래스 추가 */}
+                      <FontAwesomeIcon icon={seq.visible ? faChevronDown : faChevronRight} className="chevron-icon" onClick={() => toggleVisibility(seq.id)} />
+                      {editingId === seq.id ? (
+                        <input
+                          type="text"
+                          value={seq.name}
+                          onChange={(e) => handleNameChange(seq.id, e.target.value)}
+                          onBlur={() => setEditingId(null)}
+                          className="edit-name-input"
+                          autoFocus
+                        />
+                      ) : (
+                        <span onClick={() => setEditingId(seq.id)}>{seq.name}</span>
+                      )}
+                      <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => deleteSequence(seq.id)} />
+                    </div>
+                    {seq.visible && (
+                      <textarea
+                        placeholder="TAGCTAGCCGATCG....."
+                        value={seq.value}
+                        onChange={(e) => handleSequenceChange(seq.id, e.target.value)}
+                        className="w-100"
+                      />
+                    )}
+                  </div>
+                ))}
+              </Col>
+            </Row>
           </Form.Group>
 
+          <button onClick={addSequence} className="add-sequence-button">+ Add Sequence</button>
+          {/* -----------------다솔님 Paste Sequence ------------끝---- */}
 
 
-          <Row>
+
+          {/* <Row>
             <Col md={9} className="d-flex justify-content-start">
               <Button variant="link" className="mt-3" onClick={handleAddSequence}>+ Add Sequence</Button>
             </Col>
-          </Row>
+          </Row> */}
 
           <Row>
             <Col className="d-flex justify-content-end">

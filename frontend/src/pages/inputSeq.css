@@ -89,6 +89,7 @@
   width: 50px; /* 원하는 크기로 조정 */
   height: auto;
   margin-bottom: 10px;
+  margin-right: 15px;
 }
 
 .file-label span {
@@ -245,4 +246,41 @@ body {
 .upload-text {
   font-size: 16px;
   color: #666;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.delete-icon, .chevron-icon{
+  color: #646464;
+  margin: 0px 5px 0px 5px;
+  font-size: 15px;
+}
+
+.sequence-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.add-sequence-button {
+  display: flex;
+  font-size: 16px;
+  background-color:white;
+  border: none;
+  cursor: pointer;
+  color: rgb(55, 55, 55);
+}
+
+textarea::placeholder {
+  padding: 3px;
+  color: #92929d; /* placeholder 색상 변경 */
+}
+
+.text-left {
+  text-align: left;
+}
+
+textarea {
+  width: 100%;
 }
