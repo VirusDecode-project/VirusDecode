@@ -1,62 +1,124 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Container } from 'react-bootstrap';
-import logo from './logo.png';//이거 퍼블릭 폴더에 넣기
-import { Routes, Route, useNavigate } from 'react-router-dom'
-
+import logo from './logo.png';
+import { Routes, Route, useNavigate, useLocation} from 'react-router-dom'
 import InputSeq from './pages/inputSeq.js'
 import Analysis from './pages/analysis.js'
-import LoginButtonComponent from './loginButtonComponent';
-import LoginFailurePage from './pages/loginFailurePage';
-import LoginSuccessPage from './pages/loginSuccessPage';
-import React from 'react';
-
-// const InputSeq = React.lazy(() => import('./pages/inputSeq'));
-// const Analysis = React.lazy(() => import('./pages/analysis'));
+import { React, useState, useEffect } from 'react';
+import historyIcon from './history.png';
+import editIcon from './edit.png';
 
 function App() {
 
   let navigate = useNavigate();
+  let location = useLocation();
+
+  const [show, setShow] = useState(false);
+  const [isHome, setIsHome] = useState(true);
+
+  useEffect(() => {
+    if (location.pathname === '/') {
+      setIsHome(true);
+      setShow(false);
+    } else {
+      setIsHome(false);
+      setShow(true);
+    }
+  }, [location.pathname]);
+
+
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleNavigate = (path) => {
+    navigate(path);
+  }
+
 
   return (
     <div className="App">
 
+      <div className={`sidebar ${show ? 'show' : ''}`}>
+        <div className="sidebar-header">
+
+          <img className="history-icon" src={historyIcon} onClick={handleClose} style={{ cursor: 'pointer' }} />
+          <img src={editIcon} alt="Edit" className="edit-icon" />
+        </div>
+        <div className="sidebar-body">
+          <div>Today</div>
+          <div>Reference1</div>
+          <div>Reference2</div>
+          <div>Reference3</div>
+          <br />
+          <div>Yesterday</div>
+          <div>Reference1</div>
+          <div>Reference2</div>
+          <div>Reference3</div>
+          <div>Reference4</div>
+          <div>Reference5</div>
+          <div>Reference6</div>
+          <div>Reference7</div>
+
+          <br />
+          <div>Previous 7days</div>
+          <div>Reference1</div>
+          <div>Reference2</div>
+          <div>Reference3</div>
+          <div>Reference4</div>
+          <div>Reference5</div>
+          <div>Reference6</div>
+          <div>Reference7</div>
+          <div>Reference8</div>
+          <div>Reference9</div>
+          <div>Referencea</div>
+          <div>Referenceb</div>
+          <div>Referencec</div>
 
 
-      <Routes>
-        <Route path='/' element={
-          <div>
-            <Navbar bg="white" data-bs-theme="white">
-              <Container className="custom-container">
-                <Navbar.Brand style={{ cursor: 'pointer' }} onClick={() => {
-                  navigate('/')
-                }}>
-                  <img
-                    alt="VirusDecode Logo"
-                    src={logo}
-                    width="30"
-                    height="30"
-                    className="d-inline-block align-top"
-                  />{' '}
-                  <span className="ibm-plex-mono-regular">VirusDecode</span>
-                </Navbar.Brand>
-              </Container>
-            </Navbar>
-            <div className='main-bg'></div>
-            <div className='text-box'>
-              <p>Decode the virus’s genetic code,<br />
-                analyze its mutations,<br />
-                and determine the vaccine sequence.</p>
-            </div>
-            <LoginButtonComponent />      {/* login Button js파일로 따로 구현 */}
-          </div>} />
 
-        <Route path="/login-success" element={<LoginSuccessPage />} />   {/* server 로부터 path 값 전달받음 (성공) */}
-        <Route path="/login-failure" element={<LoginFailurePage />} />  {/* server 로부터 path 값 전달받음 (실패) */}
-        {/* <Route path="/inputSeq" element={<InputSeq />} />
-        <Route path="/analysis" element={<Analysis />} /> */}
+        </div>
+      </div>
 
-      </Routes>
+
+      <div className={`content-container ${show ? 'shrink' : ''}`}>
+        <div className="header-bar">
+          {!show && !isHome && (
+            <>
+
+              <img onClick={handleShow} style={{ cursor: 'pointer' }} src={historyIcon} alt="History" className="history-icon" />
+              <img src={editIcon} alt="Edit" className="edit-icon" />
+            </>
+          )}
+          <span className='logo-text' onClick={() => { handleNavigate('/') }} style={{ cursor: 'pointer' }}>
+            {isHome &&
+              <img
+                alt="VirusDecode Logo"
+                src={logo}
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+                style={{ marginRight: '10px' }}
+              />}VirusDecode</span>
+        </div>
+        <Routes>
+          <Route path='/' element={
+            <div>
+              <div className='main-bg'></div>
+              <div className='text-box'>
+                <p style={{ fontSize: '20px' }}>Decode the virus’s genetic code,<br />
+                  analyze its mutations,<br />
+                  and determine the vaccine sequence.</p>
+              </div>
+              <button className="image-button" onClick={() => { handleNavigate('inputSeq') }}></button>
+            </div>} />
+
+          <Route path="/inputSeq" element={<InputSeq />} />
+          <Route path="/analysis" element={<Analysis />} />
+
+        </Routes>
+      </div>
+
 
 
 

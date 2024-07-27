@@ -1,3 +1,13 @@
+.content-container.shrink {
+  padding-left: 260px;
+}
+
+.content-container {
+  position: relative;
+  height: 100vh;
+  transition: padding-left 0.3s ease;
+  padding-left: 0px;
+}
 .ibm-plex-mono-regular {
   font-family: "IBM Plex Mono", monospace;
   font-weight: 400;
@@ -22,7 +32,7 @@
 
 .text-box {
   line-height: 3;  
-  width: 350px;
+  width: 420px;
   margin: 30px auto; /* 수평 가운데 정렬 */
 }
 
@@ -38,6 +48,7 @@
   height: 50px;              /* 버튼 높이 설정 */
   border: none;              /* 기본 버튼 테두리 제거 */
   cursor: pointer;           /* 마우스 커서 변경 */
+  border-radius: 15px;
 
 }
 
@@ -55,4 +66,60 @@
 .custom-container {
   padding-left: 0;
   padding-right: 0;
+}
+
+.sidebar-toggle {
+  margin: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100%;
+  background-color: #f0f0f0;
+  transition: left 0.3s ease;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  /* overflow-y: auto; */
+  display: flex;
+  flex-direction: column; /* Flexbox 레이아웃 추가 */
+}
+
+
+.sidebar.show {
+  left: 0;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+}
+
+.close-btn {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.sidebar-body {
+  flex-grow: 1; /* Flex-grow로 남은 공간 차지 */
+  overflow-y: auto;
+  text-align: left;
+  line-height: 2.2;
 }
