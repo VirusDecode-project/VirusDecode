@@ -19,7 +19,7 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     @Override
-    public Map<String, Object> getAttributes() {
+    public Map<String, Object> getAttributes() {  // attribute 는 리소스 서버로부터 넘어온 모든 유저정보
 //        return Map.of();
         return null;
     }
@@ -41,6 +41,7 @@ public class CustomOAuth2User implements OAuth2User {
         return oAuth2Response.getName();
     }
 
+    // id로 사용할 값을 만들어줌 ( response 에 있는 Name 을 사용하지 않는 것.. )
     public String getUsername(){
         return oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
     }
