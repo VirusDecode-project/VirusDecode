@@ -6,6 +6,7 @@ import { Routes, Route, useNavigate, useLocation} from 'react-router-dom'
 
 import InputSeq from './pages/inputSeq.js'
 import Analysis from './pages/analysis.js'
+
 import { React, useState, useEffect } from 'react';
 import historyIcon from './history.png';
 import editIcon from './edit.png';
