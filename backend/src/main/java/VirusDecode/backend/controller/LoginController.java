@@ -1,2 +1,14 @@
-package VirusDecode.backend.controller;public class LoginController {
+package VirusDecode.backend.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class LoginController {
+
+    @GetMapping("/login")
+    public String loginPage() {
+
+        return "login";
+    }
 }
