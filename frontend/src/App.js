@@ -6,6 +6,9 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 
 import InputSeq from './pages/inputSeq.js'
 import Analysis from './pages/analysis.js'
+import LoginButtonComponent from './loginButtonComponent';
+import LoginFailurePage from './pages/loginFailurePage';
+import LoginSuccessPage from './pages/loginSuccessPage';
 import React from 'react';
 
 // const InputSeq = React.lazy(() => import('./pages/inputSeq'));
@@ -45,14 +48,15 @@ function App() {
                 analyze its mutations,<br />
                 and determine the vaccine sequence.</p>
             </div>
-            <button className="image-button" onClick={() => { navigate('inputSeq') }}></button>
+            <LoginButtonComponent />      {/* login Button js파일로 따로 구현 */}
           </div>} />
 
-        <Route path="/inputSeq" element={<InputSeq />} />
-        <Route path="/analysis" element={<Analysis />} />
+        <Route path="/login-success" element={<LoginSuccessPage />} />   {/* server 로부터 path 값 전달받음 (성공) */}
+        <Route path="/login-failure" element={<LoginFailurePage />} />  {/* server 로부터 path 값 전달받음 (실패) */}
+        {/* <Route path="/inputSeq" element={<InputSeq />} />
+        <Route path="/analysis" element={<Analysis />} /> */}
 
       </Routes>
-
 
 
 
