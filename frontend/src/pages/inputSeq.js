@@ -3,8 +3,7 @@ import { Button, Modal, Form, Offcanvas, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
-// import historyIcon from './history.png';
-// import editIcon from './edit.png';
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import uploadIcon from './upload_icon.png';
 
 function InputSeq() {
@@ -67,6 +66,8 @@ function InputSeq() {
 
                 </Form>
 
+                
+
                 <Form>
 
                     <div className="mb-5"></div>
@@ -118,7 +119,7 @@ function InputSeq() {
                     <Row>
                         <Col className="d-flex justify-content-end">
 
-                            <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ->'}</h4>
+                            <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ➔'}</h4>
                         </Col>
                     </Row>
 
