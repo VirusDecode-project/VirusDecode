@@ -74,9 +74,9 @@
   border-radius: 5px;
 }
 
-.file-input {
+/* .file-input {
   display: none;
-}
+} */
 
 .file-label {
   display: flex;
@@ -222,3 +222,27 @@ body {
   display: block; /* 기본적으로 form-label은 inline 요소이므로 block으로 설정 */
 }
 
+/* 다솔님이 만든 코드 -----------시작---------------------*/
+.upload-box2 {
+  border: 1.9px solid #dfdfdf;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+  border-radius: 5px;
+  width: 63%;
+
+}
+
+.file-input {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  top: 0;
+  left: 0;
+}
+
+.upload-text {
+  font-size: 16px;
+  color: #666;
+}

@@ -3,154 +3,201 @@ import { Button, Modal, Form, Offcanvas, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
 import './inputSeq.css';
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFile, faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
 import uploadIcon from './upload_icon.png';
 
 function InputSeq() {
-    let navigate = useNavigate();
+  let navigate = useNavigate();
 
-    const [uploadedFiles, setUploadedFiles] = useState([]);
-    const handleFileChange = (event) => {
-        const files = Array.from(event.target.files);
-        setUploadedFiles((prevFiles) => [...prevFiles, ...files.map(file => file.name)]);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const handleFileChange = (event) => {
+    const files = Array.from(event.target.files);
+    setUploadedFiles((prevFiles) => [...prevFiles, ...files.map(file => file.name)]);
+  };
+
+  const [pastedSequences, setPastedSequences] = useState([]);
+  const [currentSequence, setCurrentSequence] = useState('');
+  const handleAddSequence = () => {
+    if (currentSequence.trim() !== '') {
+      setPastedSequences((prevSequences) => [...prevSequences, currentSequence]);
+      setCurrentSequence('');
+    }
+  };
+
+
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
+
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+
+  // const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    setShowModal(true);
+    return () => {
+      document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
     };
+  }, []);
 
-    const [pastedSequences, setPastedSequences] = useState([]);
-    const [currentSequence, setCurrentSequence] = useState('');
-    const handleAddSequence = () => {
-        if (currentSequence.trim() !== '') {
-            setPastedSequences((prevSequences) => [...prevSequences, currentSequence]);
-            setCurrentSequence('');
-        }
-    };
+  /*-----------다솔님 코드 구현 함수, 변수---------------*/
+  const [editingFileIndex, setEditingFileIndex] = useState(null);
+  // const [uploadedFiles, setUploadedFiles] = useState([]);   이미 있음
 
 
-    // const handleClose = () => setShow(false);
-    // const handleShow = () => setShow(true);
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const newFiles = files.map(file => ({ name: file.name, file }));
+    setUploadedFiles([...uploadedFiles, ...newFiles]);
+    setEditingFileIndex(null);
+  };
 
-    const [showModal, setShowModal] = useState(false);
-    const handleCloseModal = () => setShowModal(false);
+  const handleFileNameChange = (index, name) => {
+    const updatedFiles = [...uploadedFiles];
+    updatedFiles[index] = { ...updatedFiles[index], name };
+    setUploadedFiles(updatedFiles);
+  };
 
-    // const [show, setShow] = useState(true);
-
-    useEffect(() => {
-        setShowModal(true);
-        return () => {
-            document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
-        };
-    }, []);
+  const deleteUploadedFile = (index) => {
+    setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
+  };
 
 
-    return (
+  return (
 
-            <div>
+    <div>
 
 
 
-            <div className="container mt-4" style={{ marginLeft: '75px' }}>
+      <div className="container mt-4" style={{ marginLeft: '75px' }}>
 
 
-                <Form>
+        <Form>
 
-                    <h5 className="RS-id">Reference Sequence ID</h5>
-                    <Row className="align-items-center">
-                        <Col md={6}>
-                            <Form.Group controlId="referenceSequenceId">
-                                <Form.Control type="text" placeholder="Enter sequence ID" className="input-field" />
-                            </Form.Group>
-                        </Col>
-                        <Col md={1} className="d-flex justify-content-end align-items-center">
-                            <Button variant="primary" className="done-button">DONE</Button>
-                        </Col>
-                    </Row>
+          <h5 className="RS-id">Reference Sequence ID</h5>
+          <Row className="align-items-center">
+            <Col md={6}>
+              <Form.Group controlId="referenceSequenceId">
+                <Form.Control type="text" placeholder="Enter sequence ID" className="input-field" />
+              </Form.Group>
+            </Col>
+            <Col md={1} className="d-flex justify-content-end align-items-center">
+              <Button variant="primary" className="done-button">DONE</Button>
+            </Col>
+          </Row>
 
-                </Form>
-
-                
-
-                <Form>
-
-                    <div className="mb-5"></div>
-
-                    <h5 className="RS-id">Variant Sequence</h5>
-
-                    <Form.Group controlId="formFile" className="mb-3">
-                        <Form.Label>Upload File</Form.Label>
-                        <Col md={6}>
-                            <div className="upload-box">
-                                <Form.Control type="file" className="file-input" onChange={handleFileChange} multiple />
-                                <label className="file-label" htmlFor="formFile">
-                                    <img src={uploadIcon} alt="Upload Icon" className="upload-icon" />
-                                    <span>Drag your FASTA files here</span>
-                                </label>
-                            </div>
-                            {uploadedFiles.length > 0 && (
-                                <ul className="file-list">
-                                    {uploadedFiles.map((fileName, index) => (
-                                        <li key={index}>{fileName}</li>
-                                    ))}
-                                </ul>
-                            )}
-                        </Col>
-                    </Form.Group>
-
-                    <Form.Group controlId="pasteSequence">
-                        <Form.Label>Paste Sequence</Form.Label>
-                        {pastedSequences.length > 0 && (
-                            <ul className="seq-list">
-                                {pastedSequences.map((sequence, index) => (
-                                    <li key={index}>{sequence}</li>
-                                ))}
-                            </ul>
-                        )}
-                        <Col md={9}>
-                            <Form.Control as="textarea" rows={3} value={currentSequence} onChange={(e) => setCurrentSequence(e.target.value)} placeholder="sequence1" />
-                        </Col>
-                    </Form.Group>
+        </Form>
 
 
 
-                    <Row>
-                        <Col md={9} className="d-flex justify-content-start">
-                            <Button variant="link" className="mt-3" onClick={handleAddSequence}>+ Add Sequence</Button>
-                        </Col>
-                    </Row>
+        <Form>
 
-                    <Row>
-                        <Col className="d-flex justify-content-end">
+          <div className="mb-5"></div>
 
-                            <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ➔'}</h4>
-                        </Col>
-                    </Row>
+          <h5 className="RS-id">Variant Sequence</h5>
 
-
-
-
-                </Form>
+          <Form.Group controlId="formFile" className="mb-3">
+            <Form.Label>Upload File</Form.Label>
+            {/* <Col md={6}>
+              <div className="upload-box">
+                <Form.Control type="file" className="file-input" onChange={handleFileChange} multiple />
+                <label className="file-label" htmlFor="formFile">
+                  <img src={uploadIcon} alt="Upload Icon" className="upload-icon" />
+                  <span>Drag your FASTA files here</span>
+                </label>
+              </div>
+              {uploadedFiles.length > 0 && (
+                <ul className="file-list">
+                  {uploadedFiles.map((fileName, index) => (
+                    <li key={index}>{fileName}</li>
+                  ))}
+                </ul>
+              )}
+            </Col> */}
+            {/* ------------다솔님 업로드 박스--------시작------- */}
+            <div className="upload-box2">
+              <input type="file" className="file-input" accept=".fasta" multiple onChange={handleFileUpload} />
+              <div className="upload-text"><img src={uploadIcon} alt="Upload Icon" className="upload-icon" /><p />Drag your FASTA files here</div>
             </div>
+            {uploadedFiles.map((uploadedFile, index) => (
+              <div key={index} className="uploaded-file">
+                {editingFileIndex === index ? (
+                  <input
+                    type="text"
+                    value={uploadedFile.name}
+                    onChange={(e) => handleFileNameChange(index, e.target.value)}
+                    onBlur={() => setEditingFileIndex(null)}
+                    className="edit-file-name-input"
+                    autoFocus
+                  />
+                ) : (
+                  <span onClick={() => setEditingFileIndex(index)}>{uploadedFile.name}</span>
+                )}
+                <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => deleteUploadedFile(index)} />
+              </div>
+            ))}
+            {/* ------------다솔님 업로드 박스--------끝------- */}
+          </Form.Group>
 
-            <Modal show={showModal} onHide={handleCloseModal} centered>
-                <Modal.Header className="modal-body-centered">
-                    <Modal.Title>Welcome to VirusDecode!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="modal-body-centered">
-                    Log in to get your<br />
-                    virus analysis records.
-                    <div className="google-login-button-container">
-                        <GoogleLoginButton />
-                    </div>
-                </Modal.Body>
 
-                <Modal.Footer>
-                    <p className='logged-out' onClick={handleCloseModal}>
-                        Stay logged out
-                    </p>
-                </Modal.Footer>
-            </Modal>
+          <Form.Group controlId="pasteSequence">
+            <Form.Label>Paste Sequence</Form.Label>
+            {pastedSequences.length > 0 && (
+              <ul className="seq-list">
+                {pastedSequences.map((sequence, index) => (
+                  <li key={index}>{sequence}</li>
+                ))}
+              </ul>
+            )}
+            <Col md={9}>
+              <Form.Control as="textarea" rows={3} value={currentSequence} onChange={(e) => setCurrentSequence(e.target.value)} placeholder="sequence1" />
+            </Col>
+          </Form.Group>
 
 
-        </div>
-    );
+
+          <Row>
+            <Col md={9} className="d-flex justify-content-start">
+              <Button variant="link" className="mt-3" onClick={handleAddSequence}>+ Add Sequence</Button>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col className="d-flex justify-content-end">
+
+              <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ➔'}</h4>
+            </Col>
+          </Row>
+
+
+
+
+        </Form>
+      </div>
+
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header className="modal-body-centered">
+          <Modal.Title>Welcome to VirusDecode!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body className="modal-body-centered">
+          Log in to get your<br />
+          virus analysis records.
+          <div className="google-login-button-container">
+            <GoogleLoginButton />
+          </div>
+        </Modal.Body>
+
+        <Modal.Footer>
+          <p className='logged-out' onClick={handleCloseModal}>
+            Stay logged out
+          </p>
+        </Modal.Footer>
+      </Modal>
+
+
+    </div>
+  );
 }
 
 export default InputSeq;
