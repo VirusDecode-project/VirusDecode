@@ -30,6 +30,41 @@ function InputSeq() {
   const [editingId, setEditingId] = useState(null);
   const [nextId, setNextId] = useState(2);
 
+  /*parkki */
+  const [referenceSequenceId, setReferenceSequenceId] = useState('');
+  const [responseMessage, setResponseMessage] = useState('');
+  /*parkki */
+
+  /*parkki */
+  const handleDoneSubmit = async (e) => {
+    e.preventDefault(); // 폼의 기본 제출 동작 방지
+    const data = { sequenceId: referenceSequenceId };
+
+    try {
+      const response = await fetch('http://localhost:8080/inputSeq/reference', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      // 서버 응답 처리
+      const result = await response.text(); // 서버 응답을 텍스트로 처리
+      if (response.ok) {
+        setResponseMessage(result); // 서버 응답 메시지 설정
+      } else {
+        console.error('서버 응답 오류:', response.statusText);
+        setResponseMessage('서버 응답 오류: ' + response.statusText);
+      }
+    } catch (error) {
+      console.error('요청 중 오류 발생:', error);
+      setResponseMessage('요청 중 오류 발생: ' + error.message);
+    }
+  };
+  /*parkki */
+
+  
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -84,16 +119,33 @@ function InputSeq() {
           <Row className="align-items-center">
             <Col md={6}>
               <Form.Group controlId="referenceSequenceId">
-                <Form.Control type="text" placeholder="Enter sequence ID" className="input-field" />
+                {/*parkki */}
+                <Form.Control 
+                  type="text" 
+                  placeholder="Enter sequence ID" 
+                  className="input-field" 
+                  value={referenceSequenceId} 
+                  onChange={(e) => setReferenceSequenceId(e.target.value)} 
+                />
+                {/*parkki */}
               </Form.Group>
             </Col>
             <Col md={1} className="d-flex justify-content-end align-items-center">
-              <Button variant="primary" className="done-button">DONE</Button>
+              {/* <Button variant="primary" className="done-button">DONE</Button> */}
+              {/*parkki */}
+              <Button type="submit" variant="primary" onClick={handleDoneSubmit} className="done-button">DONE</Button>
+              {/*parkki */}
             </Col>
           </Row>
 
         </Form>
-
+        {/*parkki */}
+        {responseMessage && (
+          <div className="response-message">
+            <p>{responseMessage}</p>
+          </div>
+        )}
+        {/*parkki */}
 
 
         <Form>
