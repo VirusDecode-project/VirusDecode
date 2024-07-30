@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import loadingImage from './loading.png';
 import './analysis.css';
+import Alignment from './Alignment';
 
 function Analysis() {
     let [tab, setTab] = useState(0)
@@ -14,6 +15,8 @@ function Analysis() {
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [show, setShow] = useState(false);
+
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -77,8 +80,19 @@ function Analysis() {
 }
 
 function Tab(props) {
+
+        // --todo-- 서버에서 annotation 결과 가져오기, 색상 랜덤 설정하기 
+        const [data, setData] = useState([
+            { label: 'ORF1ab', value: 50, color: 'rgba(144, 238, 144, 0.6)' },
+            { label: 'S', value: 20, color: 'rgba(255, 99, 132, 0.6)' },
+            { label: 'ORF3a', value: 10, color: 'rgba(255, 182, 193, 0.6)' },
+            { label: 'E', value: 5, color: 'rgba(255, 255, 102, 0.6)' },
+            { label: 'M', value: 10, color: 'rgba(135, 206, 235, 0.6)' },
+            { label: 'ORF7b', value: 5, color: 'rgba(255, 160, 122, 0.6)' },
+        ]);
+
     if (props.tab == 0) {
-        return <div>Alignment을 분석한 결과에 대한 내용입니다.<br />(오픈예정)</div>
+        return <Alignment data={data}/>
     } else if (props.tab == 1) {
         return <div>Gene에 관한 내용을 나타냅니다.<br />(예정)</div>
     } else if (props.tab == 2) {
