@@ -14,10 +14,22 @@ const Tabs = () => {
     setActiveTab(tab);
   };
 
+
+  // 서버에서 annotation 결과 가져오기, 색상 랜덤 설정하기 
+  const [data, setData] = useState([
+    { label: 'ORF1ab', value: 50, color: 'rgba(144, 238, 144, 0.6)' },
+    { label: 'S', value: 20, color: 'rgba(255, 99, 132, 0.6)' },
+    { label: 'ORF3a', value: 10, color: 'rgba(255, 182, 193, 0.6)' },
+    { label: 'E', value: 5, color: 'rgba(255, 255, 102, 0.6)' },
+    { label: 'M', value: 10, color: 'rgba(135, 206, 235, 0.6)' },
+    { label: 'ORF7b', value: 5, color: 'rgba(255, 160, 122, 0.6)' },
+]);
+
+
   const renderContent = () => {
     switch (activeTab) {
       case 'Sequence':
-        return <Sequence/>;
+        return <Sequence data={data}/>;
       case 'Gene':
         return <Gene/>;
       case 'Mutation':
