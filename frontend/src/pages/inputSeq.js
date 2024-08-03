@@ -62,7 +62,7 @@ function InputSeq() {
       setResponseMessage('요청 중 오류 발생: ' + error.message);
     }
   };
-  /*parkki */
+  
 
   
 
