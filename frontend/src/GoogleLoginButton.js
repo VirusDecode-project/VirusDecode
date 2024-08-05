@@ -2,7 +2,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";  // 수정된 import 구문
 
-const GoogleLoginButton = ({setShowModal}) => {
+const GoogleLoginButton = ({setShowModal, setUsername}) => {
     const clientId = '758755790796-5sf7i6gfss7m2tpvuju44tviakdghvtm.apps.googleusercontent.com';
     
     return (
@@ -23,6 +23,7 @@ const GoogleLoginButton = ({setShowModal}) => {
                         console.log("User Name:", username);
                         console.log("User Email:", email);
 
+                        setUsername(username);  // 로그인 성공 후 사용자 이름 설정
                         setShowModal(false);  // 로그인 성공 후 모달 닫기
                     }}
                     onError={() => {

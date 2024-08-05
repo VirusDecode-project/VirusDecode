@@ -11,7 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import uploadIcon from "./upload_icon.png";
 
-function InputSeq() {
+function InputSeq({ setUsername }) {
   let navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
@@ -298,7 +298,8 @@ function InputSeq() {
           <br />
           virus analysis records.
           <div className="google-login-button-container">
-            <GoogleLoginButton setShowModal={setShowModal} />
+          <GoogleLoginButton setShowModal={setShowModal} setUsername={setUsername} />
+
           </div>
         </Modal.Body>
 
