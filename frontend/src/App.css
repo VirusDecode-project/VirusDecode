@@ -123,3 +123,15 @@
   text-align: left;
   line-height: 2.2;
 }
+
+.header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.username-display {
+  margin-left: auto;
+  padding-left: 20px;
+}

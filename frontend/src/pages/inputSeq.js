@@ -1,38 +1,41 @@
-import { useState, useEffect } from 'react';
-import { Button, Modal, Form, Row, Col } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import GoogleLoginButton from '../GoogleLoginButton.js'; // 경로 확인
-import './inputSeq.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronDown, faChevronRight, faTrash } from '@fortawesome/free-solid-svg-icons';
-import uploadIcon from './upload_icon.png';
+import { useState, useEffect } from "react";
+import { Button, Modal, Form, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import GoogleLoginButton from "../GoogleLoginButton.js"; // 경로 확인
+import "./inputSeq.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronDown,
+  faChevronRight,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import uploadIcon from "./upload_icon.png";
 
-function InputSeq() {
+function InputSeq({ setUsername }) {
   let navigate = useNavigate();
-
-
 
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
 
-
   useEffect(() => {
     setShowModal(true);
     return () => {
-      document.body.style.overflow = 'auto';  // 오버플로우 기본값으로 재설정
+      document.body.style.overflow = "auto"; // 오버플로우 기본값으로 재설정
     };
   }, []);
 
   /*-----------다솔님 코드 구현 함수, 변수---------------*/
   const [editingFileIndex, setEditingFileIndex] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [sequences, setSequences] = useState([{ id: 1, name: 'Sequence 1', value: '', visible: true }]);
+  const [sequences, setSequences] = useState([
+    { id: 1, name: "Sequence 1", value: "", visible: true },
+  ]);
   const [editingId, setEditingId] = useState(null);
   const [nextId, setNextId] = useState(2);
 
   /*parkki */
-  const [referenceSequenceId, setReferenceSequenceId] = useState('');
-  const [responseMessage, setResponseMessage] = useState('');
+  const [referenceSequenceId, setReferenceSequenceId] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
   /*parkki */
 
   /*parkki */
@@ -41,10 +44,10 @@ function InputSeq() {
     const data = { sequenceId: referenceSequenceId };
 
     try {
-      const response = await fetch('http://localhost:8080/inputSeq/reference', {
-        method: 'POST',
+      const response = await fetch("http://localhost:8080/inputSeq/reference", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
@@ -54,21 +57,18 @@ function InputSeq() {
       if (response.ok) {
         setResponseMessage(result); // 서버 응답 메시지 설정
       } else {
-        console.error('서버 응답 오류:', response.statusText);
-        setResponseMessage('서버 응답 오류: ' + response.statusText);
+        console.error("서버 응답 오류:", response.statusText);
+        setResponseMessage("서버 응답 오류: " + response.statusText);
       }
     } catch (error) {
-      console.error('요청 중 오류 발생:', error);
-      setResponseMessage('요청 중 오류 발생: ' + error.message);
+      console.error("요청 중 오류 발생:", error);
+      setResponseMessage("요청 중 오류 발생: " + error.message);
     }
   };
-  
-
-  
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
-    const newFiles = files.map(file => ({ name: file.name, file }));
+    const newFiles = files.map((file) => ({ name: file.name, file }));
     setUploadedFiles([...uploadedFiles, ...newFiles]);
     setEditingFileIndex(null);
   };
@@ -83,61 +83,73 @@ function InputSeq() {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
   };
   const toggleVisibility = (id) => {
-    setSequences(sequences.map(seq => seq.id === id ? { ...seq, visible: !seq.visible } : seq));
+    setSequences(
+      sequences.map((seq) =>
+        seq.id === id ? { ...seq, visible: !seq.visible } : seq
+      )
+    );
   };
 
   const handleNameChange = (id, name) => {
-    setSequences(sequences.map(seq => seq.id === id ? { ...seq, name } : seq));
+    setSequences(
+      sequences.map((seq) => (seq.id === id ? { ...seq, name } : seq))
+    );
   };
 
   const deleteSequence = (id) => {
-    setSequences(sequences.filter(seq => seq.id !== id));
+    setSequences(sequences.filter((seq) => seq.id !== id));
   };
 
   const handleSequenceChange = (id, value) => {
-    setSequences(sequences.map(seq => seq.id === id ? { ...seq, value } : seq));
+    setSequences(
+      sequences.map((seq) => (seq.id === id ? { ...seq, value } : seq))
+    );
   };
   const addSequence = (event) => {
     event.preventDefault();
-    setSequences([...sequences, { id: nextId, name: `Sequence ${nextId}`, value: '', visible: true }]);
+    setSequences([
+      ...sequences,
+      { id: nextId, name: `Sequence ${nextId}`, value: "", visible: true },
+    ]);
     setNextId(nextId + 1);
   };
 
-
   return (
-
     <div>
-
-
-
-      <div className="container mt-4" style={{ marginLeft: '75px' }}>
-
-
+      <div className="container mt-4" style={{ marginLeft: "75px" }}>
         <Form>
-
           <h5 className="RS-id">Reference Sequence ID</h5>
           <Row className="align-items-center">
             <Col md={6}>
               <Form.Group controlId="referenceSequenceId">
                 {/*parkki */}
-                <Form.Control 
-                  type="text" 
-                  placeholder="Enter sequence ID" 
-                  className="input-field" 
-                  value={referenceSequenceId} 
-                  onChange={(e) => setReferenceSequenceId(e.target.value)} 
+                <Form.Control
+                  type="text"
+                  placeholder="Enter sequence ID"
+                  className="input-field"
+                  value={referenceSequenceId}
+                  onChange={(e) => setReferenceSequenceId(e.target.value)}
                 />
                 {/*parkki */}
               </Form.Group>
             </Col>
-            <Col md={1} className="d-flex justify-content-end align-items-center">
+            <Col
+              md={1}
+              className="d-flex justify-content-end align-items-center"
+            >
               {/* <Button variant="primary" className="done-button">DONE</Button> */}
               {/*parkki */}
-              <Button type="submit" variant="primary" onClick={handleDoneSubmit} className="done-button">DONE</Button>
+              <Button
+                type="submit"
+                variant="primary"
+                onClick={handleDoneSubmit}
+                className="done-button"
+              >
+                DONE
+              </Button>
               {/*parkki */}
             </Col>
           </Row>
-
         </Form>
         {/*parkki */}
         {responseMessage && (
@@ -147,9 +159,7 @@ function InputSeq() {
         )}
         {/*parkki */}
 
-
         <Form>
-
           <div className="mb-5"></div>
 
           <h5 className="RS-id">Variant Sequence</h5>
@@ -160,8 +170,21 @@ function InputSeq() {
             <Row className="align-items-center">
               <Col md={6}>
                 <div className="upload-box">
-                  <input type="file" className="file-input" accept=".fasta" multiple onChange={handleFileUpload} />
-                  <div className="upload-text"><img src={uploadIcon} alt="Upload Icon" className="upload-icon" /><p>Drag your FASTA files here</p></div>
+                  <input
+                    type="file"
+                    className="file-input"
+                    accept=".fasta"
+                    multiple
+                    onChange={handleFileUpload}
+                  />
+                  <div className="upload-text">
+                    <img
+                      src={uploadIcon}
+                      alt="Upload Icon"
+                      className="upload-icon"
+                    />
+                    <p>Drag your FASTA files here</p>
+                  </div>
                 </div>
                 {uploadedFiles.map((uploadedFile, index) => (
                   <div key={index} className="uploaded-file">
@@ -169,15 +192,23 @@ function InputSeq() {
                       <input
                         type="text"
                         value={uploadedFile.name}
-                        onChange={(e) => handleFileNameChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleFileNameChange(index, e.target.value)
+                        }
                         onBlur={() => setEditingFileIndex(null)}
                         className="edit-file-name-input"
                         autoFocus
                       />
                     ) : (
-                      <span onClick={() => setEditingFileIndex(index)}>{uploadedFile.name}</span>
+                      <span onClick={() => setEditingFileIndex(index)}>
+                        {uploadedFile.name}
+                      </span>
                     )}
-                    <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => deleteUploadedFile(index)} />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      className="delete-icon"
+                      onClick={() => deleteUploadedFile(index)}
+                    />
                   </div>
                 ))}
               </Col>
@@ -190,29 +221,45 @@ function InputSeq() {
             <Form.Label>Paste Sequence</Form.Label>
             <Row>
               <Col md={9} className="text-left">
-                {sequences.map(seq => (
+                {sequences.map((seq) => (
                   <div key={seq.id} className="form-group">
-                    <div className="sequence-header d-flex align-items-center justify-content-start"> {/* justify-content-start 클래스 추가 */}
-                      <FontAwesomeIcon icon={seq.visible ? faChevronDown : faChevronRight} className="chevron-icon" onClick={() => toggleVisibility(seq.id)} />
+                    <div className="sequence-header d-flex align-items-center justify-content-start">
+                      {" "}
+                      {/* justify-content-start 클래스 추가 */}
+                      <FontAwesomeIcon
+                        icon={seq.visible ? faChevronDown : faChevronRight}
+                        className="chevron-icon"
+                        onClick={() => toggleVisibility(seq.id)}
+                      />
                       {editingId === seq.id ? (
                         <input
                           type="text"
                           value={seq.name}
-                          onChange={(e) => handleNameChange(seq.id, e.target.value)}
+                          onChange={(e) =>
+                            handleNameChange(seq.id, e.target.value)
+                          }
                           onBlur={() => setEditingId(null)}
                           className="edit-name-input"
                           autoFocus
                         />
                       ) : (
-                        <span onClick={() => setEditingId(seq.id)}>{seq.name}</span>
+                        <span onClick={() => setEditingId(seq.id)}>
+                          {seq.name}
+                        </span>
                       )}
-                      <FontAwesomeIcon icon={faTrash} className="delete-icon" onClick={() => deleteSequence(seq.id)} />
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className="delete-icon"
+                        onClick={() => deleteSequence(seq.id)}
+                      />
                     </div>
                     {seq.visible && (
                       <textarea
                         placeholder="TAGCTAGCCGATCG....."
                         value={seq.value}
-                        onChange={(e) => handleSequenceChange(seq.id, e.target.value)}
+                        onChange={(e) =>
+                          handleSequenceChange(seq.id, e.target.value)
+                        }
                         className="w-100"
                       />
                     )}
@@ -222,17 +269,23 @@ function InputSeq() {
             </Row>
           </Form.Group>
 
-          <button onClick={addSequence} className="add-sequence-button">+ Add Sequence</button>
+          <button onClick={addSequence} className="add-sequence-button">
+            + Add Sequence
+          </button>
           {/* -----------------다솔님 Paste Sequence ------------끝---- */}
-
 
           <Row>
             <Col className="d-flex justify-content-end">
-
-              <h4 className="next-page" onClick={() => { navigate('/analysis') }}>{'Next ➔'}</h4>
+              <h4
+                className="next-page"
+                onClick={() => {
+                  navigate("/analysis");
+                }}
+              >
+                {"Next ➔"}
+              </h4>
             </Col>
           </Row>
-
         </Form>
       </div>
 
@@ -241,21 +294,21 @@ function InputSeq() {
           <Modal.Title>Welcome to VirusDecode!</Modal.Title>
         </Modal.Header>
         <Modal.Body className="modal-body-centered">
-          Log in/ Sign up to get your<br />
+          Log in/ Sign up to get your
+          <br />
           virus analysis records.
           <div className="google-login-button-container">
-            <GoogleLoginButton />
+          <GoogleLoginButton setShowModal={setShowModal} setUsername={setUsername} />
+
           </div>
         </Modal.Body>
 
         <Modal.Footer>
-          <p className='logged-out' onClick={handleCloseModal}>
+          <p className="logged-out" onClick={handleCloseModal}>
             Stay logged out
           </p>
         </Modal.Footer>
       </Modal>
-
-
     </div>
   );
 }
