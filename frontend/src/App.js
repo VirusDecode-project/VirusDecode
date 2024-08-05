@@ -15,6 +15,7 @@ function App() {
 
   const [show, setShow] = useState(false);
   const [isHome, setIsHome] = useState(true);
+  
 
   useEffect(() => {
     if (location.pathname === '/') {
