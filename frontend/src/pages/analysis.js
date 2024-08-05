@@ -45,17 +45,12 @@ function Analysis() {
                 <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="link1" onClick={() => setTab(1)}>Gene</Nav.Link>
+                <Nav.Link eventKey="link1" onClick={() => setTab(1)}>mRNA design</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="link2" onClick={() => setTab(2)}>Mutation</Nav.Link>
+                <Nav.Link eventKey="link2" onClick={() => setTab(2)}>3D viewer</Nav.Link>
               </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="link3" onClick={() => setTab(3)}>Pathogenecity</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="link4" onClick={() => setTab(4)}>Analyze</Nav.Link>
-              </Nav.Item>
+              
             </Nav>
             <Tab tab={tab} />
           </>
@@ -78,10 +73,9 @@ function Tab(props) {
   return (
     <div>
       {props.tab === 0 && <Alignment data={data} />}
-      {props.tab === 1 && <div>Gene에 관한 내용을 나타냅니다.<br />(예정)</div>}
-      {props.tab === 2 && <div>Mutation에 관한 정보<br />(베타서비스중)</div>}
-      {props.tab === 3 && <div>Pathogenecity를 분석한 내용입니다.<br />(추후오픈예정)</div>}
-      {props.tab === 4 && <div>Analyze 결과 입니다.<br />(유료서비스)</div>}
+      {props.tab === 1 && <div>mRNA design에 관한 내용을 나타냅니다.<br />(예정)</div>}
+      {props.tab === 2 && <div>3D viewer가 실행되는 페이지 입니다.<br />(베타서비스)</div>}
+      
     </div>
   );
 }
