@@ -1,12 +1,12 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import logo from "./logo.png";
+import logo from "./image/logo.png";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import InputSeq from "./pages/inputSeq.js";
 import Analysis from "./pages/analysis.js";
 import { React, useState, useEffect } from "react";
-import historyIcon from "./history.png";
-import editIcon from "./edit.png";
+import historyIcon from "./image/history.png";
+import editIcon from "./image/edit.png";
 
 function App() {
   let navigate = useNavigate();

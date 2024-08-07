@@ -9,7 +9,7 @@ import {
   faChevronRight,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import uploadIcon from "./upload_icon.png";
+import uploadIcon from "../image/upload_icon.png";
 
 function InputSeq({ setUsername }) {
   let navigate = useNavigate();
