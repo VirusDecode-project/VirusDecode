@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Nav } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import loadingImage from './loading.png';
+import loadingImage from '../image/loading.png';
 import './analysis.css';
 import Alignment from './Alignment';
 
