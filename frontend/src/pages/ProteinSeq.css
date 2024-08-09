@@ -29,7 +29,7 @@
     font-weight: bold;
   }
   
-  /* .sequence-boxes { */
+  .sequence-boxes {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
