@@ -13,6 +13,10 @@ function Analysis() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [show, setShow] = useState(false);
+    /* parkki */
+    const location = useLocation();
+    const { responseBody } = location.state || {}; // 전달된 상태를 받아옴
+    /* parkki */
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,12 +36,6 @@ function Analysis() {
 
   return (
     <div>
-      {isLoading ? (
-        <div className="loading-container">
-          <img src={loadingImage} alt="Loading..." className="loading-image" />
-          <div className="loading-text">{loadingText}</div>
-        </div>
-      ) : (
         <div className={`analysis-container ${show ? 'shrink' : ''}`}>
           <>
             <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
@@ -53,9 +51,14 @@ function Analysis() {
               
             </Nav>
             <Tab tab={tab} />
+            {/*parkki 넣을 곳이 마땅치 않아서 아무곳에나 출력함 */}
+            <div>
+              <h3>Server Response</h3>
+              <pre>{JSON.stringify(responseBody, null, 2)}</pre>
+            </div>
+            {/*parkki */}
           </>
         </div>
-      )}
     </div>
   );
 }
