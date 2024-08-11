@@ -1,10 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { BrowserRouter as Router, Route, Routes, Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // BrowserRouter는 최상위 컴포넌트에만 적용되어야 함
 import './ProteinSeq.css';
-
-
 
 function Alignment({ data }) {
     const chartRef = useRef();
@@ -158,129 +156,132 @@ const ComponentForLabel2 = ({ value }) => (
 export default Alignment;
 
 
-
-
-
 // 세부 단백질 시퀀스 표시
 
 
+
+// 세부 단백질 시퀀스 표시 컴포넌트
 const ProteinSeq = () => {
-    const sequences = [
-        {
-            label: 'Reference',
-            sequence: 'MESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
-        },
-        {
-            label: 'USA-WA1/2020',
-            sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
-        },
-        {
-            label: 'SARS-P2/2021',
-            sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
-        },
-        {
-            label: 'SH-P10-A-2-Shanghai/2020',
-            sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
-        }
-    ];
-
-    const [selectedSequence, setSelectedSequence] = useState(null);
-
-    const handleSequenceClick = (sequence) => {
-        setSelectedSequence(sequence);
-    };
-
-    return (
-        <div className="ProteinSeq">
-            <SequenceDisplay sequences={sequences} onSequenceClick={handleSequenceClick} />
-            <Routes>
-                {sequences.map((seq, index) => (
-                    <Route
-                        key={index}
-                        path={`/${seq.label.replace(/\s+/g, '-')}`}
-                        element={<SequenceDetails label={seq.label} sequence={seq.sequence} />}
-                    />
-                ))}
-            </Routes>
-            {selectedSequence && (
-                <NextButton selectedSequence={selectedSequence} />
-            )}
-        </div>
-    );
-};
-
-const SequenceDisplay = ({ sequences, onSequenceClick }) => {
-    return (
-        <div className="sequence-container">
-            {splitSequences(sequences).map((chunk, chunkIndex) => (
-                <div key={chunkIndex} className="sequence-chunk">
-                    {chunk.map((seq, index) => (
-                        <div key={index} className="sequence" onClick={() => onSequenceClick(seq)}>
-                            <Link to={`/${seq.label.replace(/\s+/g, '-')}`}>
-                                <div className="sequence-label">{seq.label}</div>
-                            </Link>
-                            <div className="sequence-boxes">
-                                {seq.lines.map((line, lineIndex) => (
-                                    <div key={lineIndex} className="sequence-line">
-                                        {line.split('').map((char, charIndex) => (
-                                            <div key={charIndex} className={`sequence-box ${char === '-' ? 'gap' : ''}`}>
-                                                {char}
-                                            </div>
-                                        ))}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    ))}
-                    <div className="sequence-indexes">
-                        {Array.from({ length: Math.ceil(chunk[0].lines[0].length / 10) }, (_, i) => (i + 1) * 10).map((num, i) => (
-                            <div key={i} className="sequence-index">
-                                {chunkIndex * 50 + num}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-};
-
-const splitSequences = (sequences) => {
-    const chunkSize = 50;
-    const result = [];
-    const numChunks = Math.ceil(sequences[0].sequence.length / chunkSize);
-
-    for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
-        const chunk = sequences.map((seq) => ({
-            label: seq.label,
-            lines: [seq.sequence.slice(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize)]
-        }));
-        result.push(chunk);
+  const sequences = [
+    {
+      label: 'Reference',
+      sequence: 'MESLNPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVATLEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
+    },
+    {
+      label: 'USA-WA1/2020',
+      sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
+    },
+    {
+      label: 'SARS-P2/2021',
+      sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGoQ'
+    },
+    {
+      label: 'SH-P10-A-2-Shanghai/2020',
+      sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
     }
+  ];
 
-    return result;
+  const [selectedSequence, setSelectedSequence] = useState(null);
+
+  const handleSequenceClick = (sequence) => {
+    setSelectedSequence(sequence); // 선택된 시퀀스를 설정
+  };
+
+  const referenceSequence = sequences[0].sequence;  // 첫 번째 서열이 Reference
+
+  return (
+    <div className="ProteinSeq">
+      <SequenceDisplay 
+        sequences={sequences} 
+        referenceSequence={referenceSequence}
+        onSequenceClick={handleSequenceClick} 
+        selectedSequence={selectedSequence} 
+      />
+      {/* NextButton이 selectedSequence가 설정될 때만 렌더링되도록 함 */}
+      {selectedSequence && (
+        <NextButton selectedSequence={selectedSequence} sequences={sequences} />
+      )}
+    </div>
+  );
 };
 
-const SequenceDetails = ({ label, sequence }) => {
-    return (
-        <div className="sequence-details">
-            <h2>{label} 상세 정보 페이지</h2>
-            <p>{sequence}</p> {/* 여기에서 시퀀스를 보여줌 */}
+const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence }) => {
+  return (
+    <div className="sequence-container">
+      {splitSequences(sequences, referenceSequence).map((chunk, chunkIndex) => (
+        <div key={chunkIndex} className="sequence-chunk">
+          {chunk.map((seq, index) => (
+            <div
+              key={index}
+              className={`sequence ${selectedSequence && seq.label === selectedSequence.label ? 'selected' : ''}`}
+              onClick={() => onSequenceClick(seq)}
+            >
+              <div className="sequence-label">{seq.label}</div>
+              <div className="sequence-boxes">
+                {seq.lines.map((line, lineIndex) => (
+                  <div key={lineIndex} className="sequence-line">
+                    {line.map((charObj, charIndex) => (
+                      <div 
+                        key={charIndex} 
+                        className={`sequence-box ${charObj.different ? 'different' : ''} ${charObj.char === '-' ? 'gap' : ''}`}
+                      >
+                        {charObj.char}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+          <div className="sequence-indexes">
+            {Array.from({ length: Math.ceil(chunk[0].lines[0].length / 10) }, (_, i) => (i + 1) * 10).map((num, i) => (
+              <div key={i} className="sequence-index">
+                {chunkIndex * 50 + num}
+              </div>
+            ))}
+          </div>
         </div>
-    );
+      ))}
+    </div>
+  );
 };
 
-const NextButton = ({ selectedSequence }) => {
-    const navigate = useNavigate();
+const splitSequences = (sequences, referenceSequence) => {
+  const chunkSize = 50;
+  const result = [];
+  const numChunks = Math.ceil(referenceSequence.length / chunkSize);
 
-    const handleNextClick = () => {
-        navigate(`/${selectedSequence.label.replace(/\s+/g, '-')}`);
-    };
+  for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
+    const chunk = sequences.map((seq) => ({
+      label: seq.label,
+      lines: [
+        seq.sequence
+          .slice(chunkIndex * chunkSize, (chunkIndex + 1) * chunkSize)
+          .split('')
+          .map((char, index) => ({
+            char,
+            different: char !== referenceSequence[chunkIndex * chunkSize + index]
+          }))
+      ]
+    }));
+    result.push(chunk);
+  }
 
-    return (
-        <div className="next-button">
-            <button onClick={handleNextClick}>{selectedSequence.label} - Next</button>
-        </div>
-    );
+  return result;
 };
 
+const NextButton = ({ selectedSequence, sequences }) => {
+  const currentIndex = sequences.findIndex(seq => seq.label === selectedSequence.label);
+  const nextIndex = (currentIndex + 1) % sequences.length;
+  const nextSequence = sequences[nextIndex];
+
+  return (
+    <div className="next-button">
+      <button>
+        <Link to={`/${nextSequence.label.replace(/\s+/g, '-')}`}>
+          {nextSequence.label} - 다음
+        </Link>
+      </button>
+    </div>
+  );
+};
