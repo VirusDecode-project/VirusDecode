@@ -277,9 +277,9 @@ const NextButton = ({ selectedSequence, sequences }) => {
 
   return (
     <div className="next-button">
-      <button>
+      <button >
         <Link to={`/${nextSequence.label.replace(/\s+/g, '-')}`}>
-          {nextSequence.label} - 다음
+          Convert {nextSequence.label}
         </Link>
       </button>
     </div>
