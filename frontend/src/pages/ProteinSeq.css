@@ -1,82 +1,144 @@
 .ProteinSeq {
-    text-align: center;
-  }
-  
-  .sequence-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin: 20px;
-  }
-  
-  .sequence-chunk {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
-  }
-  
-  .sequence {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-    cursor: pointer; /* Add cursor pointer for clickability */
-  }
-  
-  .sequence-label {
-    width: 200px;
-    text-align: left;
-    margin-right: 10px;
-    font-weight: bold;
-  }
-  
-  .sequence-boxes {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .sequence-line {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .sequence-box {
-    width: 20px;
-    height: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid #cccccc;
-    font-size: 14px;
-    background-color: #535353;
-    color: white;
-  }
-  
-  .sequence-box.gap {
-    background-color: yellow;
-    color: black;
-  }
-  
-  .sequence-indexes {
-    display: flex;
-    justify-content: flex-start;
-    margin-left: 210px; /* Adjust according to sequence-label width */
-    margin-top: 5px; /* Add some space above the index */
-  }
-  
-  .sequence-index {
-    width: 20px;
-    text-align: center;
-    margin: 1px;
-  }
-  
-  .sequence-details {
-    margin: 20px;
-  }
-  
-  .sequence-details h2 {
-    text-align: left;
-  }
-  
-  
-  
+  text-align: center;
+}
+
+.sequence-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 20px;
+  position: relative;
+}
+
+.sequence-chunk {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  margin-left: 50px; /* 라벨과의 간격을 맞추기 위해 */
+}
+
+.sequence {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+
+.sequence-label {
+  width: 200px;
+  text-align: left;
+  margin-right: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  height: 20px; /* .sequence-box의 높이와 맞추기 */
+}
+
+.sequence-boxes {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.sequence-line {
+  display: flex;
+  flex-direction: row;
+}
+
+.sequence-box {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #cccccc;
+  font-size: 14px;
+  background-color: #535353;
+  color: white;
+}
+
+.sequence-box.gap {
+  background-color: yellow;
+  color: black;
+}
+
+.sequence-box.different {
+  background-color: #ffc700;
+  color: #C11010;
+}
+
+.sequence-box:hover {
+  background-color: #666;
+  border-color: #999;
+}
+
+.sequence:hover .sequence-box {
+  background-color: #444;
+  border-color: #888;
+}
+
+.sequence-indexes {
+  display: flex;
+  justify-content: flex-start;
+  margin-left: 50px; /* 라벨과의 간격을 맞추기 위해 */
+  margin-top: 5px; /* 인덱스 위에 약간의 공간 추가 */
+}
+
+.sequence-index {
+  width: 20px;
+  text-align: center;
+  margin: 1px;
+}
+
+.sequence-details {
+  margin: 20px;
+}
+
+.sequence-details h2 {
+  text-align: left;
+}
+
+.sequence-full {
+  font-family: monospace;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.sequence-char {
+  display: inline-block;
+  margin: 2px;
+}
+
+.back-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+.selected {
+  border-left: 4px solid #007bff;
+  background-color: #f0f8ff;
+}
+
+.next-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  z-index: 1000;       
+}
+
+.next-button:hover {
+  background-color: #0056b3;
+}
