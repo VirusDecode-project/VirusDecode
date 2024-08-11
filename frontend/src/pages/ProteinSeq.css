@@ -123,7 +123,6 @@
 }
 
 .selected {
-  border-left: 4px solid #007bff;
   background-color: #f0f8ff;
 }
 
@@ -131,14 +130,27 @@
   position: fixed;
   bottom: 20px;
   right: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+  margin: 0; /* 상위 요소와의 여백을 없앰 */
+  padding: 0;
   cursor: pointer;
-  z-index: 1000;       
+  z-index: 1000;    
+
 }
 
-.next-button:hover {
-  background-color: #0056b3;
+
+.next-button a {
+  text-decoration: none;
+  background-color: #0FB9AF;
+  color: #f0f8ff; 
+  padding: 5px 6px;
+  border-radius: 10px; 
+}
+
+.next-button button {
+  background-color: transparent; 
+  border: 1px;
+  padding: 0; 
+  margin: 0; 
+  cursor: pointer; 
+  
 }
