@@ -9,7 +9,7 @@ function MRNAdesign() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/genomic_data.json");
+        const response = await fetch("/genomic_data.json"); //이부분이 백엔드 링크로 수정되어야함.
         const result = await response.json();
         setData(result);
       } catch (error) {
@@ -36,7 +36,8 @@ function MRNAdesign() {
   return (
     <div>
       <p className="detail">
-        The detailed description of mRNA conversion can be found here.
+        The detailed description of mRNA conversion can be found{" "}
+        <a href="https://www.youtube.com/@%EC%98%A4%EC%B4%88%EB%AA%BD">here.</a>
       </p>
 
       <div className="mrna-container">
