@@ -1,15 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { Link } from 'react-router-dom'; // BrowserRouter는 최상위 컴포넌트에만 적용되어야 함
+import { Link } from 'react-router-dom';
 import './ProteinSeq.css';
 
 function Alignment({ data }) {
-    const chartRef = useRef();
+    const chartRef = useRef(); // 차트에 대한 참조
     const [selectedData, setSelectedData] = useState(null);
 
     const chartData = {
-        labels: ['Total'],
+        labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
         datasets: data.map((item) => ({
             label: item.label,
             data: [item.value],
@@ -19,7 +19,7 @@ function Alignment({ data }) {
     };
 
     const options = {
-        indexAxis: 'y',
+        indexAxis: 'y', // 차트를 가로 방향으로 설정
         layout: {
             padding: {
                 top: 0, 
@@ -30,17 +30,17 @@ function Alignment({ data }) {
         },
         scales: {
             x: {
-                stacked: true,
+                stacked: true, // x축 데이터를 스택으로 쌓음
                 display: false, // x축 지우기
             },
             y: {
-                stacked: true,
+                stacked: true, // y축 데이터를 스택으로 쌓음
                 display: false, // y축 지우기
             },
         },
         plugins: {
             legend: {
-                display: false, 
+                display: false,
             },
             tooltip: {
                 enabled: false, // 툴팁 비활성화
@@ -52,12 +52,12 @@ function Alignment({ data }) {
             },
         },
         animation: {
-            duration: 0, 
+            duration: 0, // 애니메이션 비활성화
         },
     };
 
     const handleClick = (event) => {
-        const chart = chartRef.current;
+        const chart = chartRef.current; // 차트 참조를 가져옴
         if (!chart) return;
 
         const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
@@ -65,21 +65,21 @@ function Alignment({ data }) {
             const firstPoint = points[0];
             const label = chart.data.datasets[firstPoint.datasetIndex].label;
             const value = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
-            setSelectedData({ label, value });
+            setSelectedData({ label, value }); // 선택된 데이터를 상태에 저장
         }
     };
 
     const renderComponent = () => {
-        if (!selectedData) return null;
+        if (!selectedData) return null; // 선택된 데이터가 없으면 아무것도 렌더링하지 않음
 
         switch (selectedData.label) {
             case 'Label 1':
                 return <ComponentForLabel1 value={selectedData.value} />;
             case 'Label 2':
                 return <ComponentForLabel2 value={selectedData.value} />;
-            // Add cases for other labels
+            // 다른 레이블에 대한 케이스 추가하기
             default:
-                return <ProteinSeq/>;
+                return <ProteinSeq/>; // 디폴트는 ProteinSeq 컴포넌트 렌더링
         }
     };
 
@@ -118,10 +118,10 @@ function Alignment({ data }) {
                                 const centerY = bar.y; // 바의 중앙 Y 좌표 계산
 
                                 // 텍스트 스타일 설정
-                                ctx.fillStyle = 'black'; // 텍스트 색상 설정
-                                ctx.font = 'bold 12px Arial'; // 텍스트 폰트 설정
-                                ctx.textAlign = 'center'; // 텍스트 정렬 설정
-                                ctx.textBaseline = 'middle'; // 텍스트 기준선 설정
+                                ctx.fillStyle = 'black'; 
+                                ctx.font = 'bold 12px Arial'; 
+                                ctx.textAlign = 'center'; 
+                                ctx.textBaseline = 'middle'; 
 
                                 // 바의 중앙에 텍스트 그리기
                                 ctx.fillText(dataset.label, centerX, centerY);
@@ -133,7 +133,7 @@ function Alignment({ data }) {
                     },
                 ]}
             />
-            {renderComponent()} {/* 선택된 데이터에 따라 다른 컴포넌트를 렌더링 */}
+            {renderComponent()} {/* 선택된 데이터에 따라 다른 컴포넌트 렌더링 */}
         </div>
     );
 }
@@ -152,15 +152,11 @@ const ComponentForLabel2 = ({ value }) => (
     </div>
 );
 
-
 export default Alignment;
 
 
-// 세부 단백질 시퀀스 표시
+// 세부 단백질 시퀀스 데이터예시
 
-
-
-// 세부 단백질 시퀀스 표시 컴포넌트
 const ProteinSeq = () => {
   const sequences = [
     {
@@ -168,7 +164,7 @@ const ProteinSeq = () => {
       sequence: 'MESLNPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVATLEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
     },
     {
-      label: 'USA-WA1/2020',
+      label: 'USA-WA1/2020', 
       sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
     },
     {
@@ -176,18 +172,18 @@ const ProteinSeq = () => {
       sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGoQ'
     },
     {
-      label: 'SH-P10-A-2-Shanghai/2020',
+      label: 'SH-P10-A-2-Shanghai/2020', 
       sequence: 'MESLHPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
     }
   ];
 
-  const [selectedSequence, setSelectedSequence] = useState(null);
+  const [selectedSequence, setSelectedSequence] = useState(null); // 선택된 시퀀스를 상태로 관리
 
   const handleSequenceClick = (sequence) => {
     setSelectedSequence(sequence); // 선택된 시퀀스를 설정
   };
 
-  const referenceSequence = sequences[0].sequence;  // 첫 번째 서열이 Reference
+  const referenceSequence = sequences[0].sequence;  // 첫 번째 서열이 참조 서열
 
   return (
     <div className="ProteinSeq">
@@ -216,7 +212,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               className={`sequence ${selectedSequence && seq.label === selectedSequence.label ? 'selected' : ''}`}
               onClick={() => onSequenceClick(seq)}
             >
-              <div className="sequence-label">{seq.label}</div>
+              <div className="sequence-label">{seq.label}</div> {/* 시퀀스 레이블 표시 */}
               <div className="sequence-boxes">
                 {seq.lines.map((line, lineIndex) => (
                   <div key={lineIndex} className="sequence-line">
@@ -247,9 +243,9 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
 };
 
 const splitSequences = (sequences, referenceSequence) => {
-  const chunkSize = 50;
+  const chunkSize = 50; // 서열을 50개씩 나눔
   const result = [];
-  const numChunks = Math.ceil(referenceSequence.length / chunkSize);
+  const numChunks = Math.ceil(referenceSequence.length / chunkSize); // 서열을 나눌 덩어리 수 계산
 
   for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
     const chunk = sequences.map((seq) => ({
@@ -260,7 +256,7 @@ const splitSequences = (sequences, referenceSequence) => {
           .split('')
           .map((char, index) => ({
             char,
-            different: char !== referenceSequence[chunkIndex * chunkSize + index]
+            different: char !== referenceSequence[chunkIndex * chunkSize + index] // 참조 서열과 다른지 여부
           }))
       ]
     }));
@@ -271,15 +267,15 @@ const splitSequences = (sequences, referenceSequence) => {
 };
 
 const NextButton = ({ selectedSequence, sequences }) => {
-  const currentIndex = sequences.findIndex(seq => seq.label === selectedSequence.label);
-  const nextIndex = (currentIndex + 1) % sequences.length;
-  const nextSequence = sequences[nextIndex];
+  const currentIndex = sequences.findIndex(seq => seq.label === selectedSequence.label); // 현재 선택된 시퀀스 인덱스 찾기
+  const nextIndex = (currentIndex + 1) % sequences.length; // 다음 시퀀스 인덱스 계산
+  const nextSequence = sequences[nextIndex]; // 다음 시퀀스 가져오기
 
   return (
     <div className="next-button">
       <button >
         <Link to={`/${nextSequence.label.replace(/\s+/g, '-')}`}>
-          Convert {nextSequence.label}
+          Convert {nextSequence.label} {/* 다음 시퀀스로 이동 */}
         </Link>
       </button>
     </div>
