@@ -112,7 +112,7 @@ function MRNAdesign() {
         </div>
 
         <div className="mrna-column">
-          <h3 className="mrna-subtitle">Amino Acid Count</h3>
+         
 
           <table className="amino-acid-table">
             <thead>
