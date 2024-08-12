@@ -23,6 +23,15 @@ function MRNAdesign() {
   if (!data) {
     return <div>Loading...</div>;
   }
+  const formatSequence = (sequence) => {
+    const formatted = [];
+    for (let i = 0; i < sequence.length; i += 50) {
+      const line = sequence.slice(i, i + 50).match(/.{1,10}/g) || [];
+      const lineNumber = i + 1;
+      formatted.push(`${lineNumber} | ${line.join(" ")}`);
+    }
+    return formatted;
+  };
 
   return (
     <div>
@@ -33,9 +42,11 @@ function MRNAdesign() {
       <div className="mrna-container">
         <div className="mrna-column">
           <h2 className="mrna-title">mRNA Sequence</h2>
-          <p className="mrna-sequence">
+          <div className="mrna-sequence">
             {showFullSequence
-              ? data.mRNA_sequence
+              ? formatSequence(data.mRNA_sequence).map((seq, index) => (
+                  <div key={index}>{seq}</div>
+                ))
               : `${data.mRNA_sequence.substring(0, 50)} ...`}
             {!showFullSequence && (
               <span
@@ -54,13 +65,13 @@ function MRNAdesign() {
                 ...hide
               </span>
             )}
-          </p>
+          </div>
 
           <h2 className="mrna-title">mRNA Structure</h2>
           <p className="mrna-sequence">
             {showFullStructure
               ? data.mRNA_structure
-              : `${data.mRNA_structure.substring(0, 50)} ...`}
+              : `${data.mRNA_structure.substring(0, 50)} `}
             {!showFullStructure && (
               <span
                 className="show-toggle"
@@ -75,7 +86,7 @@ function MRNAdesign() {
                 onClick={() => setShowFullStructure(false)}
               >
                 {" "}
-                ...hide
+                hide
               </span>
             )}
           </p>
@@ -112,8 +123,6 @@ function MRNAdesign() {
         </div>
 
         <div className="mrna-column">
-         
-
           <table className="amino-acid-table">
             <thead>
               <tr>
