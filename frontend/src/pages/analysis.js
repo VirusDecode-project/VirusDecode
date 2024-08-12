@@ -40,7 +40,7 @@ function Analysis() {
     <div>
         <div className={`analysis-container ${show ? 'shrink' : ''}`}>
           <>
-            <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-center">
+            <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-start">
               <Nav.Item>
                 <Nav.Link eventKey="link0" onClick={() => setTab(0)}>Alignment</Nav.Link>
               </Nav.Item>
