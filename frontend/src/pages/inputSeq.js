@@ -10,6 +10,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import uploadIcon from "../image/upload_icon.png";
+import loadingImage from "../image/loading.png";
 
 function InputSeq({ setUsername }) {
   let navigate = useNavigate();

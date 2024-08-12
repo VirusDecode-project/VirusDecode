@@ -1,0 +1,118 @@
+{
+    "mRNA_sequence": "CGGGUGCAGCCGACCGAGUCCAUUGUGCGCUUCCCCAAUAUCACAAACCUGUGUCCCUUUGGGGAAGUGUUCAAUGCGACUCGGUUUGCAUCCGUGUACGCCUGGAAUCGCAAGCGAAUCAGCAAUUGCGUCGCAGAUUAUUCAGUUUUGUACAACUCAGCCUCGUUCAGCACGUUCAAGUGCUACGGGGUGAGUCCUACAAAGCUGAAUGAUCUGUGCUUCACCAACGUAUAUGCUGAUUCGUUUGUGAUUCGGGGCGACGAGGUCCGCCAGAUCGCGCCGGGGCAGACAGGGACGAUAGCGGACUAUAAUUAUAAGUUGCCCGACGACUUUACUGGCUGCGUUAUUGCUUGGAAUAGCAAUAACUUAGACAGUAAAGUCGGGGGCAACUAUAAUUACCUCUAUCGUCUCUUUCGGAAGAGCAAUUUGAAGCCCUUCGAGCGCGACAUUAGCACGGAGAUCUACCAGGCUGGUAGUACUCCGUGCAAUGGCGUGAAGGGCUUCAAUUGCUACUUCCCGCUGCAGAGCUACGGAUUUCAGCCCACCUACGGGGUAGGGUACCAGCCCUACCGCGUGGUGGUGCUGAGUUUCGAGCUUCUGCAUGCCCCGGCGACGGUCUGCGGACCUAAGAAGUCGACGAACUUGGUGAAGAACAAGUGCGUCAACUUC",
+    "mRNA_structure": "((((((((...((((((((((((((.((((((((((((...((((....)))).....)))))))))))).))))).)))))))))))))))))(((.(((((.((((((((((((((((((((..((((((((((((((((((((((((((..(((((.((((((..(((((......))))))))))))))))..)))))))))))))))))))))........)))))..)))))))))))))))))))).))))))))((((((((.((((((((((((((((((.(((((((((((.((....((((((((.(((((((..(((((((((((.(((.(((((((((......))))))))).))).))))))))))).))))))))))))))))).))))))))))).))((((((((((((.((((((((((..((((..((((.((((((((..((((((...))))))..))))))))))))))))))))))))))))))))).)))))...(((((((((.((((.(((((((((((.(((.((((((((....)))))))).)))))))).)))))).))))))).)))))))))))))))).))))))))))))))..(((((.((((.(((((........))))).)))).)))))",
+    "mRNA_folding_free_energy": -414.6,
+    "mRNA_CAI": 0.766,
+    "Molecular_Weight": 25098.1,
+    "Isoelectric_Point": 8.91,
+    "Instability_Index": 22.69,
+    "Secondary_Structure_Fraction": {
+        "Helix": 0.20179372197309414,
+        "Turn": 0.3363228699551569,
+        "Sheet": 0.39910313901345296
+    },
+    "Gravy": -0.26,
+    "Aromaticity": 14.8,
+    "Amino_Acid_Data": [
+        {
+            "Amino_Acid": "A",
+            "Count": 12,
+            "Percent": 5.38
+        },
+        {
+            "Amino_Acid": "C",
+            "Count": 9,
+            "Percent": 4.04
+        },
+        {
+            "Amino_Acid": "D",
+            "Count": 9,
+            "Percent": 4.04
+        },
+        {
+            "Amino_Acid": "E",
+            "Count": 7,
+            "Percent": 3.14
+        },
+        {
+            "Amino_Acid": "F",
+            "Count": 16,
+            "Percent": 7.17
+        },
+        {
+            "Amino_Acid": "G",
+            "Count": 15,
+            "Percent": 6.73
+        },
+        {
+            "Amino_Acid": "H",
+            "Count": 1,
+            "Percent": 0.45
+        },
+        {
+            "Amino_Acid": "I",
+            "Count": 9,
+            "Percent": 4.04
+        },
+        {
+            "Amino_Acid": "K",
+            "Count": 12,
+            "Percent": 5.38
+        },
+        {
+            "Amino_Acid": "L",
+            "Count": 14,
+            "Percent": 6.28
+        },
+        {
+            "Amino_Acid": "M",
+            "Count": 0,
+            "Percent": 0.0
+        },
+        {
+            "Amino_Acid": "N",
+            "Count": 21,
+            "Percent": 9.42
+        },
+        {
+            "Amino_Acid": "P",
+            "Count": 13,
+            "Percent": 5.83
+        },
+        {
+            "Amino_Acid": "Q",
+            "Count": 7,
+            "Percent": 3.14
+        },
+        {
+            "Amino_Acid": "R",
+            "Count": 11,
+            "Percent": 4.93
+        },
+        {
+            "Amino_Acid": "S",
+            "Count": 17,
+            "Percent": 7.62
+        },
+        {
+            "Amino_Acid": "T",
+            "Count": 13,
+            "Percent": 5.83
+        },
+        {
+            "Amino_Acid": "V",
+            "Count": 20,
+            "Percent": 8.97
+        },
+        {
+            "Amino_Acid": "W",
+            "Count": 2,
+            "Percent": 0.9
+        },
+        {
+            "Amino_Acid": "Y",
+            "Count": 15,
+            "Percent": 6.73
+        }
+    ]
+}
