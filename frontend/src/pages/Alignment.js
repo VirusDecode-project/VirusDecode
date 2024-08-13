@@ -224,6 +224,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
 
   }, []);
 
+
   return (
     <div className="sequence-container">
       {splitSequences(sequences, referenceSequence).map((chunk, chunkIndex) => (
