@@ -106,19 +106,6 @@ class SequenceAlignment:
             self.alignment_index[gene] = (start, end)
             start=end
 
-
-    def write_protein_sequences(self):
-        # for (gene, start, end) in self.alignment_index:
-        for gene, (start, end) in self.alignment_index.items():
-            protein_sequences=[]
-            for record in self.aligned_sequences:
-                protein_record = SeqRecord(record.seq[start:end], id=record.id, description=f"translated protein {start}-{end}")
-                protein_sequences.append(protein_record)
-
-            with open(os.path.join(current_dir, f"result/proteins_{gene}.fasta"), "w") as f:
-                SeqIO.write(protein_sequences, f, "fasta")
-
-
     def set_mutation(self):
         reference_protein = self.aligned_sequences[0].seq
         for record in self.aligned_sequences[1:]:
@@ -242,18 +229,9 @@ class SequenceAlignment:
         self.read_sequences()
         self.run_muscle_dna()
         self.read_alignment()
-        # self.write_protein_sequences()    # 부가기능(LinearDesign) 활용 시 주석 해제
         self.set_mutation()
 #         self.run_linear_design("S", "MW642250.1")
 #         self.set_protParam()
-
-
-def string_to_json(input_string):
-    # JSON 데이터 생성
-    data = {
-        "message": input_string
-    }
-    return data
 
 
 if __name__ == "__main__":
