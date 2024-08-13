@@ -5,6 +5,7 @@ function MRNAdesign() {
   const [data, setData] = useState(null);
   const [showFullSequence, setShowFullSequence] = useState(false);
   const [showFullStructure, setShowFullStructure] = useState(false);
+  const zeroWidthSpace = "\u200B";
 
   useEffect(() => {
     async function fetchData() {
@@ -28,7 +29,7 @@ function MRNAdesign() {
     for (let i = 0; i < sequence.length; i += 50) {
       const line = sequence.slice(i, i + 50).match(/.{1,10}/g) || [];
       const lineNumber = i + 1;
-      const zeroWidthSpace = "\u200B";
+      // const zeroWidthSpace = "\u200B";
       if (lineNumber === 1) {
         formatted.push(
           `${zeroWidthSpace} ${zeroWidthSpace} ${lineNumber} | ${line.join(
@@ -79,6 +80,7 @@ function MRNAdesign() {
                 className="show-toggle"
                 onClick={() => setShowFullSequence(true)}
               >
+                
                 show
               </span>
             )}
@@ -87,7 +89,6 @@ function MRNAdesign() {
                 className="show-toggle"
                 onClick={() => setShowFullSequence(false)}
               >
-                {" "}
                 ...hide
               </span>
             )}
@@ -105,7 +106,7 @@ function MRNAdesign() {
                 className="show-toggle"
                 onClick={() => setShowFullStructure(true)}
               >
-                show
+                {"   "}show
               </span>
             )}
             {showFullStructure && (
@@ -113,8 +114,7 @@ function MRNAdesign() {
                 className="show-toggle"
                 onClick={() => setShowFullStructure(false)}
               >
-                {" "}
-                hide
+                ...hide
               </span>
             )}
           </p>
