@@ -210,20 +210,20 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
     labels.forEach(label => {
       const labelWidth = label.offsetWidth;
       if (labelWidth > maxWidth) {
-        maxWidth = labelWidth + 10;
+        maxWidth = labelWidth ;
       }
     });
-
+    maxWidth += 10;
     labels.forEach(label => {
       label.style.width = `${maxWidth}px`;
     });
 
     const indexesContainers = document.querySelectorAll('.sequence-indexes');
-    indexesContainers.forEach(container => {
-      container.style.marginLeft = `${maxWidth}px`;
-    });
+    indexesContainers.forEach((container, index) => {
+      container.style.marginLeft = `${maxWidth}px`;})
 
-  }, [sequences]);
+  }, []);
+
 
   return (
     <div className="sequence-container">
@@ -255,7 +255,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
           <div className="sequence-indexes">
             {Array.from({ length: 5 }, (_, i) => (chunkIndex * 50) + ((i + 1) * 10)).map((num, i) => (
               <div key={i} className="sequence-index">
-                {num <= referenceSequence.length ? num : ''}
+                {num <= referenceSequence.length ? num : '---'}
               </div>
             ))}
           </div>
