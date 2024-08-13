@@ -7,7 +7,7 @@ function Render3D() {
     height: '900px',
   };
 
-  const pdbId = "7rn1";
+  const pdbId = "5r7y"; // default, SARS-CoV-2
 
   const refData = {
     filename: `https://files.rcsb.org/download/${pdbId}.pdb`,
@@ -21,6 +21,7 @@ function Render3D() {
     <div className='reference3D'>
       <h4>Reference</h4>
       <Viztein data={refData} viewportStyle={viewportStyle} />
+      <h5>{pdbId}.pdb</h5>
     </div>
   );
 }

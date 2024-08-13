@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./MRNAdesign.css";
+import RNAVisualizer from './RNAVisualizer';
 
 function MRNAdesign() {
   const [data, setData] = useState(null);
@@ -65,9 +66,12 @@ function MRNAdesign() {
           here.
         </a>
       </p>
-
       <div className="mrna-container">
         <div className="mrna-column">
+          {/*visualization 추가*/}
+          <h2 className="mrna-title">mRNA Visualization</h2>
+          <RNAVisualizer sequence={data.mRNA_sequence} structure={data.mRNA_structure} />
+          {/*visualization 끝*/}
           <h2 className="mrna-title">mRNA Sequence</h2>
           <div className="mrna-sequence">
             {showFullSequence
