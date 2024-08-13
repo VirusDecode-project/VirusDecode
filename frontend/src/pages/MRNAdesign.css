@@ -32,7 +32,9 @@
   padding: 10px;
   border-radius: 4px;
   overflow-wrap: break-word;
-  max-width: 700px;
+
+  width: 540px;
+
   margin-bottom: 15px;
 }
 

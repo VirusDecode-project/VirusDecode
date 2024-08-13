@@ -28,7 +28,15 @@ function MRNAdesign() {
     for (let i = 0; i < sequence.length; i += 50) {
       const line = sequence.slice(i, i + 50).match(/.{1,10}/g) || [];
       const lineNumber = i + 1;
-      formatted.push(`${lineNumber} | ${line.join(" ")}`);
+      const zeroWidthSpace = '\u200B';
+      if (lineNumber===1){
+        formatted.push(`${zeroWidthSpace} ${zeroWidthSpace} ${lineNumber} | ${line.join(" ")}`);
+      }else if(lineNumber===51){
+        formatted.push(`${zeroWidthSpace} ${lineNumber} | ${line.join(" ")}`);
+      }else{
+        formatted.push(`${lineNumber} | ${line.join(" ")}`);
+      }
+      
     }
     return formatted;
   };
