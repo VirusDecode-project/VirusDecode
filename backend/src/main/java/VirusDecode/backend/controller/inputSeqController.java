@@ -26,7 +26,8 @@ public class inputSeqController {
         Map<String, Object> metadata = new HashMap<>();
         metadata = referenceIdPy(sequenceId);
 
-        return ResponseEntity.ok("DONE processing completed for sequence ID: " + metadata);
+        // Frontend로 전달 값
+        return ResponseEntity.ok(metadata.toString());
     }
 
     @PostMapping("/analyze")
@@ -50,7 +51,7 @@ public class inputSeqController {
         Map<String, Object> metadata = new HashMap<>();
         try {
             // 파이썬 스크립트 경로를 ClassPathResource를 사용하여 얻기
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/alignment_and_translation.py");
             String scriptPath = resource.getFile().getAbsolutePath();
 
             // 파이썬 스크립트와 인자를 설정
@@ -64,11 +65,17 @@ public class inputSeqController {
             // 프로세스의 출력을 읽기 위한 BufferedReader
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder output = new StringBuilder();
+
+
+
             String line;
             while ((line = in.readLine()) != null) {
                 output.append(line);
             }
             in.close();
+
+            // 파이썬 스크립트 출력 결과 확인
+            System.out.println("Output for python script: " + output);
 
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
