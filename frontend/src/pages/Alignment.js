@@ -161,7 +161,7 @@ const ProteinSeq = () => {
   const sequences = [
     {
       label: 'Reference',
-      sequence: 'MESLNPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVATLEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQ'
+      sequence: 'MESLNPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVAELEGIQMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEARQHLKDGTCGLVEVEKGVLPQLEQPYVFIKRSDARTAPHGHVMVELVATLEGIQ'
     },
     {
       label: 'USA-WA1/2020', 
@@ -204,23 +204,25 @@ const ProteinSeq = () => {
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence }) => {
 
   useEffect(() => {
-    // 모든 sequence-label 요소를 가져옴
     const labels = document.querySelectorAll('.sequence-label');
     
-    // 가장 긴 텍스트의 너비를 계산
     let maxWidth = 0;
     labels.forEach(label => {
       const labelWidth = label.offsetWidth;
       if (labelWidth > maxWidth) {
-        maxWidth = labelWidth;
+        maxWidth = labelWidth ;
       }
     });
-    
-    // 모든 sequence-label 요소의 너비를 가장 긴 텍스트의 너비로 설정
+    maxWidth += 10;
     labels.forEach(label => {
       label.style.width = `${maxWidth}px`;
     });
-  }, [sequences]); // sequences가 변경될 때마다 다시 계산
+
+    const indexesContainers = document.querySelectorAll('.sequence-indexes');
+    indexesContainers.forEach((container, index) => {
+      container.style.marginLeft = `${maxWidth}px`;})
+
+  }, []);
 
   return (
     <div className="sequence-container">
@@ -232,7 +234,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               className={`sequence ${selectedSequence && seq.label === selectedSequence.label ? 'selected' : ''}`}
               onClick={() => onSequenceClick(seq)}
             >
-              <div className="sequence-label">{seq.label}</div> {/* 시퀀스 레이블 표시 */}
+              <div className="sequence-label">{seq.label}</div>
               <div className="sequence-boxes">
                 {seq.lines.map((line, lineIndex) => (
                   <div key={lineIndex} className="sequence-line">
@@ -250,9 +252,9 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
             </div>
           ))}
           <div className="sequence-indexes">
-            {Array.from({ length: Math.ceil(chunk[0].lines[0].length / 10) }, (_, i) => (i + 1) * 10).map((num, i) => (
+            {Array.from({ length: 5 }, (_, i) => (chunkIndex * 50) + ((i + 1) * 10)).map((num, i) => (
               <div key={i} className="sequence-index">
-                {chunkIndex * 50 + num}
+                {num <= referenceSequence.length ? num : '-'}
               </div>
             ))}
           </div>
@@ -285,6 +287,7 @@ const splitSequences = (sequences, referenceSequence) => {
 
   return result;
 };
+
 
 const NextButton = ({ selectedSequence, sequences }) => {
   const currentIndex = sequences.findIndex(seq => seq.label === selectedSequence.label); // 현재 선택된 시퀀스 인덱스 찾기

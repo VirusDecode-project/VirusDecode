@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  margin-left: 50px; /* 라벨과의 간격을 맞추기 위해 */
+  margin-left: 50px; 
 }
 
 .sequence {
@@ -28,7 +28,6 @@
   width: auto;
   white-space: nowrap;
   text-align: left;
-  margin-right: 10px;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -73,6 +72,7 @@
   border-color: #999;
 }
 
+
 .sequence:hover .sequence-box {
   background-color: #444;
   border-color: #888;
@@ -80,15 +80,19 @@
 
 .sequence-indexes {
   display: flex;
-  justify-content: flex-start;
-  margin-left: 50px; /* 라벨과의 간격을 맞추기 위해 */
+  justify-content: space-between; /* 인덱스들 사이의 간격을 균일하게 */
+  width: 1000px; /* 고정 너비 설정 */
   margin-top: 5px; /* 인덱스 위에 약간의 공간 추가 */
+  letter-spacing: -1.2px;
+  font-size: 15px;
 }
 
 .sequence-index {
-  width: 20px;
-  text-align: center;
-  margin: 1px;
+  flex-grow: 1; /* 각 인덱스가 동일한 비율로 공간을 차지하도록 설정 */
+  text-align: right; /* 텍스트를 중앙에 정렬 */
+  margin: 0; /* 여백 제거 */
+  min-width: 0; /* 최소 너비를 0으로 설정해 숫자의 길이 무시 */
+  overflow: visible; /* overflow를 visible로 변경해 인덱스가 보이도록 */
 }
 
 .sequence-details {
@@ -129,9 +133,9 @@
 
 .next-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  margin: 0; /* 상위 요소와의 여백을 없앰 */
+  bottom: 30px;
+  right: 30px;
+  margin: 0; 
   padding: 0;
   cursor: pointer;
   z-index: 1000;    
@@ -143,7 +147,7 @@
   text-decoration: none;
   background-color: #0FB9AF;
   color: #f0f8ff; 
-  padding: 5px 6px;
+  padding: 10px 15px;
   border-radius: 10px; 
 }
 
