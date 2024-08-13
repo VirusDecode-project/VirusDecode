@@ -80,3 +80,17 @@
   cursor: pointer;
   font-weight: 700;
 }
+
+
+.mrna-structure {
+  font-family: monospace;
+  font-size: 14px;
+  background-color: #eee;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  width: 540px;
+
+  margin-bottom: 15px;
+}

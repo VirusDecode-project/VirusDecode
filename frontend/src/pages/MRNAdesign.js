@@ -28,15 +28,27 @@ function MRNAdesign() {
     for (let i = 0; i < sequence.length; i += 50) {
       const line = sequence.slice(i, i + 50).match(/.{1,10}/g) || [];
       const lineNumber = i + 1;
-      const zeroWidthSpace = '\u200B';
-      if (lineNumber===1){
-        formatted.push(`${zeroWidthSpace} ${zeroWidthSpace} ${lineNumber} | ${line.join(" ")}`);
-      }else if(lineNumber===51){
+      const zeroWidthSpace = "\u200B";
+      if (lineNumber === 1) {
+        formatted.push(
+          `${zeroWidthSpace} ${zeroWidthSpace} ${lineNumber} | ${line.join(
+            " "
+          )}`
+        );
+      } else if (lineNumber === 51) {
         formatted.push(`${zeroWidthSpace} ${lineNumber} | ${line.join(" ")}`);
-      }else{
+      } else {
         formatted.push(`${lineNumber} | ${line.join(" ")}`);
       }
-      
+    }
+    return formatted;
+  };
+
+  const formatStructure = (structure) => {
+    const formatted = [];
+    for (let i = 0; i < structure.length; i += 60) {
+      const line = structure.slice(i, i + 60).match(/.{1,10}/g) || [];
+      formatted.push(`${line.join("")}`);
     }
     return formatted;
   };
@@ -45,7 +57,12 @@ function MRNAdesign() {
     <div>
       <p className="detail">
         The detailed description of mRNA conversion can be found{" "}
-        <a href="https://www.nature.com/articles/s41586-023-06127-z" target="_blank">here.</a>
+        <a
+          href="https://www.nature.com/articles/s41586-023-06127-z"
+          target="_blank"
+        >
+          here.
+        </a>
       </p>
 
       <div className="mrna-container">
@@ -77,9 +94,11 @@ function MRNAdesign() {
           </div>
 
           <h2 className="mrna-title">mRNA Structure</h2>
-          <p className="mrna-sequence">
+          <p className="mrna-structure">
             {showFullStructure
-              ? data.mRNA_structure
+              ? formatStructure(data.mRNA_structure).map((seq, index) => (
+                  <div key={index}>{seq}</div>
+                ))
               : `${data.mRNA_structure.substring(0, 50)} `}
             {!showFullStructure && (
               <span
