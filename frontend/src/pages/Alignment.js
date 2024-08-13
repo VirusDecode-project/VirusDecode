@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Link } from 'react-router-dom';
@@ -202,6 +202,26 @@ const ProteinSeq = () => {
 };
 
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence }) => {
+
+  useEffect(() => {
+    // 모든 sequence-label 요소를 가져옴
+    const labels = document.querySelectorAll('.sequence-label');
+    
+    // 가장 긴 텍스트의 너비를 계산
+    let maxWidth = 0;
+    labels.forEach(label => {
+      const labelWidth = label.offsetWidth;
+      if (labelWidth > maxWidth) {
+        maxWidth = labelWidth;
+      }
+    });
+    
+    // 모든 sequence-label 요소의 너비를 가장 긴 텍스트의 너비로 설정
+    labels.forEach(label => {
+      label.style.width = `${maxWidth}px`;
+    });
+  }, [sequences]); // sequences가 변경될 때마다 다시 계산
+
   return (
     <div className="sequence-container">
       {splitSequences(sequences, referenceSequence).map((chunk, chunkIndex) => (

@@ -25,7 +25,8 @@
 }
 
 .sequence-label {
-  width: 200px;
+  width: auto;
+  white-space: nowrap;
   text-align: left;
   margin-right: 10px;
   font-weight: bold;
