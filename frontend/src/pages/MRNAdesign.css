@@ -32,7 +32,9 @@
   padding: 10px;
   border-radius: 4px;
   overflow-wrap: break-word;
-  max-width: 700px;
+
+  width: 540px;
+
   margin-bottom: 15px;
 }
 
@@ -77,4 +79,18 @@
   color: #0fb9af;
   cursor: pointer;
   font-weight: 700;
+}
+
+
+.mrna-structure {
+  font-family: monospace;
+  font-size: 14px;
+  background-color: #eee;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  width: 540px;
+
+  margin-bottom: 15px;
 }
