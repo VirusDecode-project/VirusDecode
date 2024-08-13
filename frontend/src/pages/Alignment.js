@@ -255,7 +255,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
           <div className="sequence-indexes">
             {Array.from({ length: 5 }, (_, i) => (chunkIndex * 50) + ((i + 1) * 10)).map((num, i) => (
               <div key={i} className="sequence-index">
-                {num <= referenceSequence.length ? num : '-'}
+                {num <= referenceSequence.length ? num : '---'}
               </div>
             ))}
           </div>
