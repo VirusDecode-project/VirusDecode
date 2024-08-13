@@ -37,7 +37,7 @@ function MRNAdesign() {
     <div>
       <p className="detail">
         The detailed description of mRNA conversion can be found{" "}
-        <a href="https://www.youtube.com/@%EC%98%A4%EC%B4%88%EB%AA%BD">here.</a>
+        <a href="https://www.nature.com/articles/s41586-023-06127-z" target="_blank">here.</a>
       </p>
 
       <div className="mrna-container">
