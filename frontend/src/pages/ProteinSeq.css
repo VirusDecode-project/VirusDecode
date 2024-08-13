@@ -82,7 +82,6 @@
   display: flex;
   justify-content: space-between; /* 인덱스들 사이의 간격을 균일하게 */
   width: 1000px; /* 고정 너비 설정 */
-  margin-left: 0; /* 필요에 따라 추가 조정 */
   margin-top: 5px; /* 인덱스 위에 약간의 공간 추가 */
   letter-spacing: -1.2px;
   font-size: 15px;
