@@ -6,6 +6,7 @@ import loadingImage from '../image/loading.png';
 import './analysis.css';
 import Alignment from './Alignment';
 import MRNAdesign from './MRNAdesign';
+import Render3D from './Render3D';
 
 function Analysis() {
   let [tab, setTab] = useState(0);
@@ -79,7 +80,7 @@ function Tab(props) {
     <div>
       {props.tab === 0 && <Alignment data={data} />}
       {props.tab === 1 && <MRNAdesign />}
-      {props.tab === 2 && <div>3D viewer가 실행되는 페이지 입니다.<br />(베타서비스)</div>}
+      {props.tab === 2 && <Render3D />}
       
     </div>
   );
