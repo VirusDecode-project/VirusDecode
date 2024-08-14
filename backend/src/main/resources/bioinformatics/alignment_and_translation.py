@@ -8,13 +8,15 @@ import os
 import sys
 import json
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
 class SequenceAlignment:
     def __init__(self, files, reference_id, muscle_exe="muscle"):
         Entrez.email = "your_email@example.com"
         self.files = files
         self.muscle_exe = muscle_exe
-        self.combined_file = "result/combined.fasta"
-        self.aligned_file = "result/aligned.fasta"
+        self.combined_file = os.path.join(current_dir, "result/combined.fasta")
+        self.aligned_file = os.path.join(current_dir, "result/aligned.fasta")
         self.reference_sequence = None
         self.variant_sequences = []
         self.aligned_sequences = []
@@ -71,11 +73,15 @@ class SequenceAlignment:
 
     def run_muscle_dna(self):
         # Run muscle
-        result = subprocess.run([self.muscle_exe, "-in", self.combined_file, "-out", self.aligned_file])
-        if result.returncode != 0:
-            print("Error running muscle:")
-        else:
-            print("Muscle ran successfully:")
+        result = subprocess.run(
+            [self.muscle_exe, "-in", self.combined_file, "-out", self.aligned_file],
+            stdout=subprocess.DEVNULL,  # 표준 출력을 숨김
+            stderr=subprocess.DEVNULL   # 표준 오류를 숨김
+        )
+        # if result.returncode != 0:
+        #     print("Error running muscle:")
+        # else:
+        #     print("Muscle ran successfully:")
 
 
     def read_alignment(self):
@@ -99,19 +105,6 @@ class SequenceAlignment:
             # Set alignment data
             self.alignment_index[gene] = (start, end)
             start=end
-
-
-    def write_protein_sequences(self):
-        # for (gene, start, end) in self.alignment_index:
-        for gene, (start, end) in self.alignment_index.items():
-            protein_sequences=[]
-            for record in self.aligned_sequences:
-                protein_record = SeqRecord(record.seq[start:end], id=record.id, description=f"translated protein {start}-{end}")
-                protein_sequences.append(protein_record)
-
-            with open(f"result/proteins_{gene}.fasta", "w") as f:
-                SeqIO.write(protein_sequences, f, "fasta")
-
 
     def set_mutation(self):
         reference_protein = self.aligned_sequences[0].seq
@@ -145,16 +138,17 @@ class SequenceAlignment:
         self.target_sequence = input_sequence
         
         # Run LinearDesign
-        os.chdir("./LinearDesign")
 
         # Execute the command and capture the result
+        os.chdir(os.path.join(current_dir, "LinearDesign"))
         command = f"echo {input_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
+        os.chdir(current_dir)
 
         # Check if the command was executed successfully
         if process.returncode == 0:
-            print("Command executed successfully")
+            # print("Command executed successfully")
 
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
@@ -170,8 +164,10 @@ class SequenceAlignment:
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
 
-        else:
-            print("Error executing command")
+        # else:
+            # print("Error executing command")
+            # print(stderr)
+
             
     def set_protParam(self):
         # Protein sequence to analyze
@@ -235,75 +231,72 @@ class SequenceAlignment:
         self.read_sequences()
         self.run_muscle_dna()
         self.read_alignment()
-        self.write_protein_sequences()    # 부가기능(LinearDesign) 활용 시 주석 해제
         self.set_mutation()
         self.run_linear_design("S", "MW642250.1")
         self.set_protParam()
 
 
-def string_to_json(input_string):
-    # JSON 데이터 생성
-    data = {
-        "message": input_string
-    }
-    return data
-
-
 if __name__ == "__main__":
     reference_id = sys.argv[1]
 
-#     reference_id = "NC_045512"
-    files = ["data/OL672836.1.spike.fasta", "data/MW642250.1.spike.fasta", "data/OM958567.1.spike.fasta"]
+    # reference_id = "NC_045512"
+
+    files = [
+        os.path.join(current_dir, "data/OL672836.1.spike.fasta"),
+        os.path.join(current_dir, "data/MW642250.1.spike.fasta"),
+        os.path.join(current_dir, "data/OM958567.1.spike.fasta")
+    ]
+
     alignment = SequenceAlignment(files, reference_id)
 
-    # alignment 실행 전 metadata 받아오기
+    # metadata
     metadata = alignment.get_metadata()
-#     for key, value in metadata.items():
-#         print(f"{key}: {value}")
-    print(json.dumps(metadata))
+    # print(json.dumps(metadata))
+
+    # run alignment
+    alignment.run()
+
+    # alignment, mutation data
+    alignment_index, aligned_sequences = alignment.get_alignment_data()
+    aligned_sequences_dict = {record.id: str(record.seq) for record in aligned_sequences}
+    mutation_dict = alignment.get_mutation()
+    alignment_data = {
+        "alignment_index": alignment_index,
+        "aligned_sequences": aligned_sequences_dict,
+        "mutation_data": mutation_dict
+    }
+    # print(json.dumps(alignment_data))
 
 
-#     # alignment 실행
-#     alignment.run()
-#
-#     # alignment data 받아오기
-#     alignment_index, aligned_sequences = alignment.get_alignment_data()
-#     for gene, (start, end) in alignment_index.items():
-#         print(gene, start, end)
-#     for record in aligned_sequences:
-#         print(record.id)
-#         print(record.seq)
-#         print()
-#
-#     # mutation data 받아오기
-#     mutation_dict = alignment.get_mutation()
-#     for key, value in mutation_dict.items():
-#         print(key)
-#         for i, ref, var in value:
-#             print(f"{i}: {ref} -> {var}")
-#         print()
-#
-#     # linearDesign data 받아오기
-#     linearDesign = alignment.get_linearDesign()
-#     mRNA_sequence, mRNA_structure, free_energy, cai = linearDesign
-#     print(f"mRNA sequence: {mRNA_sequence}")
-#     print(f"mRNA structure: {mRNA_structure}")
-#     print(f"mRNA folding free energy: {free_energy}")
-#     print(f"mRNA CAI: {cai}")
-#
-#     # protparam data 받아오기
-#     protParam = alignment.get_protParam()
-#     sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = protParam
-#     print(f"Protein Sequence: {sequence}")
-#     print(f"Molecular Weight: {molecular_weight:.2f} Da")
-#     print("Amino Acid Count:")
-#     for aa, count in amino_acid_count.items():
-#         print(f"{aa}: {count}")
-#     print("Amino Acid Percent:")
-#     for aa, percent in amino_acid_percent.items():
-#         print(f"{aa}: {percent:.2%}")
-#     print(f"Isoelectric Point (pI): {isoelectric_point:.2f}")
-#     print(f"Instability Index: {instability_index:.2f}")
-#     print(f"Secondary Structure Fraction (Helix, Turn, Sheet): {secondary_structure_fraction}")
-#     print(f"Gravy: {gravy:.2f}")
-#     print(f"Aromaticity: {aromaticity:.2%}")
+    # linearDesign, protparam data
+    linearDesign = alignment.get_linearDesign()
+    mRNA_sequence, mRNA_structure, free_energy, cai = linearDesign
+    linearDesign_dict = {
+        "mRNA_sequence": mRNA_sequence,
+        "mRNA_structure": mRNA_structure,
+        "free_energy": free_energy,
+        "cai": cai
+    }
+
+    protParam = alignment.get_protParam()
+    sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = protParam
+    protParam_dict = {
+        "sequence": sequence,
+        "molecular_weight": molecular_weight,
+        "amino_acid_count": amino_acid_count,
+        "amino_acid_percent": amino_acid_percent,
+        "isoelectric_point": isoelectric_point,
+        "instability_index": instability_index,
+        "secondary_structure_fraction": secondary_structure_fraction,
+        "gravy": gravy,
+        "aromaticity": aromaticity
+    }
+
+    linearDesign_data = {
+        "linearDesign": linearDesign_dict,
+        "protParam": protParam_dict
+    }
+    # print(json.dumps(linearDesign_data))
+
+
+
