@@ -138,19 +138,17 @@ class SequenceAlignment:
         self.target_sequence = input_sequence
         
         # Run LinearDesign
-        # os.chdir("./LinearDesign")
-        original_dir = os.getcwd()
-        os.chdir(os.path.join(current_dir, "./LinearDesign"))
-        
 
         # Execute the command and capture the result
+        os.chdir(os.path.join(current_dir, "LinearDesign"))
         command = f"echo {input_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
+        os.chdir(current_dir)
 
         # Check if the command was executed successfully
         if process.returncode == 0:
-#             print("Command executed successfully")
+            # print("Command executed successfully")
 
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
@@ -165,10 +163,11 @@ class SequenceAlignment:
             self.linearDesign.append(mRNA_structure)
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
-#
-#         else:
-#             print("Error executing command")
-        os.chdir(original_dir)
+
+        # else:
+            # print("Error executing command")
+            # print(stderr)
+
             
     def set_protParam(self):
         # Protein sequence to analyze
@@ -238,10 +237,9 @@ class SequenceAlignment:
 
 
 if __name__ == "__main__":
-    # reference_id = sys.argv[1]
+    reference_id = sys.argv[1]
 
-    reference_id = "NC_045512"
-#     files = ["./data/OL672836.1.spike.fasta", "./data/MW642250.1.spike.fasta", "./data/OM958567.1.spike.fasta"]
+    # reference_id = "NC_045512"
 
     files = [
         os.path.join(current_dir, "data/OL672836.1.spike.fasta"),
@@ -336,6 +334,6 @@ if __name__ == "__main__":
         "protParam": protParam_dict
     }
     print(json.dumps(linearDesign_data))
-#     print(json.dumps(metadata))
+
 
 
