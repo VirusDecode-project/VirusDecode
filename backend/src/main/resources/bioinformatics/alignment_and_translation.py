@@ -138,8 +138,10 @@ class SequenceAlignment:
         self.target_sequence = input_sequence
         
         # Run LinearDesign
-        os.chdir("./LinearDesign")
-#         os.path.join(current_dir, "./LinearDesign")
+        # os.chdir("./LinearDesign")
+        original_dir = os.getcwd()
+        os.chdir(os.path.join(current_dir, "./LinearDesign"))
+        
 
         # Execute the command and capture the result
         command = f"echo {input_sequence} | ./lineardesign"
@@ -148,7 +150,7 @@ class SequenceAlignment:
 
         # Check if the command was executed successfully
         if process.returncode == 0:
-            print("Command executed successfully")
+#             print("Command executed successfully")
 
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
@@ -163,9 +165,10 @@ class SequenceAlignment:
             self.linearDesign.append(mRNA_structure)
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
-
-        else:
-            print("Error executing command")
+#
+#         else:
+#             print("Error executing command")
+        os.chdir(original_dir)
             
     def set_protParam(self):
         # Protein sequence to analyze
@@ -230,8 +233,8 @@ class SequenceAlignment:
         self.run_muscle_dna()
         self.read_alignment()
         self.set_mutation()
-#         self.run_linear_design("S", "MW642250.1")
-#         self.set_protParam()
+        self.run_linear_design("S", "MW642250.1")
+        self.set_protParam()
 
 
 if __name__ == "__main__":
@@ -251,15 +254,15 @@ if __name__ == "__main__":
 
     # alignment 실행 전 metadata 받아오기
     metadata = alignment.get_metadata()
-#     for key, value in metadata.items():
-#         print(f"{key}: {value}")
-#     print(json.dumps(metadata))
+    # for key, value in metadata.items():
+    #     print(f"{key}: {value}")
+    # print(json.dumps(metadata))
 
 
     # alignment 실행
     alignment.run()
-#
-#     # alignment data 받아오기
+
+    # alignment data 받아오기
     alignment_index, aligned_sequences = alignment.get_alignment_data()
     aligned_sequences_dict = {record.id: str(record.seq) for record in aligned_sequences}
     # for gene, (start, end) in alignment_index.items():
@@ -282,55 +285,57 @@ if __name__ == "__main__":
         "aligned_sequences": aligned_sequences_dict,
         "mutation_data": mutation_dict
     }
-    print(json.dumps(alignment_data))
+    # print(json.dumps(alignment_data))
 
-#
-#     # linearDesign data 받아오기
-#     linearDesign = alignment.get_linearDesign()
-#     mRNA_sequence, mRNA_structure, free_energy, cai = linearDesign
-#     linearDesign_dict = {
-#         "mRNA_sequence": mRNA_sequence,
-#         "mRNA_structure": mRNA_structure,
-#         "free_energy": free_energy,
-#         "cai": cai
-#     }
-#     # print(f"mRNA sequence: {mRNA_sequence}")
-#     # print(f"mRNA structure: {mRNA_structure}")
-#     # print(f"mRNA folding free energy: {free_energy}")
-#     # print(f"mRNA CAI: {cai}")
-#
-#     # protparam data 받아오기
-#     protParam = alignment.get_protParam()
-#     sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = protParam
-#     protParam_dict = {
-#         "sequence": sequence,
-#         "molecular_weight": molecular_weight,
-#         "amino_acid_count": amino_acid_count,
-#         "amino_acid_percent": amino_acid_percent,
-#         "isoelectric_point": isoelectric_point,
-#         "instability_index": instability_index,
-#         "secondary_structure_fraction": secondary_structure_fraction,
-#         "gravy": gravy,
-#         "aromaticity": aromaticity
-#     }
-#
-#     # print(f"Protein Sequence: {sequence}")
-#     # print(f"Molecular Weight: {molecular_weight:.2f} Da")
-#     # print("Amino Acid Count:")
-#     # for aa, count in amino_acid_count.items():
-#     #     print(f"{aa}: {count}")
-#     # print("Amino Acid Percent:")
-#     # for aa, percent in amino_acid_percent.items():
-#     #     print(f"{aa}: {percent:.2%}")
-#     # print(f"Isoelectric Point (pI): {isoelectric_point:.2f}")
-#     # print(f"Instability Index: {instability_index:.2f}")
-#     # print(f"Secondary Structure Fraction (Helix, Turn, Sheet): {secondary_structure_fraction}")
-#     # print(f"Gravy: {gravy:.2f}")
-#     # print(f"Aromaticity: {aromaticity:.2%}")
-#
-#     linearDesign_data = {
-#         "linearDesign": linearDesign_dict,
-#         "protParam": protParam_dict
-#     }
-#     print(json.dumps(linearDesign_data))
+
+    # linearDesign data 받아오기
+    linearDesign = alignment.get_linearDesign()
+    mRNA_sequence, mRNA_structure, free_energy, cai = linearDesign
+    linearDesign_dict = {
+        "mRNA_sequence": mRNA_sequence,
+        "mRNA_structure": mRNA_structure,
+        "free_energy": free_energy,
+        "cai": cai
+    }
+    # print(f"mRNA sequence: {mRNA_sequence}")
+    # print(f"mRNA structure: {mRNA_structure}")
+    # print(f"mRNA folding free energy: {free_energy}")
+    # print(f"mRNA CAI: {cai}")
+
+    # protparam data 받아오기
+    protParam = alignment.get_protParam()
+    sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = protParam
+    protParam_dict = {
+        "sequence": sequence,
+        "molecular_weight": molecular_weight,
+        "amino_acid_count": amino_acid_count,
+        "amino_acid_percent": amino_acid_percent,
+        "isoelectric_point": isoelectric_point,
+        "instability_index": instability_index,
+        "secondary_structure_fraction": secondary_structure_fraction,
+        "gravy": gravy,
+        "aromaticity": aromaticity
+    }
+
+    # print(f"Protein Sequence: {sequence}")
+    # print(f"Molecular Weight: {molecular_weight:.2f} Da")
+    # print("Amino Acid Count:")
+    # for aa, count in amino_acid_count.items():
+    #     print(f"{aa}: {count}")
+    # print("Amino Acid Percent:")
+    # for aa, percent in amino_acid_percent.items():
+    #     print(f"{aa}: {percent:.2%}")
+    # print(f"Isoelectric Point (pI): {isoelectric_point:.2f}")
+    # print(f"Instability Index: {instability_index:.2f}")
+    # print(f"Secondary Structure Fraction (Helix, Turn, Sheet): {secondary_structure_fraction}")
+    # print(f"Gravy: {gravy:.2f}")
+    # print(f"Aromaticity: {aromaticity:.2%}")
+
+    linearDesign_data = {
+        "linearDesign": linearDesign_dict,
+        "protParam": protParam_dict
+    }
+    print(json.dumps(linearDesign_data))
+#     print(json.dumps(metadata))
+
 
