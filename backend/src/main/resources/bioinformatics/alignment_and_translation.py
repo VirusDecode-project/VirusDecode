@@ -249,35 +249,17 @@ if __name__ == "__main__":
 
     alignment = SequenceAlignment(files, reference_id)
 
-
-    # alignment 실행 전 metadata 받아오기
+    # metadata
     metadata = alignment.get_metadata()
-    # for key, value in metadata.items():
-    #     print(f"{key}: {value}")
     # print(json.dumps(metadata))
 
-
-    # alignment 실행
+    # run alignment
     alignment.run()
 
-    # alignment data 받아오기
+    # alignment, mutation data
     alignment_index, aligned_sequences = alignment.get_alignment_data()
     aligned_sequences_dict = {record.id: str(record.seq) for record in aligned_sequences}
-    # for gene, (start, end) in alignment_index.items():
-    #     print(gene, start, end)
-    # for record in aligned_sequences:
-    #     print(record.id)
-    #     print(record.seq)
-    #     print()
-
-    # mutation data 받아오기
     mutation_dict = alignment.get_mutation()
-    # for key, value in mutation_dict.items():
-    #     print(key)
-    #     for i, ref, var in value:
-    #         print(f"{i}: {ref} -> {var}")
-    #     print()
-
     alignment_data = {
         "alignment_index": alignment_index,
         "aligned_sequences": aligned_sequences_dict,
@@ -286,7 +268,7 @@ if __name__ == "__main__":
     # print(json.dumps(alignment_data))
 
 
-    # linearDesign data 받아오기
+    # linearDesign, protparam data
     linearDesign = alignment.get_linearDesign()
     mRNA_sequence, mRNA_structure, free_energy, cai = linearDesign
     linearDesign_dict = {
@@ -295,12 +277,7 @@ if __name__ == "__main__":
         "free_energy": free_energy,
         "cai": cai
     }
-    # print(f"mRNA sequence: {mRNA_sequence}")
-    # print(f"mRNA structure: {mRNA_structure}")
-    # print(f"mRNA folding free energy: {free_energy}")
-    # print(f"mRNA CAI: {cai}")
 
-    # protparam data 받아오기
     protParam = alignment.get_protParam()
     sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = protParam
     protParam_dict = {
@@ -315,25 +292,11 @@ if __name__ == "__main__":
         "aromaticity": aromaticity
     }
 
-    # print(f"Protein Sequence: {sequence}")
-    # print(f"Molecular Weight: {molecular_weight:.2f} Da")
-    # print("Amino Acid Count:")
-    # for aa, count in amino_acid_count.items():
-    #     print(f"{aa}: {count}")
-    # print("Amino Acid Percent:")
-    # for aa, percent in amino_acid_percent.items():
-    #     print(f"{aa}: {percent:.2%}")
-    # print(f"Isoelectric Point (pI): {isoelectric_point:.2f}")
-    # print(f"Instability Index: {instability_index:.2f}")
-    # print(f"Secondary Structure Fraction (Helix, Turn, Sheet): {secondary_structure_fraction}")
-    # print(f"Gravy: {gravy:.2f}")
-    # print(f"Aromaticity: {aromaticity:.2%}")
-
     linearDesign_data = {
         "linearDesign": linearDesign_dict,
         "protParam": protParam_dict
     }
-    print(json.dumps(linearDesign_data))
+    # print(json.dumps(linearDesign_data))
 
 
 
