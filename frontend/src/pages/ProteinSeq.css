@@ -159,3 +159,15 @@
   cursor: pointer; 
   
 }
+
+.chart-container {
+  width: 100%; 
+  max-width: 1500px; 
+  height: 500px; 
+  display: flex; 
+  justify-content: center;
+}
+
+.protein-sequence-container {
+  padding-left: 70px; 
+}
