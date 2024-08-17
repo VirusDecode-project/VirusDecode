@@ -36,7 +36,9 @@ sudo apt install openjdk-21-jdk
 sudo apt install npm
 sudo apt install nodejs
 pip install biopython
-
+```
+### 2. Install necessary alignment tool
+```sh
 mkdir muscle
 cd muscle
 wget https://www.drive5.com/muscle/muscle_src_3.8.1551.tar.gz
@@ -45,7 +47,10 @@ make
 sudo cp muscle /usr/local/bin/
 cd ..
 rm -rf muscle
+```
 
+### 3. Clone and build project
+```sh
 git clone https://github.com/VirusDecode-project/VirusDecode.git
 
 # Build LinearDesign
@@ -53,11 +58,13 @@ cd VirusDecode/backend/src/main/resources/bioinformatics/LinearDesign
 make
 cd ../../../../../..
 
-# Build the backend server
-cd backend
-chmod +x gradlew
-./gradlew build
-cd ..
+
+# Build the backend server by jar(X)
+# cd backend
+# chmod +x gradlew
+# ./gradlew build
+# cd ..
+
 
 # Build the frontend
 cd frontend
@@ -66,11 +73,13 @@ npm run build
 cd ..
 ```
 
-## Execution
+## 4. Execution
 ```sh
-# Run the backend server
-cd backend
-java -jar build/libs/backend-0.0.1-SNAPSHOT.jar
+# Run the backend server by jar(X)
+# cd backend
+# java -jar build/libs/backend-0.0.1-SNAPSHOT.jar
+
+# Run by visual studio code or IntelliJ
 ```
 
 ```sh
