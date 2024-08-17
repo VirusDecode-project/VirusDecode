@@ -1,23 +1,49 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Link } from 'react-router-dom';
 import './ProteinSeq.css';
 
-function Alignment({ data }) {
+// 파스텔 톤 색상 생성 함수
+const generatePastelColor = () => {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = 70 + Math.floor(Math.random() * 10);
+  const lightness = 85 + Math.floor(Math.random() * 10);
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+};
+
+function Alignment() {
     const chartRef = useRef(); // 차트에 대한 참조
     const [selectedData, setSelectedData] = useState(null);
+    const [chartData, setChartData] = useState({ labels: [], datasets: [] });
 
-    const chartData = {
-        labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
-        datasets: data.map((item) => ({
-            label: item.label,
-            data: [item.value],
-            backgroundColor: item.color,
-            categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
-        })),
-    };
+    useEffect(() => {
+        // JSON 데이터 가져오기
+        fetch('/alignment_data.json')  // JSON 파일의 경로 설정
+            .then(response => response.json())
+            .then(jsonData => {
+                const { alignment_index } = jsonData;
+
+                // alignment_index 데이터를 사용하여 datasets 생성
+                const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
+                    const value = end - start;  // 서열 길이 계산
+                    let color = generatePastelColor();
+
+                    return {
+                        label,
+                        data: [value],
+                        backgroundColor: color,
+                        categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
+                    };
+                });
+
+                setChartData({
+                    labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
+                    datasets: datasets
+                });
+            })
+            .catch(error => console.error('Error fetching sequence data:', error));
+    }, []);
 
     const options = {
         indexAxis: 'y', // 차트를 가로 방향으로 설정
@@ -78,9 +104,9 @@ function Alignment({ data }) {
                 return <ComponentForLabel1 value={selectedData.value} />;
             case 'Label 2':
                 return <ComponentForLabel2 value={selectedData.value} />;
-            // 다른 레이블에 대한 케이스 추가하기
+            // 다른 레이블에 대한 케이스 추가하기 ->> 시퀀스 넘버 앵커로 위치 스폰하기
             default:
-                return <ProteinSeq/>; // 디폴트는 ProteinSeq 컴포넌트 렌더링
+                return null; // 기본 컴포넌트를 렌더링하지 않음
         }
     };
 
@@ -98,36 +124,54 @@ function Alignment({ data }) {
                         afterDatasetsDraw: (chart) => {
                             const ctx = chart.ctx; // 차트의 2D 캔버스 렌더링 컨텍스트 가져오기
                             const datasets = chart.data.datasets; // 차트의 데이터셋 가져오기
-                            const meta = chart.getDatasetMeta(0); // 첫 번째 데이터셋의 메타데이터 가져오기
-                            const bar = meta.data[0]; // 첫 번째 데이터셋의 바 메타데이터 가져오기
+              
+                            // 데이터셋이 존재하는지 확인
+                            if (!datasets || datasets.length === 0) return;
 
-                            // 데이터셋의 총 너비 계산
+                            // 첫 번째 바의 시작 X 좌표 계산
                             let totalWidth = 0;
                             datasets.forEach((dataset, i) => {
                                 const meta = chart.getDatasetMeta(i);
-                                const bar = meta.data[0];
+
+                                // meta.data가 정의되어 있는지 확인
+                                if (!meta.data || meta.data.length === 0) return;
+
+                                const bar = meta.data[0]; // 첫 번째 데이터셋의 바 메타데이터 가져오기
+              
+                                // bar가 undefined인지 확인
+                                if (!bar) return;
+              
                                 totalWidth += bar.width;
                             });
 
-                            // 각 데이터셋의 중앙에 텍스트 배치
-                            let startX = bar.x - totalWidth / 2; // 전체 바의 시작 X 좌표
+                            // 전체 바의 시작 X 좌표 조정
+                            let startX = datasets[0]?.meta?.data[0]?.x || 0;
+                            startX -= totalWidth / 2; // 전체 바의 시작 X 좌표 조정
+              
                             datasets.forEach((dataset, i) => {
-                                const value = dataset.data[0];
                                 const meta = chart.getDatasetMeta(i);
-                                const bar = meta.data[0];
+
+                                // meta.data가 정의되어 있는지 확인
+                                if (!meta.data || meta.data.length === 0) return;
+
+                                const bar = meta.data[0]; // 각 데이터셋의 바 메타데이터 가져오기
+              
+                                // bar가 undefined인지 확인
+                                if (!bar) return;
+              
                                 const barWidth = bar.width; // 각 바의 너비
                                 const centerX = startX + barWidth / 2; // 바의 중앙 X 좌표 계산
                                 const centerY = bar.y; // 바의 중앙 Y 좌표 계산
-
+              
                                 // 텍스트 스타일 설정
                                 ctx.fillStyle = 'black'; 
                                 ctx.font = 'bold 12px Arial'; 
                                 ctx.textAlign = 'center'; 
                                 ctx.textBaseline = 'middle'; 
-
+              
                                 // 바의 중앙에 텍스트 그리기
                                 ctx.fillText(dataset.label, centerX, centerY);
-
+              
                                 // 다음 바의 시작 X 좌표 업데이트
                                 startX += barWidth;
                             });
@@ -136,13 +180,15 @@ function Alignment({ data }) {
                 ]}
             />
 
-                {selectedData && renderComponent(selectedData)}
+                {selectedData && renderComponent()}
             </div>
 
             <ProteinSeq />
         </div>
     );
 }
+
+
 
 const ComponentForLabel1 = ({ value }) => (
     <div>
@@ -169,7 +215,7 @@ const ProteinSeq = () => {
 
   useEffect(() => {
     // JSON 데이터 가져오기
-    fetch('../../public/alignment_data.json')  // JSON 파일의 경로 설정
+    fetch('/alignment_data.json')  // JSON 파일의 경로 설정
       .then(response => response.json())
       .then(jsonData => {
         const alignedSequences = jsonData.aligned_sequences;
@@ -183,7 +229,9 @@ const ProteinSeq = () => {
       .catch(error => console.error('Error fetching sequence data:', error));
   }, []);
 
-  if (sequences.length === 0) return <p>Loading sequences...</p>; // 서열 데이터 로드 중 표시
+  if (!sequences.length || !alignmentIndex[selectedRegion]) {
+    return <p>Loading sequences...</p>; // Ensure alignmentIndex is also loaded
+}
 
   const referenceSequence = sequences[0].sequence;  // 첫 번째 서열을 참조 서열로 사용
   const regionIndices = alignmentIndex[selectedRegion]; // 선택된 지역의 시작 및 끝 인덱스
@@ -209,6 +257,7 @@ const ProteinSeq = () => {
           ))}
         </select>
       </div>
+      <div>
       <SequenceDisplay 
         sequences={sequences} 
         referenceSequence={regionSequence}
@@ -216,6 +265,7 @@ const ProteinSeq = () => {
         selectedSequence={selectedSequence}
         regionIndices={regionIndices}
       />
+      </div>
       {selectedSequence && (
         <NextButton selectedSequence={selectedSequence} sequences={sequences} />
       )}
