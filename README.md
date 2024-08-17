@@ -58,14 +58,6 @@ cd VirusDecode/backend/src/main/resources/bioinformatics/LinearDesign
 make
 cd ../../../../../..
 
-
-# Build the backend server by jar(X)
-# cd backend
-# chmod +x gradlew
-# ./gradlew build
-# cd ..
-
-
 # Build the frontend
 cd frontend
 npm install
@@ -75,11 +67,9 @@ cd ..
 
 ## 4. Execution
 ```sh
-# Run the backend server by jar(X)
-# cd backend
-# java -jar build/libs/backend-0.0.1-SNAPSHOT.jar
-
-# Run by visual studio code or IntelliJ
+cd backend
+chmod +x gradlew
+./gradlew bootRun
 ```
 
 ```sh
