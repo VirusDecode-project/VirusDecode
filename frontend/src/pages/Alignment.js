@@ -34,6 +34,8 @@ function Alignment() {
                         data: [value],
                         backgroundColor: color,
                         categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
+                        start,
+                        end,
                     };
                 });
 
@@ -49,30 +51,42 @@ function Alignment() {
         indexAxis: 'y', // 차트를 가로 방향으로 설정
         layout: {
             padding: {
-                top: 0, 
+                top: 0,
                 right: 0,
-                bottom: 0,
+                bottom: 30, // 스택바 아래에 텍스트를 표시할 공간 확보
                 left: 0,
             },
         },
         scales: {
             x: {
                 stacked: true, // x축 데이터를 스택으로 쌓음
-                display: false, // x축 지우기
+                display: false, // x축 숨기기
             },
             y: {
                 stacked: true, // y축 데이터를 스택으로 쌓음
-                display: false, // y축 지우기
+                display: false, // y축 숨기기
             },
         },
         plugins: {
-            legend: {
-                display: false,
-            },
-            tooltip: {
-                enabled: false, // 툴팁 비활성화
-            },
-        },
+          legend: {
+              display: false,
+          },
+          tooltip: {
+              enabled: true, // 툴팁 활성화
+              position: 'nearest', // 툴팁 위치 기본값 사용
+              callbacks: {
+                  title: () => '', // 타이틀을 빈 배열로 반환하여 제거
+                  label: (tooltipItem) => {
+                      // 툴팁에 표시될 텍스트 설정
+                      const datasetLabel = tooltipItem.dataset.label || '';
+                      const start_num = tooltipItem.dataset.start || 0;
+                      const end_num = tooltipItem.dataset.end || 0;
+
+                      return `${datasetLabel}: ${start_num}~${end_num}`;
+                  }
+              }
+          },
+      },
         elements: {
             bar: {
                 borderWidth: 0, // 바 테두리 지우기
@@ -106,7 +120,7 @@ function Alignment() {
                 return <ComponentForLabel2 value={selectedData.value} />;
             // 다른 레이블에 대한 케이스 추가하기 ->> 시퀀스 넘버 앵커로 위치 스폰하기
             default:
-                return null; // 기본 컴포넌트를 렌더링하지 않음
+                return null; // 디폴트는 ProteinSeq 컴포넌트 렌더링하지 않음
         }
     };
 
@@ -128,67 +142,38 @@ function Alignment() {
                             // 데이터셋이 존재하는지 확인
                             if (!datasets || datasets.length === 0) return;
 
-                            // 첫 번째 바의 시작 X 좌표 계산
-                            let totalWidth = 0;
                             datasets.forEach((dataset, i) => {
                                 const meta = chart.getDatasetMeta(i);
-
-                                // meta.data가 정의되어 있는지 확인
-                                if (!meta.data || meta.data.length === 0) return;
-
-                                const bar = meta.data[0]; // 첫 번째 데이터셋의 바 메타데이터 가져오기
-              
-                                // bar가 undefined인지 확인
-                                if (!bar) return;
-              
-                                totalWidth += bar.width;
-                            });
-
-                            // 전체 바의 시작 X 좌표 조정
-                            let startX = datasets[0]?.meta?.data[0]?.x || 0;
-                            startX -= totalWidth / 2; // 전체 바의 시작 X 좌표 조정
-              
-                            datasets.forEach((dataset, i) => {
-                                const meta = chart.getDatasetMeta(i);
-
-                                // meta.data가 정의되어 있는지 확인
-                                if (!meta.data || meta.data.length === 0) return;
-
                                 const bar = meta.data[0]; // 각 데이터셋의 바 메타데이터 가져오기
               
                                 // bar가 undefined인지 확인
                                 if (!bar) return;
-              
-                                const barWidth = bar.width; // 각 바의 너비
-                                const centerX = startX + barWidth / 2; // 바의 중앙 X 좌표 계산
+                                const centerX = bar.x - bar.width / 2; // 바의 중앙 X 좌표 계산
                                 const centerY = bar.y; // 바의 중앙 Y 좌표 계산
-              
+                                const bottomY = chart.chartArea.bottom; // 차트 영역의 아래쪽 Y 좌표
+                                const barWidth = bar.width;
                                 // 텍스트 스타일 설정
                                 ctx.fillStyle = 'black'; 
                                 ctx.font = 'bold 12px Arial'; 
                                 ctx.textAlign = 'center'; 
                                 ctx.textBaseline = 'middle'; 
-              
-                                // 바의 중앙에 텍스트 그리기
+                                if (barWidth > 30) {
+                                // 각 바의 중앙에 텍스트 표시
                                 ctx.fillText(dataset.label, centerX, centerY);
-              
-                                // 다음 바의 시작 X 좌표 업데이트
-                                startX += barWidth;
+                                }
                             });
                         },
                     },
                 ]}
             />
 
-                {selectedData && renderComponent()}
-            </div>
-
-            <ProteinSeq />
+            {selectedData && renderComponent()}
         </div>
+
+        <ProteinSeq />
+      </div>
     );
 }
-
-
 
 const ComponentForLabel1 = ({ value }) => (
     <div>
@@ -231,7 +216,7 @@ const ProteinSeq = () => {
 
   if (!sequences.length || !alignmentIndex[selectedRegion]) {
     return <p>Loading sequences...</p>; // Ensure alignmentIndex is also loaded
-}
+  }
 
   const referenceSequence = sequences[0].sequence;  // 첫 번째 서열을 참조 서열로 사용
   const regionIndices = alignmentIndex[selectedRegion]; // 선택된 지역의 시작 및 끝 인덱스
