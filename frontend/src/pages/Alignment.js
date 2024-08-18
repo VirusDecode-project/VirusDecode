@@ -349,16 +349,14 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
   return result;
 };
 
-const NextButton = ({ selectedSequence, sequences }) => {
-  const currentIndex = sequences.findIndex(seq => seq.label === selectedSequence.label); // 현재 선택된 서열의 인덱스 찾기
-  const nextIndex = (currentIndex + 1) % sequences.length; // 다음 서열 인덱스 계산
-  const nextSequence = sequences[nextIndex];
+const NextButton = ({ selectedSequence }) => {
+  if (!selectedSequence) return null;
 
   return (
     <div className="next-button">
       <button>
-        <Link to={`/${nextSequence.label.replace(/\s+/g, '-')}`}>
-          Convert {nextSequence.label}
+        <Link to={`/${selectedSequence.label.replace(/\s+/g, '-')}`}>
+          Convert {selectedSequence.label}
         </Link>
       </button>
     </div>
