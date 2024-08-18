@@ -16,6 +16,7 @@ function Alignment() {
     const chartRef = useRef(); // 차트에 대한 참조
     const [selectedData, setSelectedData] = useState(null);
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+    const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
 
     useEffect(() => {
         // JSON 데이터 가져오기
@@ -105,8 +106,7 @@ function Alignment() {
         if (points.length) {
             const firstPoint = points[0];
             const label = chart.data.datasets[firstPoint.datasetIndex].label;
-            const value = chart.data.datasets[firstPoint.datasetIndex].data[firstPoint.index];
-            setSelectedData({ label, value }); // 선택된 데이터를 상태에 저장
+            setSelectedRegion(label); // 선택된 영역 상태 업데이트
         }
     };
 
@@ -170,7 +170,7 @@ function Alignment() {
             {selectedData && renderComponent()}
         </div>
 
-        <ProteinSeq />
+        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
       </div>
     );
 }
@@ -192,11 +192,10 @@ const ComponentForLabel2 = ({ value }) => (
 export default Alignment;
 
 
-const ProteinSeq = () => {
+const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [alignmentIndex, setAlignmentIndex] = useState({});
-  const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
 
   useEffect(() => {
     // JSON 데이터 가져오기
@@ -258,8 +257,8 @@ const ProteinSeq = () => {
   );
 };
 
-const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
 
+const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
   useEffect(() => {
     const labels = document.querySelectorAll('.sequence-label');
     
@@ -310,11 +309,14 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
             </div>
           ))}
           <div className="sequence-indexes">
-            {Array.from({ length: 5 }, (_, i) => (chunkIndex * 50) + ((i + 1) * 10)).map((num, i) => (
-              <div key={i} className="sequence-index">
-                {num <= referenceSequence.length ? num : '---'}
-              </div>
-            ))}
+            {Array.from({ length: 5 }, (_, i) => {
+              const startPos = regionIndices[0] + (chunkIndex * 50) + ((i + 1) * 10);
+              return (
+                <div key={i} className="sequence-index">
+                  {startPos <= regionIndices[1] ? startPos : '---'}
+                </div>
+              );
+            })}
           </div>
         </div>
       ))}
@@ -326,7 +328,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
 const splitSequences = (sequences, referenceSequence, regionIndices) => {
   const chunkSize = 50; // 각 청크의 크기 설정
   const result = [];
-  const numChunks = Math.ceil(referenceSequence.length / chunkSize); // 청크 수 계산
+  const numChunks = Math.ceil((regionIndices[1] - regionIndices[0]) / chunkSize); // 청크 수 계산
 
   for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
     const chunk = sequences.map((seq) => ({
