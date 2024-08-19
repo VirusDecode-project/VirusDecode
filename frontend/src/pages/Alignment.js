@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
-import { Link } from 'react-router-dom';
 import './ProteinSeq.css';
+import Modal from './Modal';
+import { Link } from 'react-router-dom'; 
 
-// 파스텔 톤 색상 생성 함수
 const generatePastelColor = () => {
   const hue = Math.floor(Math.random() * 360);
   const saturation = 70 + Math.floor(Math.random() * 10);
@@ -14,12 +14,10 @@ const generatePastelColor = () => {
 
 function Alignment() {
     const chartRef = useRef(); // 차트에 대한 참조
-    const [selectedData, setSelectedData] = useState(null);
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
     const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
 
     useEffect(() => {
-        // JSON 데이터 가져오기
         fetch('/alignment_data.json')  // JSON 파일의 경로 설정
             .then(response => response.json())
             .then(jsonData => {
@@ -78,7 +76,6 @@ function Alignment() {
               callbacks: {
                   title: () => '', // 타이틀을 빈 배열로 반환하여 제거
                   label: (tooltipItem) => {
-                      // 툴팁에 표시될 텍스트 설정
                       const datasetLabel = tooltipItem.dataset.label || '';
                       const start_num = tooltipItem.dataset.start || 0;
                       const end_num = tooltipItem.dataset.end || 0;
@@ -110,20 +107,6 @@ function Alignment() {
         }
     };
 
-    const renderComponent = () => {
-        if (!selectedData) return null; // 선택된 데이터가 없으면 아무것도 렌더링하지 않음
-
-        switch (selectedData.label) {
-            case 'Label 1':
-                return <ComponentForLabel1 value={selectedData.value} />;
-            case 'Label 2':
-                return <ComponentForLabel2 value={selectedData.value} />;
-            // 다른 레이블에 대한 케이스 추가하기 ->> 시퀀스 넘버 앵커로 위치 스폰하기
-            default:
-                return null; // 디폴트는 ProteinSeq 컴포넌트 렌더링하지 않음
-        }
-    };
-
     return (
       <div>
         <div className="chart-container">
@@ -136,70 +119,50 @@ function Alignment() {
                     {
                         id: 'custom-datalabels',
                         afterDatasetsDraw: (chart) => {
-                            const ctx = chart.ctx; // 차트의 2D 캔버스 렌더링 컨텍스트 가져오기
-                            const datasets = chart.data.datasets; // 차트의 데이터셋 가져오기
+                            const ctx = chart.ctx;
+                            const datasets = chart.data.datasets;
               
-                            // 데이터셋이 존재하는지 확인
                             if (!datasets || datasets.length === 0) return;
 
                             datasets.forEach((dataset, i) => {
                                 const meta = chart.getDatasetMeta(i);
                                 const bar = meta.data[0]; // 각 데이터셋의 바 메타데이터 가져오기
               
-                                // bar가 undefined인지 확인
                                 if (!bar) return;
                                 const centerX = bar.x - bar.width / 2; // 바의 중앙 X 좌표 계산
                                 const centerY = bar.y; // 바의 중앙 Y 좌표 계산
-                                const bottomY = chart.chartArea.bottom; // 차트 영역의 아래쪽 Y 좌표
                                 const barWidth = bar.width;
-                                // 텍스트 스타일 설정
+
                                 ctx.fillStyle = 'black'; 
                                 ctx.font = 'bold 12px Arial'; 
                                 ctx.textAlign = 'center'; 
                                 ctx.textBaseline = 'middle'; 
                                 if (barWidth > 30) {
-                                // 각 바의 중앙에 텍스트 표시
-                                ctx.fillText(dataset.label, centerX, centerY);
+                                    ctx.fillText(dataset.label, centerX, centerY);
                                 }
                             });
                         },
                     },
                 ]}
             />
-
-            {selectedData && renderComponent()}
         </div>
 
-        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
+        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />  {/* setSelectedRegion 전달 */}
       </div>
     );
 }
 
-const ComponentForLabel1 = ({ value }) => (
-    <div>
-        <h2>Label 1 Data</h2>
-        <p>Value: {value}</p>
-    </div>
-);
-
-const ComponentForLabel2 = ({ value }) => (
-    <div>
-        <h2>Label 2 Data</h2>
-        <p>Value: {value}</p>
-    </div>
-);
-
 export default Alignment;
 
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {
+const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {  // setSelectedRegion 추가
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [alignmentIndex, setAlignmentIndex] = useState({});
+  const [isModalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    // JSON 데이터 가져오기
-    fetch('/alignment_data.json')  // JSON 파일의 경로 설정
+    fetch('/alignment_data.json')
       .then(response => response.json())
       .then(jsonData => {
         const alignedSequences = jsonData.aligned_sequences;
@@ -214,26 +177,27 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {
   }, []);
 
   if (!sequences.length || !alignmentIndex[selectedRegion]) {
-    return <p>Loading sequences...</p>; // Ensure alignmentIndex is also loaded
+    return <p>Loading sequences...</p>;
   }
 
-  const referenceSequence = sequences[0].sequence;  // 첫 번째 서열을 참조 서열로 사용
-  const regionIndices = alignmentIndex[selectedRegion]; // 선택된 지역의 시작 및 끝 인덱스
-  const regionSequence = referenceSequence.slice(regionIndices[0], regionIndices[1]); // 참조 서열의 해당 영역
+  const referenceSequence = sequences[0].sequence;
+  const regionIndices = alignmentIndex[selectedRegion];
+  const regionSequence = referenceSequence.slice(regionIndices[0], regionIndices[1]);
 
   const handleSequenceClick = (sequence) => {
-    setSelectedSequence(sequence); // 선택된 서열 설정
+    setSelectedSequence(sequence);
+    setModalOpen(true);
   };
 
-  const handleRegionChange = (event) => {
-    setSelectedRegion(event.target.value); // 선택된 영역 변경
+  const handleIndicesChange = (startIndex, endIndex) => {
+    console.log('Start Index:', startIndex, 'End Index:', endIndex);
   };
 
   return (
     <div className="protein-sequence-container">
       <div className="region-selector">
         <label htmlFor="region-select">Select Protein Region: </label>
-        <select id="region-select" value={selectedRegion} onChange={handleRegionChange}>
+        <select id="region-select" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
           {Object.keys(alignmentIndex).map(region => (
             <option key={region} value={region}>
               {region}
@@ -242,20 +206,25 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {
         </select>
       </div>
       <div>
-      <SequenceDisplay 
-        sequences={sequences} 
-        referenceSequence={regionSequence}
-        onSequenceClick={handleSequenceClick} 
-        selectedSequence={selectedSequence}
-        regionIndices={regionIndices}
-      />
+        <SequenceDisplay 
+          sequences={sequences} 
+          referenceSequence={regionSequence}
+          onSequenceClick={handleSequenceClick} 
+          selectedSequence={selectedSequence}
+          regionIndices={regionIndices}
+        />
       </div>
-      {selectedSequence && (
-        <NextButton selectedSequence={selectedSequence} sequences={sequences} />
-      )}
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setModalOpen(false)} 
+        selectedSequence={selectedSequence} 
+        onIndicesChange={handleIndicesChange}
+        sequences={sequences}  // sequences 전달
+      />
     </div>
   );
 };
+
 
 
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
@@ -310,10 +279,11 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
           ))}
           <div className="sequence-indexes">
             {Array.from({ length: 5 }, (_, i) => {
-              const startPos = regionIndices[0] + (chunkIndex * 50) + ((i + 1) * 10);
+              // Start indices from 1 relative to the start of the region
+              const startPos = (chunkIndex * 50) + ((i + 1) * 10);
               return (
                 <div key={i} className="sequence-index">
-                  {startPos <= regionIndices[1] ? startPos : '---'}
+                  {startPos <= (regionIndices[1] - regionIndices[0]) ? startPos : '---'}
                 </div>
               );
             })}
@@ -348,6 +318,7 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
 
   return result;
 };
+
 
 const NextButton = ({ selectedSequence }) => {
   if (!selectedSequence) return null;
