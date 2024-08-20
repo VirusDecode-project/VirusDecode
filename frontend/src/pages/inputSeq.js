@@ -58,7 +58,17 @@ function InputSeq({ setUsername }) {
       // 서버 응답 처리
       const result = await response.text(); // 서버 응답을 텍스트로 처리
       if (response.ok) {
-        setResponseMessage(result); // 서버 응답 메시지 설정
+        // 텍스트를 JSON으로 파싱
+        const jsonResponse = JSON.parse(result);
+
+        // key-value 쌍을 한 줄씩 메시지로 변환하며, 키 부분만 굵게 표시
+        let formattedMessage = "";
+        for (const [key, value] of Object.entries(jsonResponse)) {
+          formattedMessage += `<span class="key">${key}:</span> <span class="value">${value}</span><br />`;
+        }    
+
+        // 서버 응답 메시지 설정
+        setResponseMessage(formattedMessage);
       } else {
         console.error('서버 응답 오류:', response.statusText);
         setResponseMessage('서버 응답 오류: ' + response.statusText);
@@ -88,13 +98,24 @@ function InputSeq({ setUsername }) {
       })
     );
 
-    // Map을 일반 객체로 변환하여 JSON 객체 생성
-    const jsonData = {
-      referenceSequenceId,
-      sequences: Object.fromEntries(sequencesMap), // sequencesMap을 객체로 변환하여 포함
-      files: filesContent, // 파일 내용을 포함
-    };
+    // // Map을 일반 객체로 변환하여 JSON 객체 생성
+    // const jsonData = {
+    //   referenceSequenceId,
+    //   sequences: Object.fromEntries(sequencesMap), // sequencesMap을 객체로 변환하여 포함
+    //   files: filesContent, // 파일 내용을 포함
+    // };
+    
+    // sequences와 files가 비어 있는지 확인
+    const hasSequences = sequencesMap.size > 0;
+    const hasFiles = filesContent.length > 0;
 
+    // 빈 데이터에 대한 기본 처리
+    const jsonData = {
+      referenceSequenceId: referenceSequenceId || null,
+      sequences: hasSequences ? Object.fromEntries(sequencesMap) : {}, // 비어 있을 경우 빈 객체
+      files: hasFiles ? filesContent : [] // 비어 있을 경우 빈 배열
+    };
+    
     try {
       const response = await fetch('http://localhost:8080/inputSeq/analyze', {
         method: 'POST',
@@ -105,7 +126,7 @@ function InputSeq({ setUsername }) {
       });
 
       setIsLoading(true);
-      const result = await response.text();
+      const result = await response.json();
       setIsLoading(false);
       console.log("분석이 끝났습니다!"+result);
       window.alert("분석이 끝났습니다!\n"+JSON.stringify(result)); // 응답을 경고창으로 출력
@@ -213,7 +234,8 @@ function InputSeq({ setUsername }) {
           {/*parkki */}
           {responseMessage && (
             <div className="response-message">
-              <p>{responseMessage}</p>
+              <p className="metadata">Metadata</p>
+              <div className="metadata2" dangerouslySetInnerHTML={{ __html: responseMessage }} />
             </div>
           )}
           {/*parkki */}
@@ -335,6 +357,8 @@ function InputSeq({ setUsername }) {
 
             <Row>
               <Col className="d-flex justify-content-end">
+                <h4 className="next-page" onClick={handleFileUploadToServer }>{'Next ➔'}</h4>
+                {/* Backend 없이 실행할 때 바로위 코드 주석 처리, 해당 주석 제거 후 실행하시면 됩니당, 지우지 말아주세요
                 <h4
                   className="next-page"
                   onClick={() => {
@@ -343,6 +367,7 @@ function InputSeq({ setUsername }) {
                 >
                   {"Next ➔"}
                 </h4>
+                */}
               </Col>
             </Row>
           </Form>
