@@ -37,7 +37,7 @@
 } */
 
 .next-page {
-  margin-top: 80px;
+  margin-top: 1000px;
   bottom: 10px;
   right: 20px;
   padding: 10px 20px;
@@ -298,3 +298,27 @@ color: #92929d; /* placeholder 색상 변경 */
 textarea {
   width: 100%;
 }
+
+
+
+/* response message ( parkki ) */
+.response-message {
+  white-space: pre-line;
+  text-align: left;
+  margin-left: 20px;
+}
+.response-message .key {
+  font-weight: bold;
+}
+.response-message .value {
+  display: inline; 
+}
+.metadata {
+  margin-bottom: 0;
+  margin-top: 10px;
+  font-weight: bold; 
+}
+.metadata2 {
+  margin-left: 20px;
+}
+/* response message ( parkki ) */

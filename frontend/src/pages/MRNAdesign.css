@@ -32,7 +32,13 @@
   padding: 10px;
   border-radius: 4px;
   overflow-wrap: break-word;
+<<<<<<< HEAD
   max-width: 700px;
+=======
+
+  width: 540px;
+
+>>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae
   margin-bottom: 15px;
 }
 
@@ -78,3 +84,20 @@
   cursor: pointer;
   font-weight: 700;
 }
+<<<<<<< HEAD
+=======
+
+
+.mrna-structure {
+  font-family: monospace;
+  font-size: 14px;
+  background-color: #eee;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  width: 540px;
+
+  margin-bottom: 15px;
+}
+>>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae

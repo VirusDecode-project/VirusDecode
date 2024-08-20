@@ -6,6 +6,7 @@ import loadingImage from '../image/loading.png';
 import './analysis.css';
 import Alignment from './Alignment';
 import MRNAdesign from './MRNAdesign';
+import Render3D from './Render3D';
 
 function Analysis() {
   let [tab, setTab] = useState(0);
@@ -66,20 +67,13 @@ function Analysis() {
 }
 
 function Tab(props) {
-  const [data, setData] = useState([
-    { label: 'ORF1ab', value: 50, color: 'rgba(144, 238, 144, 0.6)' },
-    { label: 'S', value: 20, color: 'rgba(255, 99, 132, 0.6)' },
-    { label: 'ORF3a', value: 10, color: 'rgba(255, 182, 193, 0.6)' },
-    { label: 'E', value: 5, color: 'rgba(255, 255, 102, 0.6)' },
-    { label: 'M', value: 10, color: 'rgba(135, 206, 235, 0.6)' },
-    { label: 'ORF7b', value: 5, color: 'rgba(255, 160, 122, 0.6)' },
-  ]);
+
 
   return (
     <div>
-      {props.tab === 0 && <Alignment data={data} />}
+      {props.tab === 0 && <Alignment />}
       {props.tab === 1 && <MRNAdesign />}
-      {props.tab === 2 && <div>3D viewer가 실행되는 페이지 입니다.<br />(베타서비스)</div>}
+      {props.tab === 2 && <Render3D />}
       
     </div>
   );
