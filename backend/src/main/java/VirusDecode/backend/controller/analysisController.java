@@ -26,7 +26,11 @@ public class analysisController {
     public ResponseEntity<String> sendJsonFile() {
         try {
             // ClassPathResource를 사용하여 클래스패스 내에서 JSON 파일을 읽음
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/analyze.json");
+
+            // GK - test path 주석
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/analyze.json");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/data/alignment_data.json");
+
             Path filePath = resource.getFile().toPath();
             String jsonContent = Files.readString(filePath);
 
@@ -86,7 +90,11 @@ public class analysisController {
     public ResponseEntity<String> re_mrna_design_json() {
         try {
             // ClassPathResource를 사용하여 클래스패스 내에서 JSON 파일을 읽음
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/mRNA.json");
+
+            // GK - test path 주석
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/mRNA.json");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/data/linearDesign_data.json");
+
             Path filePath = resource.getFile().toPath();
             String jsonContent = Files.readString(filePath);
 
@@ -115,7 +123,11 @@ public class analysisController {
         Map<String, Object> mRNADesignResult = new HashMap<>();
         try {
             // 파이썬 스크립트 경로를 ClassPathResource를 사용하여 얻기
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+
+            // GK - test path 주석
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+
             String scriptPath = resource.getFile().getAbsolutePath();
 
             // 파이썬 스크립트와 인자를 설정
@@ -155,7 +167,11 @@ public class analysisController {
         Map<String, String> pdbList = null;
         try {
             // 파이썬 스크립트 경로 설정
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+
+            // GK - test path 주석
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+
             String scriptPath = resource.getFile().getAbsolutePath();
 
             // 파이썬 스크립트 실행 명령어 설정
