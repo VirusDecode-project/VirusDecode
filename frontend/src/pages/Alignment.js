@@ -12,39 +12,79 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment() {
+
+function Alignment({responseData}) {
     const chartRef = useRef(); // 차트에 대한 참조
     const [chartData, setChartData] = useState({ labels: [], datasets: [] });
     const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
 
+    // // M1 - 기존 front part 코드 시작
+    // useEffect(() => {
+    //     fetch('/alignment_data.json')  // JSON 파일의 경로 설정
+    //         .then(response => response.json())
+    //         .then(jsonData => {
+    //             const { alignment_index } = jsonData;
+
+    //             // alignment_index 데이터를 사용하여 datasets 생성
+    //             const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
+    //                 const value = end - start;  // 서열 길이 계산
+    //                 let color = generatePastelColor();
+
+    //                 return {
+    //                     label,
+    //                     data: [value],
+    //                     backgroundColor: color,
+    //                     categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
+    //                     start,
+    //                     end,
+    //                 };
+    //             });
+
+    //             setChartData({
+    //                 labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
+    //                 datasets: datasets
+    //             });
+    //         })
+    //         .catch(error => console.error('Error fetching sequence data:', error));
+    // }, []);
+    // // M1 - 기존 front part 코드 끝
+
+
+    /* M1 - backend part 수정 코드 시작 */
     useEffect(() => {
-        fetch('/alignment_data.json')  // JSON 파일의 경로 설정
-            .then(response => response.json())
-            .then(jsonData => {
-                const { alignment_index } = jsonData;
+      if (responseData) {
+        try {
+          // responseData에서 alignment_index 추출
+          const { alignment_index } = responseData;
+  
+          // alignment_index 데이터를 사용하여 datasets 생성
+          const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
+            const value = end - start;  // 서열 길이 계산
+            let color = generatePastelColor();
+  
+            return {
+              label,
+              data: [value],
+              backgroundColor: color,
+              categoryPercentage: 0.1,  // 카테고리 전체에서 바가 차지하는 비율 조정
+              start,
+              end,
+            };
+          });
+  
+          // 차트 데이터 업데이트
+          setChartData({
+            labels: ['Total'],  // 하나의 레이블을 사용해 모든 데이터 표시
+            datasets: datasets,
+          });
+        } catch (error) {
+          console.error('Error processing response data:', error);
+        }
+      }
+    }, [responseData]);  // responseData가 변경될 때마다 실행
 
-                // alignment_index 데이터를 사용하여 datasets 생성
-                const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
-                    const value = end - start;  // 서열 길이 계산
-                    let color = generatePastelColor();
+    /* M1 - backend part 수정 코드 끝 */
 
-                    return {
-                        label,
-                        data: [value],
-                        backgroundColor: color,
-                        categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
-                        start,
-                        end,
-                    };
-                });
-
-                setChartData({
-                    labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
-                    datasets: datasets
-                });
-            })
-            .catch(error => console.error('Error fetching sequence data:', error));
-    }, []);
 
     const options = {
         indexAxis: 'y', // 차트를 가로 방향으로 설정
@@ -147,7 +187,7 @@ function Alignment() {
             />
         </div>
 
-        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />  {/* setSelectedRegion 전달 */}
+        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} responseData={responseData}/>  {/* setSelectedRegion 전달 */}
       </div>
     );
 }
@@ -155,26 +195,61 @@ function Alignment() {
 export default Alignment;
 
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {  // setSelectedRegion 추가
+const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {  // setSelectedRegion 추가
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [alignmentIndex, setAlignmentIndex] = useState({});
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // // M2 - 기존 front part 코드 시작
+  // useEffect(() => {
+  //   fetch('/alignment_data.json')
+  //     .then(response => response.json())
+  //     .then(jsonData => {
+  //       const alignedSequences = jsonData.aligned_sequences;
+  //       const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
+  //         label,
+  //         sequence
+  //       }));
+  //       setSequences(sequenceData);
+  //       setAlignmentIndex(jsonData.alignment_index);
+  //     })
+  //     .catch(error => console.error('Error fetching sequence data:', error));
+  // }, []);
+  // //  M2 - 기존 front part 코드 끝
+
+
+  /* M2 - backend part 수정 코드 시작 */
   useEffect(() => {
-    fetch('/alignment_data.json')
-      .then(response => response.json())
-      .then(jsonData => {
-        const alignedSequences = jsonData.aligned_sequences;
+    if (responseData) {
+      try {
+        // responseData에서 alignedSequences와 alignmentIndex 추출
+        const alignedSequences = responseData.aligned_sequences;
         const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
           label,
-          sequence
+          sequence,
         }));
         setSequences(sequenceData);
-        setAlignmentIndex(jsonData.alignment_index);
-      })
-      .catch(error => console.error('Error fetching sequence data:', error));
-  }, []);
+
+        const alignmentIndex = responseData.alignment_index;
+        setAlignmentIndex(alignmentIndex);
+
+        // 로딩 상태 해제
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error processing response data:', error);
+        setIsLoading(false); // 오류 발생 시에도 로딩 상태 해제
+      }
+    }
+  }, [responseData]); // responseData가 변경될 때마다 실행
+
+  if (isLoading) {
+    return <p>Loading sequences...</p>;
+  }
+  /* M2 - backend part 수정 코드 끝 */
+
+
 
   if (!sequences.length || !alignmentIndex[selectedRegion]) {
     return <p>Loading sequences...</p>;
