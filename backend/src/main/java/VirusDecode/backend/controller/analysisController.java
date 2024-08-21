@@ -169,8 +169,8 @@ public class analysisController {
             // 파이썬 스크립트 경로 설정
 
             // GK - test path 주석
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
-//            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
 
             String scriptPath = resource.getFile().getAbsolutePath();
 
@@ -190,6 +190,9 @@ public class analysisController {
                 output.append(line);
             }
             in.close();
+
+            // GK - Debug
+            System.out.println(output);
 
             // 프로세스가 완료될 때까지 대기
             process.waitFor();
