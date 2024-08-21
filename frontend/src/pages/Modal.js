@@ -108,3 +108,35 @@ const Modal = ({ isOpen, onClose, selectedSequence, onIndicesChange, sequences }
 };
 
 export default Modal;
+
+
+
+// // front 코드 작성 끝나면 추가할 코드 (backend)
+// const handleConvertButton = async () => {
+//   // 데이터 객체 생성
+//   const data = {
+//     selectedSequence,
+//     selectedGenome,
+//     startIndex,
+//     endIndex,
+//   };
+
+//   try {
+//     const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(data),
+//     });
+
+//     if (!response.ok) {
+//       throw new Error('Network response was not ok');
+//     }
+
+//     const responseData = await response.json();
+//     //console.log('Response from server:', responseData);
+//   } catch (error) {
+//     console.error('Error sending data:', error);
+//   }
+// };
