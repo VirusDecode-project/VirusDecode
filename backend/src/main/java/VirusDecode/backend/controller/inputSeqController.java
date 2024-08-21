@@ -43,8 +43,13 @@ public class inputSeqController {
             for (Map.Entry<String, String> entry : request.getSequences().entrySet()) {
                 String sequenceName = entry.getKey();
                 String sequenceData = entry.getValue();
-                fastaContent.append(">").append(sequenceName).append("\n");
-                fastaContent.append(sequenceData).append("\n");
+
+                // GK - 시퀀스 데이터가 빈 문자열이 아닌 경우에만 처리
+                sequenceName = sequenceName.replace(" ", "");   // 공백 제거
+                if (sequenceData != null && !sequenceData.trim().isEmpty()) {
+                    fastaContent.append(">").append(sequenceName).append("\n");
+                    fastaContent.append(sequenceData).append("\n");
+                }
             }
         }
         // 파일 데이터가 있는 경우에만 파일 내용 파싱 후 추가
