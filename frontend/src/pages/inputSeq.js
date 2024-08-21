@@ -117,7 +117,7 @@ function InputSeq({ setUsername }) {
     };
     
     try {
-      const response = await fetch('http://localhost:8080/inputSeq/analyze', {
+      const response = await fetch('http://localhost:8080/inputSeq/alignment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,9 +128,10 @@ function InputSeq({ setUsername }) {
       setIsLoading(true);
       const result = await response.json();
       setIsLoading(false);
-      console.log("분석이 끝났습니다!"+result);
-      window.alert("분석이 끝났습니다!\n"+JSON.stringify(result)); // 응답을 경고창으로 출력
-      navigate('/analysis', { state: { responseBody: result } }); // 서버 응답의 body를 전달
+      // console.log("분석이 끝났습니다!"+result);
+      // window.alert("분석이 끝났습니다!\n"+JSON.stringify(result)); // 응답을 경고창으로 출력
+      window.alert("분석이 끝났습니다!");
+      navigate('/analysis'); // 서버 응답의 body를 전달
     } catch (error) {
       console.error('요청 중 오류 발생:', error);
       setResponseMessage('요청 중 오류 발생: ' + error.message);

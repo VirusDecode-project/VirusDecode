@@ -16,10 +16,9 @@ function Analysis() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [show, setShow] = useState(false);
-    /* parkki */
-    const location = useLocation();
-    const { responseBody } = location.state || {}; // 전달된 상태를 받아옴
-    /* parkki */
+  /* parkki */
+  const [responseData, setResponseData] = useState(null); // 서버에서 받은 데이터를 상태로 관리
+  /* parkki */
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,6 +36,33 @@ function Analysis() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // 서버로 POST 요청을 보내고 데이터를 받아옴
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/analysis/re-alignment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json(); // JSON 데이터로 변환
+        setResponseData(data); // 데이터를 상태로 저장
+        setIsLoading(false); // 로딩 상태 해제
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setIsLoading(false); // 오류 발생 시에도 로딩 상태 해제
+      }
+    };
+
+    fetchData(); // 데이터를 가져오는 함수 호출
+  }, []); // 컴포넌트가 마운트될 때 한 번만 실행
+
   return (
     <div>
         <div className={`analysis-container ${show ? 'shrink' : ''}`}>
@@ -53,13 +79,7 @@ function Analysis() {
               </Nav.Item>
               
             </Nav>
-            <Tab tab={tab} />
-            {/*parkki 넣을 곳이 마땅치 않아서 아무곳에나 출력함 */}
-            <div>
-              <h3>Server Response</h3>
-              <pre>{JSON.stringify(responseBody, null, 2)}</pre>
-            </div>
-            {/*parkki */}
+            <Tab tab={tab} responseData={responseData} />
           </>
         </div>
     </div>
@@ -71,7 +91,7 @@ function Tab(props) {
 
   return (
     <div>
-      {props.tab === 0 && <Alignment />}
+      {props.tab === 0 && <Alignment responseData={props.responseData} />}
       {props.tab === 1 && <MRNAdesign />}
       {props.tab === 2 && <Render3D />}
       

@@ -25,15 +25,14 @@ def return_reference_metadata(reference_id):
         print("reference id error")
         
 
-def return_analyze_result(fastafile_path):
+def return_analyze_result(fasta_string):
 
-    if os.path.exists(fastafile_path):
-        file_path = './backend/src/main/resources/bioinformatics/test_without_bio/analyze.json'
 
-        with open(file_path, 'r') as file:
-            result_json = json.load(file)
-        
-        print(json.dumps(result_json, indent=4))
+    # 출력 전달
+    file_path = '/Users/delione/Desktop/VD_final/VirusDecode/backend/src/main/resources/bioinformatics/test_without_bio/analyze.json'
+    with open(file_path, 'r') as file:
+        result_json = json.load(file)
+    print(json.dumps(result_json, indent=4))
 
 
 
@@ -46,8 +45,8 @@ def main():
         reference_id = sys.argv[2]
         return_reference_metadata(reference_id)
     if option == 2 :
-        fastafile_path = sys.argv[2]
-        return_analyze_result(fastafile_path)
+        fasta_string= sys.argv[2]
+        return_analyze_result(fasta_string)
     
 
 
