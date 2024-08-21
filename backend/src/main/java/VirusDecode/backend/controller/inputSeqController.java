@@ -146,6 +146,8 @@ public class inputSeqController {
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
+            // GK - 프로세스가 완료될 때까지 대기
+            process.waitFor();
 
             // 2. 파이썬 결과 파일( 저장된 ) 반환 //
             // 파이썬 스크립트 실행 결과 파일 불러오기 & 보내기
