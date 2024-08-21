@@ -1,9 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
-import './ProteinSeq.css';
 import Modal from './Modal';
-import { Link } from 'react-router-dom'; 
+import React, { useState, useEffect } from 'react';
+import './ProteinSeq.css';
 
 const generatePastelColor = () => {
   const hue = Math.floor(Math.random() * 360);
@@ -13,8 +10,7 @@ const generatePastelColor = () => {
 };
 
 function Alignment() {
-    const chartRef = useRef(); // 차트에 대한 참조
-    const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+    const [chartData, setChartData] = useState([]);
     const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
 
     useEffect(() => {
@@ -23,136 +19,92 @@ function Alignment() {
             .then(jsonData => {
                 const { alignment_index } = jsonData;
 
-                // alignment_index 데이터를 사용하여 datasets 생성
-                const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
+                const data = Object.entries(alignment_index).map(([label, [start, end]]) => {
                     const value = end - start;  // 서열 길이 계산
-                    let color = generatePastelColor();
-
                     return {
                         label,
-                        data: [value],
-                        backgroundColor: color,
-                        categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
+                        value,
+                        color: generatePastelColor(),
                         start,
                         end,
                     };
                 });
 
-                setChartData({
-                    labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
-                    datasets: datasets
-                });
+                setChartData(data);
             })
             .catch(error => console.error('Error fetching sequence data:', error));
     }, []);
 
-    const options = {
-        indexAxis: 'y', // 차트를 가로 방향으로 설정
-        layout: {
-            padding: {
-                top: 0,
-                right: 0,
-                bottom: 30, // 스택바 아래에 텍스트를 표시할 공간 확보
-                left: 0,
-            },
-        },
-        scales: {
-            x: {
-                stacked: true, // x축 데이터를 스택으로 쌓음
-                display: false, // x축 숨기기
-            },
-            y: {
-                stacked: true, // y축 데이터를 스택으로 쌓음
-                display: false, // y축 숨기기
-            },
-        },
-        plugins: {
-          legend: {
-              display: false,
-          },
-          tooltip: {
-              enabled: true, // 툴팁 활성화
-              position: 'nearest', // 툴팁 위치 기본값 사용
-              callbacks: {
-                  title: () => '', // 타이틀을 빈 배열로 반환하여 제거
-                  label: (tooltipItem) => {
-                      const datasetLabel = tooltipItem.dataset.label || '';
-                      const start_num = tooltipItem.dataset.start || 0;
-                      const end_num = tooltipItem.dataset.end || 0;
-
-                      return `${datasetLabel}: ${start_num}~${end_num}`;
-                  }
-              }
-          },
-      },
-        elements: {
-            bar: {
-                borderWidth: 0, // 바 테두리 지우기
-            },
-        },
-        animation: {
-            duration: 0, // 애니메이션 비활성화
-        },
-    };
-
-    const handleClick = (event) => {
-        const chart = chartRef.current; // 차트 참조를 가져옴
-        if (!chart) return;
-
-        const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
-        if (points.length) {
-            const firstPoint = points[0];
-            const label = chart.data.datasets[firstPoint.datasetIndex].label;
-            setSelectedRegion(label); // 선택된 영역 상태 업데이트
-        }
-    };
-
     return (
-      <div>
-        <div className="chart-container">
-            <Bar
-                ref={chartRef}
-                data={chartData}
-                options={options}
-                onClick={handleClick} // 클릭 이벤트 핸들러 추가
-                plugins={[
-                    {
-                        id: 'custom-datalabels',
-                        afterDatasetsDraw: (chart) => {
-                            const ctx = chart.ctx;
-                            const datasets = chart.data.datasets;
-              
-                            if (!datasets || datasets.length === 0) return;
-
-                            datasets.forEach((dataset, i) => {
-                                const meta = chart.getDatasetMeta(i);
-                                const bar = meta.data[0]; // 각 데이터셋의 바 메타데이터 가져오기
-              
-                                if (!bar) return;
-                                const centerX = bar.x - bar.width / 2; // 바의 중앙 X 좌표 계산
-                                const centerY = bar.y; // 바의 중앙 Y 좌표 계산
-                                const barWidth = bar.width;
-
-                                ctx.fillStyle = 'black'; 
-                                ctx.font = 'bold 12px Arial'; 
-                                ctx.textAlign = 'center'; 
-                                ctx.textBaseline = 'middle'; 
-                                if (barWidth > 30) {
-                                    ctx.fillText(dataset.label, centerX, centerY);
-                                }
-                            });
-                        },
-                    },
-                ]}
-            />
+        <div>
+            <div className="stacked-bar-chart">
+                <StackedBar data={chartData} onBarClick={setSelectedRegion} />
+            </div>
+            <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
         </div>
-
-        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />  {/* setSelectedRegion 전달 */}
-      </div>
     );
 }
 
 export default Alignment;
+
+
+
+const StackedBar = ({ data, onBarClick }) => {
+    const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
+
+    const handleMouseOver = (e, item) => {
+        setTooltip({
+            visible: true,
+            text: `${item.label}: ${item.start + 1}~${item.end}`,
+            x: e.clientX,
+            y: e.clientY,
+        });
+    };
+
+    const handleMouseOut = () => {
+        setTooltip({ visible: false, text: '', x: 0, y: 0 });
+    };
+
+    const totalValue = data.reduce((acc, item) => acc + item.value, 0);
+
+    return (
+      <div className='stackeb-bar-container'>
+        <div className="stacked-bar">
+            {data.map((item, index) => {
+                const segmentWidthPercentage = (item.value / totalValue) * 100;
+                const segmentWidthInPixels = (segmentWidthPercentage / 100) * window.innerWidth;
+
+                return (
+                    <div
+                        key={index}
+                        className="stacked-bar-segment"
+                        style={{
+                            width: `${segmentWidthPercentage}%`,
+                            backgroundColor: item.color,
+                        }}
+                        onClick={() => onBarClick(item.label)}
+                        onMouseOver={(e) => handleMouseOver(e, item)}
+                        onMouseOut={handleMouseOut}
+                    >
+                        {segmentWidthInPixels > 50 && (
+                            <span className="stacked-bar-label">
+                                {item.label}
+                            </span>
+                        )}
+                    </div>
+                );
+            })}
+            {tooltip.visible && (
+                <div
+                    className="custom-tooltip"
+                    style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
+                >
+                    {tooltip.text}
+                </div>
+            )}
+        </div></div>
+    );
+};
 
 
 const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {  // setSelectedRegion 추가
@@ -307,10 +259,14 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
         seq.sequence
           .slice(regionIndices[0] + chunkIndex * chunkSize, regionIndices[0] + (chunkIndex + 1) * chunkSize)
           .split('')
-          .map((char, index) => ({
-            char,
-            different: char !== referenceSequence[chunkIndex * chunkSize + index] // 참조 서열과 다른지 확인
-          }))
+          .map((char, index) => {
+            const globalIndex = regionIndices[0] + chunkIndex * chunkSize + index;
+            const isInRange = globalIndex >= regionIndices[0] && globalIndex < regionIndices[1];
+            return {
+              char: isInRange ? char : '', // 범위 밖일 경우 공백 출력
+              different: isInRange && char !== referenceSequence[chunkIndex * chunkSize + index] // 참조 서열과 다른지 확인
+            };
+          })
       ]
     }));
     result.push(chunk);
@@ -319,17 +275,3 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
   return result;
 };
 
-
-const NextButton = ({ selectedSequence }) => {
-  if (!selectedSequence) return null;
-
-  return (
-    <div className="next-button">
-      <button>
-        <Link to={`/${selectedSequence.label.replace(/\s+/g, '-')}`}>
-          Convert {selectedSequence.label}
-        </Link>
-      </button>
-    </div>
-  );
-};

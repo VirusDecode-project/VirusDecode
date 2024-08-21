@@ -98,15 +98,6 @@ function InputSeq({ setUsername }) {
       })
     );
 
-<<<<<<< HEAD
-    // Map을 일반 객체로 변환하여 JSON 객체 생성
-    const jsonData = {
-      referenceSequenceId,
-      sequences: Object.fromEntries(sequencesMap), // sequencesMap을 객체로 변환하여 포함
-      files: filesContent, // 파일 내용을 포함
-    };
-
-=======
     // // Map을 일반 객체로 변환하여 JSON 객체 생성
     // const jsonData = {
     //   referenceSequenceId,
@@ -125,7 +116,6 @@ function InputSeq({ setUsername }) {
       files: hasFiles ? filesContent : [] // 비어 있을 경우 빈 배열
     };
     
->>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae
     try {
       const response = await fetch('http://localhost:8080/inputSeq/analyze', {
         method: 'POST',
@@ -136,11 +126,7 @@ function InputSeq({ setUsername }) {
       });
 
       setIsLoading(true);
-<<<<<<< HEAD
-      const result = await response.text();
-=======
       const result = await response.json();
->>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae
       setIsLoading(false);
       console.log("분석이 끝났습니다!"+result);
       window.alert("분석이 끝났습니다!\n"+JSON.stringify(result)); // 응답을 경고창으로 출력
@@ -248,12 +234,8 @@ function InputSeq({ setUsername }) {
           {/*parkki */}
           {responseMessage && (
             <div className="response-message">
-<<<<<<< HEAD
-              <p>{responseMessage}</p>
-=======
               <p className="metadata">Metadata</p>
               <div className="metadata2" dangerouslySetInnerHTML={{ __html: responseMessage }} />
->>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae
             </div>
           )}
           {/*parkki */}
@@ -375,11 +357,8 @@ function InputSeq({ setUsername }) {
 
             <Row>
               <Col className="d-flex justify-content-end">
-<<<<<<< HEAD
-=======
                 <h4 className="next-page" onClick={handleFileUploadToServer }>{'Next ➔'}</h4>
                 {/* Backend 없이 실행할 때 바로위 코드 주석 처리, 해당 주석 제거 후 실행하시면 됩니당, 지우지 말아주세요
->>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae
                 <h4
                   className="next-page"
                   onClick={() => {
@@ -388,10 +367,7 @@ function InputSeq({ setUsername }) {
                 >
                   {"Next ➔"}
                 </h4>
-<<<<<<< HEAD
-=======
                 */}
->>>>>>> fffe92e8325694fb1d1937c09790a2a3dc4c81ae
               </Col>
             </Row>
           </Form>
