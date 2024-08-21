@@ -1,6 +1,6 @@
-import Modal from './Modal';
 import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
+import Modal from './Modal';
 
 const generatePastelColor = () => {
   const hue = Math.floor(Math.random() * 360);
@@ -10,130 +10,129 @@ const generatePastelColor = () => {
 };
 
 function Alignment() {
-    const [chartData, setChartData] = useState([]);
-    const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
-
-    useEffect(() => {
-        fetch('/alignment_data.json')  // JSON 파일의 경로 설정
-            .then(response => response.json())
-            .then(jsonData => {
-                const { alignment_index } = jsonData;
-
-                const data = Object.entries(alignment_index).map(([label, [start, end]]) => {
-                    const value = end - start;  // 서열 길이 계산
-                    return {
-                        label,
-                        value,
-                        color: generatePastelColor(),
-                        start,
-                        end,
-                    };
-                });
-
-                setChartData(data);
-            })
-            .catch(error => console.error('Error fetching sequence data:', error));
-    }, []);
-
-    return (
-        <div>
-            <div className="stacked-bar-chart">
-                <StackedBar data={chartData} onBarClick={setSelectedRegion} />
-            </div>
-            <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} />
-        </div>
-    );
-}
-
-export default Alignment;
-
-
-
-const StackedBar = ({ data, onBarClick }) => {
-    const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
-
-    const handleMouseOver = (e, item) => {
-        setTooltip({
-            visible: true,
-            text: `${item.label}: ${item.start + 1}~${item.end}`,
-            x: e.clientX,
-            y: e.clientY,
-        });
-    };
-
-    const handleMouseOut = () => {
-        setTooltip({ visible: false, text: '', x: 0, y: 0 });
-    };
-
-    const totalValue = data.reduce((acc, item) => acc + item.value, 0);
-
-    return (
-      <div className='stackeb-bar-container'>
-        <div className="stacked-bar">
-            {data.map((item, index) => {
-                const segmentWidthPercentage = (item.value / totalValue) * 100;
-                const segmentWidthInPixels = (segmentWidthPercentage / 100) * window.innerWidth;
-
-                return (
-                    <div
-                        key={index}
-                        className="stacked-bar-segment"
-                        style={{
-                            width: `${segmentWidthPercentage}%`,
-                            backgroundColor: item.color,
-                        }}
-                        onClick={() => onBarClick(item.label)}
-                        onMouseOver={(e) => handleMouseOver(e, item)}
-                        onMouseOut={handleMouseOut}
-                    >
-                        {segmentWidthInPixels > 50 && (
-                            <span className="stacked-bar-label">
-                                {item.label}
-                            </span>
-                        )}
-                    </div>
-                );
-            })}
-            {tooltip.visible && (
-                <div
-                    className="custom-tooltip"
-                    style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
-                >
-                    {tooltip.text}
-                </div>
-            )}
-        </div></div>
-    );
-};
-
-
-const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {  // setSelectedRegion 추가
-  const [sequences, setSequences] = useState([]);
-  const [selectedSequence, setSelectedSequence] = useState(null);
-  const [alignmentIndex, setAlignmentIndex] = useState({});
-  const [isModalOpen, setModalOpen] = useState(false);
+  const [chartData, setChartData] = useState([]);
+  const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
+  const [responseData, setresponseData] = useState(null);
 
   useEffect(() => {
     fetch('/alignment_data.json')
       .then(response => response.json())
       .then(jsonData => {
-        const alignedSequences = jsonData.aligned_sequences;
-        const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
-          label,
-          sequence
-        }));
-        setSequences(sequenceData);
-        setAlignmentIndex(jsonData.alignment_index);
+        setresponseData(jsonData);
+
+        const data = Object.entries(jsonData.alignment_index).map(([label, [start, end]]) => {
+          const value = end - start;  // 서열 길이 계산
+          return {
+            label,
+            value,
+            color: generatePastelColor(),
+            start,
+            end,
+          };
+        });
+
+        setChartData(data);
       })
       .catch(error => console.error('Error fetching sequence data:', error));
   }, []);
 
-  if (!sequences.length || !alignmentIndex[selectedRegion]) {
+  return (
+    <div>
+      <div className="stacked-bar-chart">
+        <StackedBar data={chartData} onBarClick={setSelectedRegion} />
+      </div>
+      {responseData && (
+        <ProteinSeq
+          selectedRegion={selectedRegion}
+          setSelectedRegion={setSelectedRegion}
+          responseData={responseData}
+        />
+      )}
+    </div>
+  );
+}
+
+export default Alignment;
+
+const StackedBar = ({ data, onBarClick }) => {
+  const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
+
+  const handleMouseOver = (e, item) => {
+    setTooltip({
+      visible: true,
+      text: `${item.label}: ${item.start + 1}~${item.end}`,
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
+
+  const handleMouseOut = () => {
+    setTooltip({ visible: false, text: '', x: 0, y: 0 });
+  };
+
+  const totalValue = data.reduce((acc, item) => acc + item.value, 0);
+
+  return (
+    <div className='stacked-bar-container'>
+      <div className="stacked-bar">
+        {data.map((item, index) => {
+          const segmentWidthPercentage = (item.value / totalValue) * 100;
+          const segmentWidthInPixels = (segmentWidthPercentage / 100) * window.innerWidth;
+
+          return (
+            <div
+              key={index}
+              className="stacked-bar-segment"
+              style={{
+                width: `${segmentWidthPercentage}%`,
+                backgroundColor: item.color,
+              }}
+              onClick={() => onBarClick(item.label)}
+              onMouseOver={(e) => handleMouseOver(e, item)}
+              onMouseOut={handleMouseOut}
+            >
+              {segmentWidthInPixels > 50 && (
+                <span className="stacked-bar-label">
+                  {item.label}
+                </span>
+              )}
+            </div>
+          );
+        })}
+        {tooltip.visible && (
+          <div
+            className="custom-tooltip"
+            style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
+          >
+            {tooltip.text}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {
+  const [sequences, setSequences] = useState([]);
+  const [selectedSequence, setSelectedSequence] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (responseData) {
+      const sequenceData = Object.entries(responseData.aligned_sequences).map(([label, sequence]) => ({
+        label,
+        sequence,
+      }));
+      setSequences(sequenceData);
+    }
+  }, [responseData]);
+
+  if (!sequences.length || !responseData.alignment_index[selectedRegion]) {
     return <p>Loading sequences...</p>;
   }
 
   const referenceSequence = sequences[0].sequence;
-  const regionIndices = alignmentIndex[selectedRegion];
+  const regionIndices = responseData.alignment_index[selectedRegion];
   const regionSequence = referenceSequence.slice(regionIndices[0], regionIndices[1]);
 
   const handleSequenceClick = (sequence) => {
@@ -141,16 +140,12 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {  // setSelectedR
     setModalOpen(true);
   };
 
-  const handleIndicesChange = (startIndex, endIndex) => {
-    console.log('Start Index:', startIndex, 'End Index:', endIndex);
-  };
-
   return (
     <div className="protein-sequence-container">
       <div className="region-selector">
         <label htmlFor="region-select">Select Protein Region: </label>
         <select id="region-select" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
-          {Object.keys(alignmentIndex).map(region => (
+          {Object.keys(responseData.alignment_index).map(region => (
             <option key={region} value={region}>
               {region}
             </option>
@@ -170,14 +165,11 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion }) => {  // setSelectedR
         isOpen={isModalOpen} 
         onClose={() => setModalOpen(false)} 
         selectedSequence={selectedSequence} 
-        onIndicesChange={handleIndicesChange}
         sequences={sequences}  // sequences 전달
       />
     </div>
   );
 };
-
-
 
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
   useEffect(() => {
@@ -199,7 +191,6 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
     indexesContainers.forEach((container) => {
       container.style.marginLeft = `${maxWidth}px`;
     });
-
   }, [sequences]);
 
   return (
@@ -274,4 +265,3 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
 
   return result;
 };
-
