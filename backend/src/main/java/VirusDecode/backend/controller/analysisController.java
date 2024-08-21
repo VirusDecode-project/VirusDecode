@@ -65,7 +65,7 @@ public class analysisController {
 //        String jsonFilePath = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/mrnadesign_request.json").toString();
 
         // GK - 경로 수정: ClassPathResource build 디렉토리 내에서 경로 검색
-        String jsonFilePath = Paths.get(currentDir, "build/resources/main/bioinformatics/User_input_data/mrnadesign_request.json").toString();
+        String jsonFilePath = Paths.get(currentDir, "build/resources/main/bioinformatics/data/linearDesign_data.json").toString();
 
         // 파일로 저장
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath))) {
@@ -169,8 +169,8 @@ public class analysisController {
             // 파이썬 스크립트 경로 설정
 
             // GK - test path 주석
-//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
-            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
 
             String scriptPath = resource.getFile().getAbsolutePath();
 
