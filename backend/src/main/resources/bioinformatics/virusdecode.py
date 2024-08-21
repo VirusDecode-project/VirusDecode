@@ -8,6 +8,7 @@ import os
 import sys
 import json
 from io import StringIO
+import requests
 Entrez.email = "your_email@example.com"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -274,11 +275,12 @@ class SequenceAnalysis:
 
 if __name__ == "__main__":
     option = int(sys.argv[1])
-    os.makedirs(current_dir+"/data", exist_ok=True)
 
     # metadata
     if option == 1:
         reference_id = sys.argv[2]
+
+        os.makedirs(current_dir+"/data", exist_ok=True)
 
         metadata = get_metadata(reference_id)
         
@@ -292,8 +294,6 @@ if __name__ == "__main__":
         # read fasta file
         for record in SeqIO.parse(current_dir+"/data/combined.fasta", "fasta"):
             variant_sequences[record.id] = record.seq
-
-#         print(variant_sequences)
 
         # get metadata
         metadata = get_json("metadata.json")
@@ -349,8 +349,36 @@ if __name__ == "__main__":
         print(json.dumps(linearDesign_data))
 
 
+    elif option == 4:
+        # RCSB PDB API endpoint
+        url = "https://search.rcsb.org/rcsbsearch/v2/query"
 
+        # get metadata
+        metadata = get_json("metadata.json")
+        reference_id = metadata.get("Sequence ID", None)
 
+        query = {
+            "query": {
+                "type": "terminal",
+                "service": "full_text",
+                "parameters": {
+                    "value": reference_id
+                }
+            },
+            "return_type": "entry"
+        }
+
+        # request API
+        response = requests.post(url, json=query)
+
+        # get PDB IDs (list)
+        if response.status_code == 200:
+            results = response.json()
+            pdb_list = [entry['identifier'] for entry in results['result_set']]
+            pdb_dict = {f"value{idx+1}": pdb for idx, pdb in enumerate(pdb_list)}
+            print(json.dumps(pdb_dict, indent=4))
+        # else:
+        #     print(f"Error: {response.status_code}")
 
 
 
