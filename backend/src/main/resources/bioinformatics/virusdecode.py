@@ -274,6 +274,7 @@ class SequenceAnalysis:
 
 if __name__ == "__main__":
     option = int(sys.argv[1])
+    os.makedirs(current_dir+"/data", exist_ok=True)
 
     # metadata
     if option == 1:
