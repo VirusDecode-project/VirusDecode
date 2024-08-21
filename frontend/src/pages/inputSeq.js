@@ -87,7 +87,9 @@ function InputSeq({ setUsername }) {
     const sequencesMap = new Map();
 
     sequences.forEach((seq) => {
-      sequencesMap.set(seq.name, seq.value);
+      if (seq.value) {  // seq.value가 존재하고 빈 문자열이 아닌 경우에만 저장
+        sequencesMap.set(seq.name, seq.value);
+      }
     });
 
     // 모든 파일을 문자열로 읽기
@@ -97,13 +99,6 @@ function InputSeq({ setUsername }) {
         return { name: uploadedFile.name, content: content };
       })
     );
-
-    // // Map을 일반 객체로 변환하여 JSON 객체 생성
-    // const jsonData = {
-    //   referenceSequenceId,
-    //   sequences: Object.fromEntries(sequencesMap), // sequencesMap을 객체로 변환하여 포함
-    //   files: filesContent, // 파일 내용을 포함
-    // };
     
     // sequences와 files가 비어 있는지 확인
     const hasSequences = sequencesMap.size > 0;
