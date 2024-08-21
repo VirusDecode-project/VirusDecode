@@ -58,7 +58,11 @@ public class analysisController {
         varientContent.append("}");
         // 파일 저장 경로 설정 (예: 현재 작업 디렉토리 내의 저장 위치)
         String currentDir = System.getProperty("user.dir");  // 현재 작업 디렉토리 경로
-        String jsonFilePath = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/mrnadesign_request.json").toString();
+//        String jsonFilePath = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/mrnadesign_request.json").toString();
+
+        // GK - 경로 수정: ClassPathResource build 디렉토리 내에서 경로 검색
+        String jsonFilePath = Paths.get(currentDir, "build/resources/main/bioinformatics/User_input_data/mrnadesign_request.json").toString();
+
         // 파일로 저장
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath))) {
             writer.write(varientContent.toString());
