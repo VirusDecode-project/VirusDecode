@@ -65,7 +65,7 @@ public class analysisController {
 //        String jsonFilePath = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/mrnadesign_request.json").toString();
 
         // GK - 경로 수정: ClassPathResource build 디렉토리 내에서 경로 검색
-        String jsonFilePath = Paths.get(currentDir, "build/resources/main/bioinformatics/User_input_data/mrnadesign_request.json").toString();
+        String jsonFilePath = Paths.get(currentDir, "build/resources/main/bioinformatics/data/linearDesign_data.json").toString();
 
         // 파일로 저장
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath))) {
@@ -190,6 +190,9 @@ public class analysisController {
                 output.append(line);
             }
             in.close();
+
+            // GK - Debug
+            System.out.println(output);
 
             // 프로세스가 완료될 때까지 대기
             process.waitFor();
