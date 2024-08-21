@@ -43,8 +43,13 @@ public class inputSeqController {
             for (Map.Entry<String, String> entry : request.getSequences().entrySet()) {
                 String sequenceName = entry.getKey();
                 String sequenceData = entry.getValue();
-                fastaContent.append(">").append(sequenceName).append("\n");
-                fastaContent.append(sequenceData).append("\n");
+
+                // GK - 시퀀스 데이터가 빈 문자열이 아닌 경우에만 처리
+                sequenceName = sequenceName.replace(" ", "");   // 공백 제거
+                if (sequenceData != null && !sequenceData.trim().isEmpty()) {
+                    fastaContent.append(">").append(sequenceName).append("\n");
+                    fastaContent.append(sequenceData).append("\n");
+                }
             }
         }
         // 파일 데이터가 있는 경우에만 파일 내용 파싱 후 추가
@@ -57,7 +62,10 @@ public class inputSeqController {
         // 1. input ( 사용자 입력 ) 저장 //
         // 파일 저장 경로 설정
         String currentDir = System.getProperty("user.dir");  // 현재 작업 디렉토리 경로
-        String varient_fasta_Path = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/varient_for_alignment.fasta").toString();
+//        String varient_fasta_Path = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/varient_for_alignment.fasta").toString();
+
+        // GK - 경로 수정: ClassPathResource build 디렉토리 내에서 경로 검색
+        String varient_fasta_Path = Paths.get(currentDir, "build/resources/main/bioinformatics/data/combined.fasta").toString();
         // 파일로 저장
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(varient_fasta_Path))) {
             writer.write(fastaContent.toString());
@@ -84,7 +92,11 @@ public class inputSeqController {
         try {
             // 1. 파이썬 스크립트 실행 //
             // 파이썬 스크립트 경로를 ClassPathResource를 사용하여 얻기
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+
+            // GK - test path 주석
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+
             String scriptPath = resource.getFile().getAbsolutePath();
             // 파이썬 스크립트와 인자를 설정
             String[] command = new String[]{"python3", scriptPath, "1", referenceId};
@@ -103,6 +115,10 @@ public class inputSeqController {
                 output.append(line);
             }
             in.close();
+
+            // GK - Debug
+            System.out.println(output);
+
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             metadata = objectMapper.readValue(output.toString(), HashMap.class);
@@ -122,7 +138,11 @@ public class inputSeqController {
 
             // 1. 파이썬 스크립트 실행 //
             // 파이썬 스크립트 경로를 ClassPathResource를 사용하여 얻기
-            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+
+            // GK - test path 주석
+//            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+
             String scriptPath = resource.getFile().getAbsolutePath();
             // 파이썬 스크립트와 인자를 설정
             String[] command = new String[]{"python3", scriptPath, "2", fastaString};
@@ -131,14 +151,24 @@ public class inputSeqController {
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
+            // GK - 프로세스가 완료될 때까지 대기
+            process.waitFor();
 
             // 2. 파이썬 결과 파일( 저장된 ) 반환 //
             // 파이썬 스크립트 실행 결과 파일 불러오기 & 보내기
-            ClassPathResource result_resource = new ClassPathResource("bioinformatics/test_without_bio/analyze.json");
+
+            // GK - test path 주석
+//            ClassPathResource result_resource = new ClassPathResource("bioinformatics/test_without_bio/analyze.json");
+            ClassPathResource result_resource = new ClassPathResource("bioinformatics/data/alignment_data.json");
+
             File jsonFile = result_resource.getFile(); // 파일 객체로 변환
             Path filePath = jsonFile.toPath();  // 파일 경로로 변환
             // JSON 파일의 내용을 문자열로 읽음
             String jsonContent = new String(Files.readAllBytes(filePath));
+
+            // GK - Debug
+            System.out.println(jsonContent);
+
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             analyzeResult = objectMapper.readValue(jsonContent, HashMap.class);
