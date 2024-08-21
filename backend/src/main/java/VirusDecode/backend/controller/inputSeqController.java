@@ -61,7 +61,6 @@ public class inputSeqController {
 
         // GK - 경로 수정: ClassPathResource build 디렉토리 내에서 경로 검색
         String varient_fasta_Path = Paths.get(currentDir, "build/resources/main/bioinformatics/data/combined.fasta").toString();
-
         // 파일로 저장
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(varient_fasta_Path))) {
             writer.write(fastaContent.toString());
@@ -111,6 +110,10 @@ public class inputSeqController {
                 output.append(line);
             }
             in.close();
+
+            // GK - Debug
+            System.out.println(output);
+
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             metadata = objectMapper.readValue(output.toString(), HashMap.class);
@@ -155,6 +158,10 @@ public class inputSeqController {
             Path filePath = jsonFile.toPath();  // 파일 경로로 변환
             // JSON 파일의 내용을 문자열로 읽음
             String jsonContent = new String(Files.readAllBytes(filePath));
+
+            // GK - Debug
+            System.out.println(jsonContent);
+
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
             analyzeResult = objectMapper.readValue(jsonContent, HashMap.class);
