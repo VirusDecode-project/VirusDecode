@@ -5,6 +5,12 @@ import "./Render3D.css";
 function Render3D() {
   //const [PDBids, setPDBids] = useState(['8VCI', '8UYS', '7O7Y', '7O7Z', '7O81', '7O80']); //test
   const [PDBids, setPDBids] = useState(); //test2 (backend)
+  /*
+      GK
+      1. selectedPDBid: PDBids 중 첫 번째 값으로 초기화 필요합니다.
+      2. RCSB PDB API endpoint에서 받아온 json 값에 socre도 있던데, 함께 받아와서 아래에 표시해주면 좋을 것 같습니다.
+      
+  */
   const [selectedPDBid, setSelectedPDBid] = useState("8VCI"); // test
   const [representation, setRepresentation] = useState("default"); 
 
