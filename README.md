@@ -33,7 +33,7 @@ sudo apt update
 sudo apt install python2
 sudo apt install python3
 sudo apt install openjdk-21-jdk
-sudo apt install npm
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install nodejs
 pip install biopython
 ```
