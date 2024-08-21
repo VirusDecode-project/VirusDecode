@@ -34,7 +34,14 @@ def return_analyze_result(fasta_string):
         result_json = json.load(file)
     print(json.dumps(result_json, indent=4))
 
+def return_pdb_list():
+    pdb_list = ['8VCI', '8UYS', '7O7Y', '7O7Z', '7O81', '7O80']
 
+    # 인덱스를 키로, PDB ID를 값으로 가지는 딕셔너리 생성
+    pdb_dict = {f"value{idx+1}": pdb for idx, pdb in enumerate(pdb_list)}
+
+    # 딕셔너리를 JSON으로 변환하여 출력
+    print(json.dumps(pdb_dict, indent=4))
 
 
 def main():
@@ -47,6 +54,9 @@ def main():
     if option == 2 :
         fasta_string= sys.argv[2]
         return_analyze_result(fasta_string)
+    if option == 4 :
+        return_pdb_list()
+
     
 
 

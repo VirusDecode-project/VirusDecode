@@ -8,19 +8,48 @@ function MRNAdesign() {
   const [showFullStructure, setShowFullStructure] = useState(false);
   const zeroWidthSpace = "\u200B";
 
+  /* backend 수정 코드 시작 */
   useEffect(() => {
-    async function fetchData() {
+    const fetchJsonData = async () => {
       try {
-        const response = await fetch("/genomic_data.json"); //이부분이 백엔드 링크로 수정되어야함.
-        const result = await response.json();
-        setData(result);
+        const response = await fetch('http://localhost:8080/analysis/re-mrnadesign', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const jsonData = await response.json();
+        setData(jsonData); // JSON 데이터를 상태로 설정
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
-    }
-
-    fetchData();
+    };
+    fetchJsonData();
   }, []);
+
+
+  /* backend 수정 코드 끝 */
+
+
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await fetch("/mRNA.json"); //이부분이 백엔드 링크로 수정되어야함.
+  //       const result = await response.json();
+  //       setData(result);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   }
+
+  //   fetchData();
+  // }, []);
+
 
   if (!data) {
     return <div>Loading...</div>;
@@ -70,15 +99,15 @@ function MRNAdesign() {
         <div className="mrna-column">
           {/*visualization 추가*/}
           <h2 className="mrna-title">mRNA Visualization</h2>
-          <RNAVisualizer sequence={data.mRNA_sequence} structure={data.mRNA_structure} />
+          <RNAVisualizer sequence={data.linearDesign.mRNA_sequence} structure={data.linearDesign.mRNA_structure} />
           {/*visualization 끝*/}
           <h2 className="mrna-title">mRNA Sequence</h2>
           <div className="mrna-sequence">
             {showFullSequence
-              ? formatSequence(data.mRNA_sequence).map((seq, index) => (
+              ? formatSequence(data.linearDesign.mRNA_sequence).map((seq, index) => (
                   <div key={index}>{seq}</div>
                 ))
-              : `${data.mRNA_sequence.substring(0, 50)} ...`}
+              : `${data.linearDesign.mRNA_sequence.substring(0, 50)} ...`}
             {!showFullSequence && (
               <span
                 className="show-toggle"
@@ -101,10 +130,10 @@ function MRNAdesign() {
           <h2 className="mrna-title">mRNA Structure</h2>
           <p className="mrna-structure">
             {showFullStructure
-              ? formatStructure(data.mRNA_structure).map((seq, index) => (
+              ? formatStructure(data.linearDesign.mRNA_structure).map((seq, index) => (
                   <div key={index}>{seq}</div>
                 ))
-              : `${data.mRNA_structure.substring(0, 50)} `}
+              : `${data.linearDesign.mRNA_structure.substring(0, 50)} `}
             {!showFullStructure && (
               <span
                 className="show-toggle"
@@ -124,34 +153,34 @@ function MRNAdesign() {
           </p>
 
           <h3 className="mrna-subtitle">mRNA folding free energy</h3>
-          <p className="mrna-value">{data.mRNA_folding_free_energy} kcal/mol</p>
+          <p className="mrna-value">{data.linearDesign.free_energy} </p>
 
           <h3 className="mrna-subtitle">mRNA CAI</h3>
-          <p className="mrna-value">{data.mRNA_CAI}</p>
+          <p className="mrna-value">{data.linearDesign.cai}</p>
 
           <h3 className="mrna-subtitle">Molecular Weight</h3>
-          <p className="mrna-value">{data.Molecular_Weight} Da</p>
+          <p className="mrna-value">{data.protParam.molecular_weight} Da</p>
 
           <h3 className="mrna-subtitle">Isoelectric Point(Pl)</h3>
-          <p className="mrna-value">{data.Isoelectric_Point}</p>
+          <p className="mrna-value">{data.protParam.isoelectric_point}</p>
 
           <h3 className="mrna-subtitle">Instability Index</h3>
-          <p className="mrna-value">{data.Instability_Index}</p>
+          <p className="mrna-value">{data.protParam.instability_index}</p>
 
           <h3 className="mrna-subtitle">
             Secondary Structure Fraction (Helix, Turn, Sheet)
           </h3>
           <p className="mrna-value">
-            ({data.Secondary_Structure_Fraction.Helix},{" "}
-            {data.Secondary_Structure_Fraction.Turn},{" "}
-            {data.Secondary_Structure_Fraction.Sheet})
+            ({data.protParam.secondary_structure_fraction[0]},{" "}
+            {data.protParam.secondary_structure_fraction[1]},{" "}
+            {data.protParam.secondary_structure_fraction[2]})
           </p>
 
           <h3 className="mrna-subtitle">Gravy</h3>
-          <p className="mrna-value">{data.Gravy}</p>
+          <p className="mrna-value">{data.protParam.gravy}</p>
 
           <h3 className="mrna-subtitle">Aromaticity</h3>
-          <p className="mrna-value">{data.Aromaticity} %</p>
+          <p className="mrna-value">{data.protParam.aromaticity} %</p>
         </div>
 
         <div className="mrna-column">
@@ -164,13 +193,27 @@ function MRNAdesign() {
               </tr>
             </thead>
             <tbody>
-              {data.Amino_Acid_Data.map((amino, index) => (
+              {data && data.protParam.amino_acid_count ? (
+                Object.keys(data.protParam.amino_acid_count).map((amino, index) => (
+                  <tr key={index}>
+                    <td>{amino}</td>
+                    <td>{data.protParam.amino_acid_count[amino]}</td>
+                    <td>{(data.protParam.amino_acid_percent[amino] * 100).toFixed(2)}</td> 
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="2">Loading...</td>
+                </tr>
+              )}
+
+              {/* {data.Amino_Acid_Data.map((amino, index) => (
                 <tr key={index}>
                   <td>{amino.Amino_Acid}</td>
                   <td>{amino.Count}</td>
                   <td>{amino.Percent}</td>
                 </tr>
-              ))}
+              ))} */}
             </tbody>
           </table>
         </div>

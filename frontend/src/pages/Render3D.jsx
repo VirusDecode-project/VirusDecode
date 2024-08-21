@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import "./Render3D.css";
 
 function Render3D() {
-  const [PDBids, setPDBids] = useState(['8VCI', '8UYS', '7O7Y', '7O7Z', '7O81', '7O80']); //test
+  //const [PDBids, setPDBids] = useState(['8VCI', '8UYS', '7O7Y', '7O7Z', '7O81', '7O80']); //test
+  const [PDBids, setPDBids] = useState(); //test2 (backend)
   const [selectedPDBid, setSelectedPDBid] = useState("8VCI"); // test
   const [representation, setRepresentation] = useState("default"); 
 
@@ -22,6 +23,30 @@ function Render3D() {
     };
     fetchData();
   }, []);*/
+
+  
+  /* backend 추가 코드 시작 */
+  useEffect(() => {
+    // 서버로 GET 요청을 보내고, 응답을 받아와서 상태로 설정
+    const fetchPDBids = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/analysis/render3d'); // 서버의 엔드포인트로 요청
+        if (!response.ok) {
+          throw new Error(`Network response was not ok: ${response.statusText}`);
+        }
+        const data = await response.json(); // JSON 객체를 받아옴
+        // value 값만 리스트로 모아서 상태에 저장
+        const values = Object.values(data);
+        setPDBids(values); // value들만 저장
+      } catch (error) {
+        console.error('Error fetching PDB IDs:', error);
+      }
+    };
+
+    fetchPDBids(); // 데이터 가져오기
+  }, []);
+  /* backend 추가 코드 끝 */
+
   
   const viewportStyle = {
     width: '900px',
