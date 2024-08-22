@@ -9,18 +9,19 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment() {
+function Alignment({responseData}) {
   const [chartData, setChartData] = useState([]);
+
+  // GK - Selected region 의 초기값을 ORF1ab이 아닌 첫 번째 값으로 수정 필요
   const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
-  const [responseData, setresponseData] = useState(null);
 
   useEffect(() => {
-    fetch('/alignment_data.json')
-      .then(response => response.json())
-      .then(jsonData => {
-        setresponseData(jsonData);
+    if (responseData) {
+      try {
+        console.log(responseData);
 
-        const data = Object.entries(jsonData.alignment_index).map(([label, [start, end]]) => {
+        // alignment_index 데이터를 사용하여 datasets 생성
+        const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
           const value = end - start;  // 서열 길이 계산
           return {
             label,
@@ -31,10 +32,14 @@ function Alignment() {
           };
         });
 
+        // 차트 데이터 업데이트
         setChartData(data);
-      })
-      .catch(error => console.error('Error fetching sequence data:', error));
-  }, []);
+      } catch (error) {
+        console.error('Error processing response data:', error);
+      }
+    }
+  }, [responseData]);  // responseData가 변경될 때마다 실행
+
 
   return (
     <div>
@@ -166,6 +171,7 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {
         onClose={() => setModalOpen(false)} 
         selectedSequence={selectedSequence} 
         sequences={sequences}  // sequences 전달
+        selectedRegion={selectedRegion}  // selectedRegion 전달
       />
     </div>
   );
