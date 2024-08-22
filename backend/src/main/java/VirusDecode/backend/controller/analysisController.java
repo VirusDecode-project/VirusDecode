@@ -44,40 +44,18 @@ public class analysisController {
     }
 
     @PostMapping("/mrnadesign")
-    public ResponseEntity<Map<String, Object>> getMRNAdesign(@RequestBody(required = false) mRNADesignRequest request) {
-        StringBuilder varientContent = new StringBuilder();
-
+    public ResponseEntity<Map> getMRNAdesign(@RequestBody mRNADesignRequest request) {
         // 0. request 데이터 처리 //
         String region = request.getRegion();
         String varientName = request.getVarientName();
         int start = request.getStart();
         int end = request.getEnd();
 
-        // 1. input ( 사용자 입력 ) 저장 //
-        varientContent.append("{\n");
-        varientContent.append("\"region\": \"").append(region).append("\",\n");
-        varientContent.append("\"varientName\": \"").append(varientName).append("\",\n");
-        varientContent.append("\"start\": ").append(start).append(",\n");
-        varientContent.append("\"end\": ").append(end).append("\n");
-        varientContent.append("}");
-        // 파일 저장 경로 설정 (예: 현재 작업 디렉토리 내의 저장 위치)
-        String currentDir = System.getProperty("user.dir");  // 현재 작업 디렉토리 경로
-//        String jsonFilePath = Paths.get(currentDir, "backend/src/main/resources/bioinformatics/User_input_data/mrnadesign_request.json").toString();
-
-        // GK - 경로 수정: ClassPathResource build 디렉토리 내에서 경로 검색
-        String jsonFilePath = Paths.get(currentDir, "build/resources/main/bioinformatics/data/linearDesign_data.json").toString();
-
-        // 파일로 저장
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(jsonFilePath))) {
-            writer.write(varientContent.toString());
-        } catch (IOException e) {
-            // 오류 발생 시, Map에 오류 메시지를 담아 반환
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("status", "error");
-            errorResponse.put("message", "파일 저장 중 오류 발생: " + e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
+        // 1. 데이터가 잘 추출되었는지 확인하는 디버깅 메시지 추가
+        System.out.println("Region: " + region);
+        System.out.println("Varient Name: " + varientName);
+        System.out.println("Start Index: " + start);
+        System.out.println("End Index: " + end);
 
         // 2. 파이썬 스크립트 실행 & 결과값(json) client로 전달 //
         Map<String, Object> mRNAResult = new HashMap<>();
@@ -90,10 +68,10 @@ public class analysisController {
     public ResponseEntity<String> re_mrna_design_json() {
         try {
             // ClassPathResource를 사용하여 클래스패스 내에서 JSON 파일을 읽음
-
             // GK - test path 주석
 //            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/mRNA.json");
             ClassPathResource resource = new ClassPathResource("bioinformatics/data/linearDesign_data.json");
+
 
             Path filePath = resource.getFile().toPath();
             String jsonContent = Files.readString(filePath);
@@ -150,6 +128,9 @@ public class analysisController {
 
             // 파이썬 스크립트 출력 결과 확인
             // System.out.println("Output for python script: " + output);
+
+            // GK - Debug
+            System.out.println(output);
 
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
