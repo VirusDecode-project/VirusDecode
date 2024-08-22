@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Modal.css';
 
-const Modal = ({ isOpen, onClose, selectedSequence, sequences, selectedRegion}) => {
+const Modal = ({ isOpen, onClose, selectedSequence, sequences, selectedRegion, setTab}) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState(selectedSequence ? selectedSequence.label : '');
@@ -94,7 +94,7 @@ const handleConvertButton = async () => {
     // 라우팅을 프로그래밍적으로 수행
     // navigate(`/${selectedGenome.replace(/\s+/g, '-')}`);
     // GK
-    // changeTab(1)
+    setTab(1);
   };
 
   return (
