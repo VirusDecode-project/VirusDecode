@@ -50,6 +50,7 @@ h5 {
   flex-direction: column;
   justify-content: flex-start;
   width: 320px;
+  position: relative;
   /* 리스트 넓이 조정 */
 }
 
@@ -126,4 +127,17 @@ li:hover {
   border-color: #0fb9af;
   outline: none;
   box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.25);
+}
+
+.error-message {
+  margin-top: 10px;
+  width: 100%;
+  color: #ff0019;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
