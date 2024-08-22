@@ -326,12 +326,10 @@ if __name__ == "__main__":
         alignment_dict = alignment_data.get("aligned_sequences", None)
         
         # set gene, variant_id, start, end
-        # !!! Need to fix !!!
-        gene="S"
-        variant_id="MW642250.1"
-        start = 318
-        end = 541
-        # !!! Need to fix !!!
+        gene=sys.argv[2]
+        variant_id=sys.argv[3]
+        start = int(sys.argv[4])
+        end = int(sys.argv[5])
 
         # run sequence analysis
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
