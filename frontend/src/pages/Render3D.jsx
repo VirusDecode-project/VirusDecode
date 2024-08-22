@@ -49,8 +49,8 @@ function Render3D() {
         const values = Object.values(PDBlist);
         setPDBscores(values); // value들만 저장
         // 리스트의 첫 번째 값으로 PDB id 초기화
-        if (PDBids.length > 0) {
-          setSelectedPDBid(PDBids[0]);
+        if (keys.length > 0) {
+          setSelectedPDBid(keys[0]);
         }
       } catch (error) {
         console.error('Error fetching PDB IDs:', error);
