@@ -30,6 +30,13 @@ public class inputSeqController {
         Map<String, Object> metadata = new HashMap<>();
         metadata = referenceIdPy(sequenceId);
 
+        // GK - 비정상 nucleotide 값 처리
+        if (metadata == null || metadata.isEmpty()) {
+            // 상태 코드 204 No Content 반환
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
+
+        // 메타데이터가 정상적인 경우 상태 코드 200 OK와 함께 반환
         return ResponseEntity.ok(metadata);
     }
 
@@ -118,6 +125,13 @@ public class inputSeqController {
 
             // GK - Debug
             System.out.println(output);
+
+            // GK - 비정상 nucleotide 값 처리
+            if(output == null || output.isEmpty()){
+                // GK - Debug
+                System.out.println("Empty metadata");
+                return null;
+            }
 
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
