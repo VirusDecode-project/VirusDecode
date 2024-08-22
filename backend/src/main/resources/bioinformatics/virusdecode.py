@@ -39,7 +39,7 @@ def get_metadata(reference_id):
         }
         return metadata
     except HTTPError as e:
-        print(f"HTTPError: {e.code} - {e.reason}")
+        sys.exit(1)
 
 class SequenceAlignment:
     def __init__(self, variant_sequences, reference_id, muscle_exe="muscle"):
@@ -287,6 +287,7 @@ if __name__ == "__main__":
         save_json(metadata, "metadata.json")  # JSON 파일로 저장
         print(json.dumps(metadata))
 
+
     # alignment
     elif option == 2:
         variant_sequences = {}
@@ -354,7 +355,6 @@ if __name__ == "__main__":
         # get metadata
         metadata = get_json("metadata.json")
         reference_id = metadata.get("Sequence ID", None)
-
         query = {
             "query": {
                 "type": "terminal",
