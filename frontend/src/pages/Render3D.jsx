@@ -15,6 +15,7 @@ function Render3D() {
   */
   const [selectedPDBid, setSelectedPDBid] = useState("");
   const [representation, setRepresentation] = useState("default");
+  const [error, setError] = useState("");
 
   /*useEffect(() => {
     const fetchData = async () => {
@@ -68,13 +69,34 @@ function Render3D() {
   };
 
   const refData = {
-    filename: `https://files.rcsb.org/download/${selectedPDBid}.pdb`, // 에러처리 필요
+    filename: `https://files.rcsb.org/download/${selectedPDBid}.pdb`,
     ...(representation !== "default" && { // style 지정
       config: [{
         type: 'addRepresentation',
         input: representation
       }]
     })
+  };
+
+  const checkPDBFileExists = async (url) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Error checking PDB file existence:', error);
+      return false;
+    }
+  };
+
+  const handlePDBSelection = async (id) => {
+    const pdbUrl = `https://files.rcsb.org/download/${id}.pdb`;
+    const exists = await checkPDBFileExists(pdbUrl);
+    if (exists) {
+      setSelectedPDBid(id);
+      setError(""); // 파일이 존재하므로 에러 메시지를 지웁니다.
+    } else {
+      setError(`PDB file ${id}.pdb does not exist.`);
+    }
   };
 
   const vizteinKey = `${selectedPDBid}-${representation}`; // PDBid 또는 style 변경 시 렌더링 업데이트에 필요한 key
@@ -100,16 +122,17 @@ function Render3D() {
       <div className='right-column'>
         <div className='list-header'>
           <span className='header-item'>PDB ID</span>
-          <span className='header-item'>Matching Score</span>
+          <span className='header-item'>Score</span>
         </div>
         <ul>
           {PDBids && PDBids.map((id, index) => (
-            <li key={id} onClick={() => setSelectedPDBid(id)}>
+            <li key={id} onClick={() => handlePDBSelection(id)}>
               <span className='list-item'>{id}</span>
               <span className='list-item'>{PDBscores[index]}</span>
             </li>
           ))}
         </ul>
+        {error && <div className="error-message">{error}</div>}
       </div>
     </div>
   );
