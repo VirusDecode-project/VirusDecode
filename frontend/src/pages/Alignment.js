@@ -9,7 +9,7 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment({responseData}) {
+function Alignment({responseData, setTab}) {
   const [chartData, setChartData] = useState([]);
 
   // GK - Selected region 의 초기값을 ORF1ab이 아닌 첫 번째 값으로 수정 필요
@@ -51,6 +51,7 @@ function Alignment({responseData}) {
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
           responseData={responseData}
+          setTab={setTab}
         />
       )}
     </div>
@@ -117,7 +118,7 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {
+const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -172,6 +173,7 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {
         selectedSequence={selectedSequence} 
         sequences={sequences}  // sequences 전달
         selectedRegion={selectedRegion}  // selectedRegion 전달
+        setTab={setTab}
       />
     </div>
   );
