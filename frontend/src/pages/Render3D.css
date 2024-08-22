@@ -1,30 +1,30 @@
 .reference3D {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   padding: 50px;
-  position: relative; 
+  position: relative;
 }
 
 .left-column {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  width: 900px; 
+  align-items: center;
+  width: 900px;
   height: 1020px;
-  position: relative; 
+  position: relative;
 }
 
 .representation-container {
   position: absolute;
-  top: 70px; 
-  left: 0; 
+  top: 70px;
+  left: 0;
 }
 
 h4 {
   position: absolute;
   top: 0;
   left: 0;
-  margin-top: 10px; 
+  margin-top: 10px;
   margin-left: 5px;
 }
 
@@ -38,32 +38,78 @@ h4 {
 
 h5 {
   position: absolute;
-  bottom: 0; 
-  right: 0; 
+  bottom: 0;
+  right: 0;
   color: #999;
 }
 
 .right-column {
-  margin-left: 20px; 
+  margin-left: 20px;
   margin-top: 70px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* 위에서부터 정렬 */
+  justify-content: flex-start;
+  width: 320px;
+  /* 리스트 넓이 조정 */
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 3px;
+  /* 리스트 항목과 동일한 패딩 설정 */
+  border-bottom: 2px solid #333;
+  font-weight: bold;
+  background-color: #f9f9f9;
+}
+
+.header-item {
+  flex: 1;
+  text-align: center;
+}
+
+.header-item:first-child {
+  flex: 1;
+  /* PDB ID gets less space */
+}
+
+.header-item:last-child {
+  flex: 2;
+  /* Score gets more space */
 }
 
 ul {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
 li {
-  cursor: pointer;
-  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 3px;
+  /* 헤더와 일치하는 패딩 */
   border-bottom: 1px solid #ccc;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
 }
 
 li:hover {
   background-color: #f0f0f0;
+}
+
+.list-item {
+  text-align: center;
+}
+
+.list-item:first-child {
+  flex: 1;
+  /* PDB ID gets less space */
+}
+
+.list-item:last-child {
+  flex: 2;
+  /* Score gets more space */
 }
 
 .representation-container select {
@@ -76,10 +122,8 @@ li:hover {
   cursor: pointer;
 }
 
-/* Optional: Add a focus effect to the select element */
 .representation-container select:focus {
   border-color: #0fb9af;
   outline: none;
   box-shadow: 0 0 0 3px rgba(38, 143, 255, 0.25);
 }
-  
