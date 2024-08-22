@@ -22,10 +22,10 @@
   align-items: center;
   margin-bottom: 5px;
   cursor: pointer;
+  position: relative;
 }
 
 .sequence-label {
-  width: auto;
   white-space: nowrap;
   text-align: left;
   font-weight: bold;
@@ -55,6 +55,7 @@
   font-size: 14px;
   background-color: #535353;
   color: white;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
 .sequence-box.gap {
@@ -67,15 +68,16 @@
   color: #C11010;
 }
 
-.sequence-box:hover {
-  background-color: #666;
-  border-color: #999;
+.sequence:hover .sequence-box {
+  background-color: #444;
+  border-color: #000000;
+  color: #ffffff;
 }
 
 
-.sequence:hover .sequence-box {
-  background-color: #444;
-  border-color: #888;
+
+.sequence-box:empty {
+  background-color: white; /* 범위를 벗어난 경우 흰색 칸 */
 }
 
 .sequence-indexes {
@@ -83,89 +85,11 @@
   justify-content: space-between; /* 인덱스들 사이의 간격을 균일하게 */
   width: 1000px; /* 고정 너비 설정 */
   margin-top: 5px; /* 인덱스 위에 약간의 공간 추가 */
-  letter-spacing: -1.2px;
   font-size: 15px;
 }
 
 .sequence-index {
-  flex-grow: 1; /* 각 인덱스가 동일한 비율로 공간을 차지하도록 설정 */
-  text-align: right; /* 텍스트를 중앙에 정렬 */
-  margin: 0; /* 여백 제거 */
-  min-width: 0; /* 최소 너비를 0으로 설정해 숫자의 길이 무시 */
-  overflow: visible; /* overflow를 visible로 변경해 인덱스가 보이도록 */
-}
-
-.sequence-details {
-  margin: 20px;
-}
-
-.sequence-details h2 {
-  text-align: left;
-}
-
-.sequence-full {
-  font-family: monospace;
-  white-space: pre-wrap;
-  line-height: 1.5;
-}
-
-.sequence-char {
-  display: inline-block;
-  margin: 2px;
-}
-
-.back-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background-color: #0056b3;
-}
-
-.selected {
-  background-color: #f0f8ff;
-}
-
-.next-button {
-  position: fixed;
-  bottom: 30px;
-  right: 30px;
-  margin: 0; 
-  padding: 0;
-  cursor: pointer;
-  z-index: 1000;    
-
-}
-
-
-.next-button a {
-  text-decoration: none;
-  background-color: #0FB9AF;
-  color: #f0f8ff; 
-  padding: 10px 15px;
-  border-radius: 10px; 
-}
-
-.next-button button {
-  background-color: transparent; 
-  border: 1px;
-  padding: 0; 
-  margin: 0; 
-  cursor: pointer; 
-  
-}
-
-.chart-container {
-  width: 100%; 
-  max-width: 1500px; 
-  height: 500px; 
-  display: flex; 
-  justify-content: center;
+  text-align: right; /* 텍스트를 오른쪽에 정렬 */
 }
 
 .protein-sequence-container {
@@ -200,4 +124,56 @@
   border-color: #02a59a;
   box-shadow: 0 0 5px #008d84;
   background-color: #fff;
+}
+
+.stacked-bar {
+  display: flex;
+  width: 100%;
+  height: 50px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.stacked-bar-segment {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  height: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.stacked-bar-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: medium;
+  color: black;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.custom-tooltip {
+  position: fixed;
+  background-color: #ffffff;
+  border-style: solid;
+  border-color: #0FB9AF;
+  border-width: 2.7px;
+  color: #000000;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  z-index: 1000;
+  pointer-events: none; 
+  white-space: nowrap;
+}
+
+.stacked-bar-container {
+  padding: 90px 100px 60px 130px;
 }

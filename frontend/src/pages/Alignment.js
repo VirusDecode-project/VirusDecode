@@ -1,9 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
+import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
 import Modal from './Modal';
-import { Link } from 'react-router-dom'; 
 
 const generatePastelColor = () => {
   const hue = Math.floor(Math.random() * 360);
@@ -12,251 +9,136 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
+function Alignment({responseData, setTab}) {
+  const [chartData, setChartData] = useState([]);
 
-function Alignment({responseData}) {
-    const chartRef = useRef(); // 차트에 대한 참조
-    const [chartData, setChartData] = useState({ labels: [], datasets: [] });
-    const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
+  // GK - Selected region 의 초기값을 ORF1ab이 아닌 첫 번째 값으로 수정 필요
+  const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
 
-    // // M1 - 기존 front part 코드 시작
-    // useEffect(() => {
-    //     fetch('/alignment_data.json')  // JSON 파일의 경로 설정
-    //         .then(response => response.json())
-    //         .then(jsonData => {
-    //             const { alignment_index } = jsonData;
+  useEffect(() => {
+    if (responseData) {
+      try {
+        console.log(responseData);
 
-    //             // alignment_index 데이터를 사용하여 datasets 생성
-    //             const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
-    //                 const value = end - start;  // 서열 길이 계산
-    //                 let color = generatePastelColor();
+        // alignment_index 데이터를 사용하여 datasets 생성
+        const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
+          const value = end - start;  // 서열 길이 계산
+          return {
+            label,
+            value,
+            color: generatePastelColor(),
+            start,
+            end,
+          };
+        });
 
-    //                 return {
-    //                     label,
-    //                     data: [value],
-    //                     backgroundColor: color,
-    //                     categoryPercentage: 0.1, // 카테고리 전체에서 바가 차지하는 비율 조정
-    //                     start,
-    //                     end,
-    //                 };
-    //             });
-
-    //             setChartData({
-    //                 labels: ['Total'], // 하나의 레이블을 사용해 모든 데이터 표시
-    //                 datasets: datasets
-    //             });
-    //         })
-    //         .catch(error => console.error('Error fetching sequence data:', error));
-    // }, []);
-    // // M1 - 기존 front part 코드 끝
-
-
-    /* M1 - backend part 수정 코드 시작 */
-    useEffect(() => {
-      if (responseData) {
-        try {
-          // responseData에서 alignment_index 추출
-          const { alignment_index } = responseData;
-  
-          // alignment_index 데이터를 사용하여 datasets 생성
-          const datasets = Object.entries(alignment_index).map(([label, [start, end]]) => {
-            const value = end - start;  // 서열 길이 계산
-            let color = generatePastelColor();
-  
-            return {
-              label,
-              data: [value],
-              backgroundColor: color,
-              categoryPercentage: 0.1,  // 카테고리 전체에서 바가 차지하는 비율 조정
-              start,
-              end,
-            };
-          });
-  
-          // 차트 데이터 업데이트
-          setChartData({
-            labels: ['Total'],  // 하나의 레이블을 사용해 모든 데이터 표시
-            datasets: datasets,
-          });
-        } catch (error) {
-          console.error('Error processing response data:', error);
-        }
+        // 차트 데이터 업데이트
+        setChartData(data);
+      } catch (error) {
+        console.error('Error processing response data:', error);
       }
-    }, [responseData]);  // responseData가 변경될 때마다 실행
+    }
+  }, [responseData]);  // responseData가 변경될 때마다 실행
 
-    /* M1 - backend part 수정 코드 끝 */
 
-
-    const options = {
-        indexAxis: 'y', // 차트를 가로 방향으로 설정
-        layout: {
-            padding: {
-                top: 0,
-                right: 0,
-                bottom: 30, // 스택바 아래에 텍스트를 표시할 공간 확보
-                left: 0,
-            },
-        },
-        scales: {
-            x: {
-                stacked: true, // x축 데이터를 스택으로 쌓음
-                display: false, // x축 숨기기
-            },
-            y: {
-                stacked: true, // y축 데이터를 스택으로 쌓음
-                display: false, // y축 숨기기
-            },
-        },
-        plugins: {
-          legend: {
-              display: false,
-          },
-          tooltip: {
-              enabled: true, // 툴팁 활성화
-              position: 'nearest', // 툴팁 위치 기본값 사용
-              callbacks: {
-                  title: () => '', // 타이틀을 빈 배열로 반환하여 제거
-                  label: (tooltipItem) => {
-                      const datasetLabel = tooltipItem.dataset.label || '';
-                      const start_num = tooltipItem.dataset.start || 0;
-                      const end_num = tooltipItem.dataset.end || 0;
-
-                      return `${datasetLabel}: ${start_num}~${end_num}`;
-                  }
-              }
-          },
-      },
-        elements: {
-            bar: {
-                borderWidth: 0, // 바 테두리 지우기
-            },
-        },
-        animation: {
-            duration: 0, // 애니메이션 비활성화
-        },
-    };
-
-    const handleClick = (event) => {
-        const chart = chartRef.current; // 차트 참조를 가져옴
-        if (!chart) return;
-
-        const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: true }, false);
-        if (points.length) {
-            const firstPoint = points[0];
-            const label = chart.data.datasets[firstPoint.datasetIndex].label;
-            setSelectedRegion(label); // 선택된 영역 상태 업데이트
-        }
-    };
-
-    return (
-      <div>
-        <div className="chart-container">
-            <Bar
-                ref={chartRef}
-                data={chartData}
-                options={options}
-                onClick={handleClick} // 클릭 이벤트 핸들러 추가
-                plugins={[
-                    {
-                        id: 'custom-datalabels',
-                        afterDatasetsDraw: (chart) => {
-                            const ctx = chart.ctx;
-                            const datasets = chart.data.datasets;
-              
-                            if (!datasets || datasets.length === 0) return;
-
-                            datasets.forEach((dataset, i) => {
-                                const meta = chart.getDatasetMeta(i);
-                                const bar = meta.data[0]; // 각 데이터셋의 바 메타데이터 가져오기
-              
-                                if (!bar) return;
-                                const centerX = bar.x - bar.width / 2; // 바의 중앙 X 좌표 계산
-                                const centerY = bar.y; // 바의 중앙 Y 좌표 계산
-                                const barWidth = bar.width;
-
-                                ctx.fillStyle = 'black'; 
-                                ctx.font = 'bold 12px Arial'; 
-                                ctx.textAlign = 'center'; 
-                                ctx.textBaseline = 'middle'; 
-                                if (barWidth > 30) {
-                                    ctx.fillText(dataset.label, centerX, centerY);
-                                }
-                            });
-                        },
-                    },
-                ]}
-            />
-        </div>
-
-        <ProteinSeq selectedRegion={selectedRegion} setSelectedRegion={setSelectedRegion} responseData={responseData}/>  {/* setSelectedRegion 전달 */}
+  return (
+    <div>
+      <div className="stacked-bar-chart">
+        <StackedBar data={chartData} onBarClick={setSelectedRegion} />
       </div>
-    );
+      {responseData && (
+        <ProteinSeq
+          selectedRegion={selectedRegion}
+          setSelectedRegion={setSelectedRegion}
+          responseData={responseData}
+          setTab={setTab}
+        />
+      )}
+    </div>
+  );
 }
 
 export default Alignment;
 
+const StackedBar = ({ data, onBarClick }) => {
+  const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {  // setSelectedRegion 추가
+  const handleMouseOver = (e, item) => {
+    setTooltip({
+      visible: true,
+      text: `${item.label}: ${item.start + 1}~${item.end}`,
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
+
+  const handleMouseOut = () => {
+    setTooltip({ visible: false, text: '', x: 0, y: 0 });
+  };
+
+  const totalValue = data.reduce((acc, item) => acc + item.value, 0);
+
+  return (
+    <div className='stacked-bar-container'>
+      <div className="stacked-bar">
+        {data.map((item, index) => {
+          const segmentWidthPercentage = (item.value / totalValue) * 100;
+          const segmentWidthInPixels = (segmentWidthPercentage / 100) * window.innerWidth;
+
+          return (
+            <div
+              key={index}
+              className="stacked-bar-segment"
+              style={{
+                width: `${segmentWidthPercentage}%`,
+                backgroundColor: item.color,
+              }}
+              onClick={() => onBarClick(item.label)}
+              onMouseOver={(e) => handleMouseOver(e, item)}
+              onMouseOut={handleMouseOut}
+            >
+              {segmentWidthInPixels > 50 && (
+                <span className="stacked-bar-label">
+                  {item.label}
+                </span>
+              )}
+            </div>
+          );
+        })}
+        {tooltip.visible && (
+          <div
+            className="custom-tooltip"
+            style={{ top: tooltip.y + 10, left: tooltip.x + 10 }}
+          >
+            {tooltip.text}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
-  const [alignmentIndex, setAlignmentIndex] = useState({});
   const [isModalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  // // M2 - 기존 front part 코드 시작
-  // useEffect(() => {
-  //   fetch('/alignment_data.json')
-  //     .then(response => response.json())
-  //     .then(jsonData => {
-  //       const alignedSequences = jsonData.aligned_sequences;
-  //       const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
-  //         label,
-  //         sequence
-  //       }));
-  //       setSequences(sequenceData);
-  //       setAlignmentIndex(jsonData.alignment_index);
-  //     })
-  //     .catch(error => console.error('Error fetching sequence data:', error));
-  // }, []);
-  // //  M2 - 기존 front part 코드 끝
-
-
-  /* M2 - backend part 수정 코드 시작 */
   useEffect(() => {
     if (responseData) {
-      try {
-        // responseData에서 alignedSequences와 alignmentIndex 추출
-        const alignedSequences = responseData.aligned_sequences;
-        const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
-          label,
-          sequence,
-        }));
-        setSequences(sequenceData);
-
-        const alignmentIndex = responseData.alignment_index;
-        setAlignmentIndex(alignmentIndex);
-
-        // 로딩 상태 해제
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error processing response data:', error);
-        setIsLoading(false); // 오류 발생 시에도 로딩 상태 해제
-      }
+      const sequenceData = Object.entries(responseData.aligned_sequences).map(([label, sequence]) => ({
+        label,
+        sequence,
+      }));
+      setSequences(sequenceData);
     }
-  }, [responseData]); // responseData가 변경될 때마다 실행
+  }, [responseData]);
 
-  if (isLoading) {
-    return <p>Loading sequences...</p>;
-  }
-  /* M2 - backend part 수정 코드 끝 */
-
-
-
-  if (!sequences.length || !alignmentIndex[selectedRegion]) {
+  if (!sequences.length || !responseData.alignment_index[selectedRegion]) {
     return <p>Loading sequences...</p>;
   }
 
   const referenceSequence = sequences[0].sequence;
-  const regionIndices = alignmentIndex[selectedRegion];
+  const regionIndices = responseData.alignment_index[selectedRegion];
   const regionSequence = referenceSequence.slice(regionIndices[0], regionIndices[1]);
 
   const handleSequenceClick = (sequence) => {
@@ -264,16 +146,12 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {  /
     setModalOpen(true);
   };
 
-  const handleIndicesChange = (startIndex, endIndex) => {
-    console.log('Start Index:', startIndex, 'End Index:', endIndex);
-  };
-
   return (
     <div className="protein-sequence-container">
       <div className="region-selector">
         <label htmlFor="region-select">Select Protein Region: </label>
         <select id="region-select" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
-          {Object.keys(alignmentIndex).map(region => (
+          {Object.keys(responseData.alignment_index).map(region => (
             <option key={region} value={region}>
               {region}
             </option>
@@ -293,14 +171,13 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData }) => {  /
         isOpen={isModalOpen} 
         onClose={() => setModalOpen(false)} 
         selectedSequence={selectedSequence} 
-        onIndicesChange={handleIndicesChange}
         sequences={sequences}  // sequences 전달
+        selectedRegion={selectedRegion}  // selectedRegion 전달
+        setTab={setTab}
       />
     </div>
   );
 };
-
-
 
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
   useEffect(() => {
@@ -322,7 +199,6 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
     indexesContainers.forEach((container) => {
       container.style.marginLeft = `${maxWidth}px`;
     });
-
   }, [sequences]);
 
   return (
@@ -382,29 +258,18 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
         seq.sequence
           .slice(regionIndices[0] + chunkIndex * chunkSize, regionIndices[0] + (chunkIndex + 1) * chunkSize)
           .split('')
-          .map((char, index) => ({
-            char,
-            different: char !== referenceSequence[chunkIndex * chunkSize + index] // 참조 서열과 다른지 확인
-          }))
+          .map((char, index) => {
+            const globalIndex = regionIndices[0] + chunkIndex * chunkSize + index;
+            const isInRange = globalIndex >= regionIndices[0] && globalIndex < regionIndices[1];
+            return {
+              char: isInRange ? char : '', // 범위 밖일 경우 공백 출력
+              different: isInRange && char !== referenceSequence[chunkIndex * chunkSize + index] // 참조 서열과 다른지 확인
+            };
+          })
       ]
     }));
     result.push(chunk);
   }
 
   return result;
-};
-
-
-const NextButton = ({ selectedSequence }) => {
-  if (!selectedSequence) return null;
-
-  return (
-    <div className="next-button">
-      <button>
-        <Link to={`/${selectedSequence.label.replace(/\s+/g, '-')}`}>
-          Convert {selectedSequence.label}
-        </Link>
-      </button>
-    </div>
-  );
 };
