@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './Modal.css';
 
 const Modal = ({ isOpen, onClose, selectedSequence, onIndicesChange, sequences }) => {
@@ -7,6 +7,7 @@ const Modal = ({ isOpen, onClose, selectedSequence, onIndicesChange, sequences }
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState(selectedSequence ? selectedSequence.label : '');
   const [error, setError] = useState('');
+  const navigate = useNavigate(); // useNavigate 훅 사용
 
   useEffect(() => {
     setStartIndex('');
@@ -38,23 +39,24 @@ const Modal = ({ isOpen, onClose, selectedSequence, onIndicesChange, sequences }
     const end = parseInt(endIndex, 10);
     const maxEndIndex = getMaxEndIndex();
 
-    if (isNaN(start) || isNaN(end)) {
+    // 조건 검사 통과 여부 확인
+    if (
+      isNaN(start) ||
+      isNaN(end) ||
+      start < 1 ||
+      start > maxEndIndex ||
+      end < start ||
+      end > maxEndIndex
+    ) {
       setError('Please enter valid indices.');
-      return;
-    }
-
-    if (start < 1 || start > maxEndIndex) {
-      setError(`Start index must be between 1 and ${maxEndIndex}.`);
-      return;
-    }
-
-    if (end < start || end > maxEndIndex) {
-      setError(`End index must be between ${start} and ${maxEndIndex}.`);
       return;
     }
 
     onIndicesChange(start, end);
     onClose();
+
+    // 라우팅을 프로그래밍적으로 수행
+    navigate(`/${selectedGenome.replace(/\s+/g, '-')}`);
   };
 
   return (
@@ -97,9 +99,7 @@ const Modal = ({ isOpen, onClose, selectedSequence, onIndicesChange, sequences }
             Cancel
           </button>
           <button className="modal-next-button" onClick={handleNext}>
-            <Link to={`/${selectedGenome.replace(/\s+/g, '-')}`}>
-              Convert
-            </Link>
+            Convert
           </button>
         </div>
       </div>
@@ -108,35 +108,3 @@ const Modal = ({ isOpen, onClose, selectedSequence, onIndicesChange, sequences }
 };
 
 export default Modal;
-
-
-
-// // front 코드 작성 끝나면 추가할 코드 (backend)
-// const handleConvertButton = async () => {
-//   // 데이터 객체 생성
-//   const data = {
-//     selectedSequence,
-//     selectedGenome,
-//     startIndex,
-//     endIndex,
-//   };
-
-//   try {
-//     const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(data),
-//     });
-
-//     if (!response.ok) {
-//       throw new Error('Network response was not ok');
-//     }
-
-//     const responseData = await response.json();
-//     //console.log('Response from server:', responseData);
-//   } catch (error) {
-//     console.error('Error sending data:', error);
-//   }
-// };
