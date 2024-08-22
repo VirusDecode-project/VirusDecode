@@ -372,8 +372,9 @@ if __name__ == "__main__":
         # get PDB IDs (list)
         if response.status_code == 200:
             results = response.json()
-            pdb_list = [entry['identifier'] for entry in results['result_set']]
-            pdb_dict = {f"value{idx+1}": pdb for idx, pdb in enumerate(pdb_list)}
+            pdb_dict={}
+            for entry in results['result_set']:
+                pdb_dict[entry['identifier']] = entry['score']
             print(json.dumps(pdb_dict, indent=4))
         # else:
         #     print(f"Error: {response.status_code}")
