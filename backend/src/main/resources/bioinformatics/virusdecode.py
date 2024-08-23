@@ -93,10 +93,9 @@ class SequenceAlignment:
         # Run muscle using subprocess, reading from stdin and writing to stdout
         result = subprocess.run([self.muscle_exe], input=self.combined_memory_file.read(), text=True, capture_output=True)  # 수정된 부분: muscle 실행을 위해 stdin으로 데이터를 전달하고 stdout을 메모리에 저장
         if result.returncode == 0:
-            # print("Muscle ran successfully")
             self.aligned_memory_file = StringIO(result.stdout)  # 수정된 부분: 결과를 StringIO 객체에 저장하여 메모리 내에서 처리
-        # else:
-            # print("Error running muscle:", result.stderr)
+        else:
+            sys.exit(1)
 
     def read_alignment(self):
         # Read alignment
@@ -285,7 +284,7 @@ if __name__ == "__main__":
         metadata = get_metadata(reference_id)
         
         save_json(metadata, "metadata.json")  # JSON 파일로 저장
-        print(json.dumps(metadata))
+#         print(json.dumps(metadata))
 
 
     # alignment
@@ -313,7 +312,7 @@ if __name__ == "__main__":
         }
 
         save_json(alignment_data, "alignment_data.json")  # JSON 파일로 저장
-        print(json.dumps(alignment_data))
+#         print(json.dumps(alignment_data))
 
     # linearDesign, protparam data
     elif option == 3:
@@ -345,7 +344,7 @@ if __name__ == "__main__":
         }
 
         save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
-        print(json.dumps(linearDesign_data))
+#         print(json.dumps(linearDesign_data))
 
 
     elif option == 4:
@@ -375,9 +374,11 @@ if __name__ == "__main__":
             pdb_dict={}
             for entry in results['result_set']:
                 pdb_dict[entry['identifier']] = entry['score']
-            print(json.dumps(pdb_dict, indent=4))
-        # else:
-        #     print(f"Error: {response.status_code}")
+#             print(json.dumps(pdb_dict, indent=4))
+            save_json(pdb_dict, "pdb_data.json")
+        else:
+            sys.exit(1)
+#             print(f"Error: {response.status_code}")
 
 
 

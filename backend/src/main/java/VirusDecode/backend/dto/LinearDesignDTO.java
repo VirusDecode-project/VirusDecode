@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class mRNADesignRequest {
+public class LinearDesignDTO {
     private String region;
     private String varientName;
     private int start;

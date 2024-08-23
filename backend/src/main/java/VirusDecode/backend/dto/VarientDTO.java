@@ -8,7 +8,7 @@ import java.util.Map;
 
 @Getter
 @Setter
-public class VarientSequenceRequest {
+public class VarientDTO {
     private String referenceSequenceId;
     private Map<String, String> sequences;
     private List<FastaFileDTO> files;
