@@ -9,40 +9,23 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment() {
+function Alignment({responseData, setTab}) {
   const [chartData, setChartData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
-  const [responseData, setResponseData] = useState(null);
+  
+  // GK
+  // const [responseData, setResponseData] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedSequence, setSelectedSequence] = useState(null);
 
-  // // M2 - 기존 front part 코드 시작
-  // useEffect(() => {
-  //   fetch('/alignment_data.json')
-  //     .then(response => response.json())
-  //     .then(jsonData => {
-  //       const alignedSequences = jsonData.aligned_sequences;
-  //       const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
-  //         label,
-  //         sequence
-  //       }));
-  //       setSequences(sequenceData);
-  //       setAlignmentIndex(jsonData.alignment_index);
-  //     })
-  //     .catch(error => console.error('Error fetching sequence data:', error));
-  // }, []);
-  // //  M2 - 기존 front part 코드 끝
-
-
-  /* M2 - backend part 수정 코드 시작 */
   useEffect(() => {
-    fetch('/alignment_data.json')
-      .then(response => response.json())
-      .then(jsonData => {
-        setResponseData(jsonData);
+    if (responseData) {
+      try {
+        console.log(responseData);
 
-        const data = Object.entries(jsonData.alignment_index).map(([label, [start, end]]) => {
-          const value = end - start;
+        // alignment_index 데이터를 사용하여 datasets 생성
+        const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
+          const value = end - start;  // 서열 길이 계산
           return {
             label,
             value,
@@ -52,16 +35,14 @@ function Alignment() {
           };
         });
 
+        // 차트 데이터 업데이트
         setChartData(data);
-      })
-      .catch(error => console.error('Error fetching sequence data:', error));
-  }, []);
-
-  const handleIndicesChange = (startIndex, endIndex) => {
-    console.log("Selected Indices: ", startIndex, endIndex);
-    // --todo-- 다음 창으로 연결하는 부분 
-  };
-
+      } catch (error) {
+        console.error('Error processing response data:', error);
+      }
+    }
+  }, [responseData]);  // responseData가 변경될 때마다 실행
+  
   return (
     <div>
       <div className="stacked-bar-chart">
@@ -72,17 +53,9 @@ function Alignment() {
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
           responseData={responseData}
-          handleIndicesChange={handleIndicesChange}  
+          setTab={setTab}
         />
       )}
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setModalOpen(false)} 
-        selectedSequence={selectedSequence} 
-        onIndicesChange={handleIndicesChange}  
-        sequences={responseData?.aligned_sequences || []} 
-        alignmentIndex={responseData?.alignment_index || {}}  
-      />
     </div>
   );
 }
@@ -147,7 +120,7 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, handleIndicesChange }) => {
+const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -204,11 +177,10 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, handleInd
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => setModalOpen(false)} 
-        selectedSequence={selectedSequence} 
-        onIndicesChange={handleIndicesChange}
         sequences={sequences}
         alignmentIndex={responseData.alignment_index}
         modalData={modalData}  // 모달에 초기값 전달
+        setTab={setTab}
       />
     </div>
   );
