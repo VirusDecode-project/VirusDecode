@@ -88,7 +88,7 @@ public class inputSeqController {
 
         // 2. 파이썬 스크립트 실행 & 결과값(json) client로 전달 //
         Map<String, Object> alignmentResult = new HashMap<>();
-        alignmentResult = alignmentPy(varient_fasta_Path);
+        alignmentResult = alignmentPy();
 
         return ResponseEntity.ok(alignmentResult);
     }
@@ -103,8 +103,14 @@ public class inputSeqController {
             // GK - test path 주석
 //            ClassPathResource resource = new ClassPathResource("bioinformatics/test_without_bio/test.py");
             ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+            
+
+            if (!resource.exists()) {
+                throw new FileNotFoundException("Python script not found: " + resource.getPath());
+            }
 
             String scriptPath = resource.getFile().getAbsolutePath();
+
             // 파이썬 스크립트와 인자를 설정
             String[] command = new String[]{"python3", scriptPath, "1", referenceId};
             // ProcessBuilder를 사용하여 프로세스를 시작
@@ -112,32 +118,27 @@ public class inputSeqController {
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
+            // GK
+            process.waitFor();
 
-            // 2. 파이썬 스크립트 출력값 읽어오기 & 반환 //
-            // 프로세스의 출력을 읽기 위한 BufferedReader
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                output.append(line);
+            ClassPathResource resultResource = new ClassPathResource("bioinformatics/data/metadata.json");
+
+            if (!resultResource.exists()) {
+                throw new FileNotFoundException("Result JSON file not found: " + resultResource.getPath());
             }
-            in.close();
+
+            File jsonFile = resultResource.getFile(); // 파일 객체로 변환
+            Path filePath = jsonFile.toPath();  // 파일 경로로 변환
+            // JSON 파일의 내용을 문자열로 읽음
+            String jsonContent = new String(Files.readAllBytes(filePath));
 
             // GK - Debug
-            System.out.println(output);
-
-            // GK - 비정상 nucleotide 값 처리
-            if(output == null || output.isEmpty()){
-                // GK - Debug
-                System.out.println("Empty metadata");
-                return null;
-            }
+            System.out.println(jsonContent);
 
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
-            metadata = objectMapper.readValue(output.toString(), HashMap.class);
-            // 프로세스가 완료될 때까지 대기
-            process.waitFor();
+            metadata = objectMapper.readValue(jsonContent, HashMap.class);
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,7 +147,7 @@ public class inputSeqController {
     }
 
 
-    public static Map<String, Object> alignmentPy(String fastaString) {
+    public static Map<String, Object> alignmentPy() {
         Map<String, Object> analyzeResult = new HashMap<>();
         try {
 
@@ -159,7 +160,7 @@ public class inputSeqController {
 
             String scriptPath = resource.getFile().getAbsolutePath();
             // 파이썬 스크립트와 인자를 설정
-            String[] command = new String[]{"python3", scriptPath, "2", fastaString};
+            String[] command = new String[]{"python3", scriptPath, "2"};
             // ProcessBuilder를 사용하여 프로세스를 시작
             ProcessBuilder pb = new ProcessBuilder(command);
             pb.redirectErrorStream(true);
@@ -167,15 +168,14 @@ public class inputSeqController {
 
             // GK - 프로세스가 완료될 때까지 대기
             process.waitFor();
-
             // 2. 파이썬 결과 파일( 저장된 ) 반환 //
             // 파이썬 스크립트 실행 결과 파일 불러오기 & 보내기
 
             // GK - test path 주석
-//            ClassPathResource result_resource = new ClassPathResource("bioinformatics/test_without_bio/analyze.json");
-            ClassPathResource result_resource = new ClassPathResource("bioinformatics/data/alignment_data.json");
+//            ClassPathResource resultResource = new ClassPathResource("bioinformatics/test_without_bio/analyze.json");
+            ClassPathResource resultResource = new ClassPathResource("bioinformatics/data/alignment_data.json");
 
-            File jsonFile = result_resource.getFile(); // 파일 객체로 변환
+            File jsonFile = resultResource.getFile(); // 파일 객체로 변환
             Path filePath = jsonFile.toPath();  // 파일 경로로 변환
             // JSON 파일의 내용을 문자열로 읽음
             String jsonContent = new String(Files.readAllBytes(filePath));

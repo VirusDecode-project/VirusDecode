@@ -285,7 +285,7 @@ if __name__ == "__main__":
         metadata = get_metadata(reference_id)
         
         save_json(metadata, "metadata.json")  # JSON 파일로 저장
-        print(json.dumps(metadata))
+#         print(json.dumps(metadata))
 
 
     # alignment
@@ -313,7 +313,7 @@ if __name__ == "__main__":
         }
 
         save_json(alignment_data, "alignment_data.json")  # JSON 파일로 저장
-        print(json.dumps(alignment_data))
+#         print(json.dumps(alignment_data))
 
     # linearDesign, protparam data
     elif option == 3:
@@ -345,7 +345,7 @@ if __name__ == "__main__":
         }
 
         save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
-        print(json.dumps(linearDesign_data))
+#         print(json.dumps(linearDesign_data))
 
 
     elif option == 4:
@@ -375,7 +375,8 @@ if __name__ == "__main__":
             pdb_dict={}
             for entry in results['result_set']:
                 pdb_dict[entry['identifier']] = entry['score']
-            print(json.dumps(pdb_dict, indent=4))
+#             print(json.dumps(pdb_dict, indent=4))
+            save_json(pdb_dict, "pdb_data.json")
         # else:
         #     print(f"Error: {response.status_code}")
 

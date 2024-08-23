@@ -116,28 +116,24 @@ public class analysisController {
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
-            // 프로세스의 출력을 읽기 위한 BufferedReader
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
 
-            String line;
-            while ((line = in.readLine()) != null) {
-                output.append(line);
-            }
-            in.close();
+            // GK
+            process.waitFor();
 
-            // 파이썬 스크립트 출력 결과 확인
-            // System.out.println("Output for python script: " + output);
+            ClassPathResource resultResource = new ClassPathResource("bioinformatics/data/linearDesign_data.json");
+
+            File jsonFile = resultResource.getFile(); // 파일 객체로 변환
+            Path filePath = jsonFile.toPath();  // 파일 경로로 변환
+            // JSON 파일의 내용을 문자열로 읽음
+            String jsonContent = new String(Files.readAllBytes(filePath));
 
             // GK - Debug
-            System.out.println(output);
+            System.out.println(jsonContent);
 
             // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
-            mRNADesignResult = objectMapper.readValue(output.toString(), HashMap.class);
-
-            // 프로세스가 완료될 때까지 대기
-            process.waitFor();
+            mRNADesignResult = objectMapper.readValue(jsonContent, HashMap.class);
+            System.out.println(mRNADesignResult);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,24 +159,23 @@ public class analysisController {
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
-            // 파이썬 스크립트 출력을 읽기
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                output.append(line);
-            }
-            in.close();
-
-            // GK - Debug
-            System.out.println(output);
-
-            // 프로세스가 완료될 때까지 대기
+            // GK
             process.waitFor();
 
-            // 출력된 JSON 문자열을 Map<String, String>로 변환
+            ClassPathResource resultResource = new ClassPathResource("bioinformatics/data/pdb_data.json");
+
+            File jsonFile = resultResource.getFile(); // 파일 객체로 변환
+            Path filePath = jsonFile.toPath();  // 파일 경로로 변환
+            // JSON 파일의 내용을 문자열로 읽음
+            String jsonContent = new String(Files.readAllBytes(filePath));
+
+
+            // JSON 문자열을 Map 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
-            pdbList = objectMapper.readValue(output.toString(), new TypeReference<Map<String, String>>() {});
+            pdbList = objectMapper.readValue(jsonContent, new TypeReference<Map<String, String>>() {});
+
+            // GK - Debug
+            System.out.println(pdbList);
 
         } catch (Exception e) {
             e.printStackTrace();
