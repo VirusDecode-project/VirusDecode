@@ -93,10 +93,9 @@ class SequenceAlignment:
         # Run muscle using subprocess, reading from stdin and writing to stdout
         result = subprocess.run([self.muscle_exe], input=self.combined_memory_file.read(), text=True, capture_output=True)  # 수정된 부분: muscle 실행을 위해 stdin으로 데이터를 전달하고 stdout을 메모리에 저장
         if result.returncode == 0:
-            # print("Muscle ran successfully")
             self.aligned_memory_file = StringIO(result.stdout)  # 수정된 부분: 결과를 StringIO 객체에 저장하여 메모리 내에서 처리
-        # else:
-            # print("Error running muscle:", result.stderr)
+        else:
+            sys.exit(1)
 
     def read_alignment(self):
         # Read alignment
@@ -377,8 +376,9 @@ if __name__ == "__main__":
                 pdb_dict[entry['identifier']] = entry['score']
 #             print(json.dumps(pdb_dict, indent=4))
             save_json(pdb_dict, "pdb_data.json")
-        # else:
-        #     print(f"Error: {response.status_code}")
+        else:
+            sys.exit(1)
+#             print(f"Error: {response.status_code}")
 
 
 
