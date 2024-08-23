@@ -9,20 +9,40 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment({responseData, setTab}) {
+function Alignment() {
   const [chartData, setChartData] = useState([]);
-
-  // GK - Selected region 의 초기값을 ORF1ab이 아닌 첫 번째 값으로 수정 필요
   const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
+  const [responseData, setResponseData] = useState(null);
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedSequence, setSelectedSequence] = useState(null);
 
+  // // M2 - 기존 front part 코드 시작
+  // useEffect(() => {
+  //   fetch('/alignment_data.json')
+  //     .then(response => response.json())
+  //     .then(jsonData => {
+  //       const alignedSequences = jsonData.aligned_sequences;
+  //       const sequenceData = Object.entries(alignedSequences).map(([label, sequence]) => ({
+  //         label,
+  //         sequence
+  //       }));
+  //       setSequences(sequenceData);
+  //       setAlignmentIndex(jsonData.alignment_index);
+  //     })
+  //     .catch(error => console.error('Error fetching sequence data:', error));
+  // }, []);
+  // //  M2 - 기존 front part 코드 끝
+
+
+  /* M2 - backend part 수정 코드 시작 */
   useEffect(() => {
-    if (responseData) {
-      try {
-        console.log(responseData);
+    fetch('/alignment_data.json')
+      .then(response => response.json())
+      .then(jsonData => {
+        setResponseData(jsonData);
 
-        // alignment_index 데이터를 사용하여 datasets 생성
-        const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
-          const value = end - start;  // 서열 길이 계산
+        const data = Object.entries(jsonData.alignment_index).map(([label, [start, end]]) => {
+          const value = end - start;
           return {
             label,
             value,
@@ -32,14 +52,15 @@ function Alignment({responseData, setTab}) {
           };
         });
 
-        // 차트 데이터 업데이트
         setChartData(data);
-      } catch (error) {
-        console.error('Error processing response data:', error);
-      }
-    }
-  }, [responseData]);  // responseData가 변경될 때마다 실행
+      })
+      .catch(error => console.error('Error fetching sequence data:', error));
+  }, []);
 
+  const handleIndicesChange = (startIndex, endIndex) => {
+    console.log("Selected Indices: ", startIndex, endIndex);
+    // --todo-- 다음 창으로 연결하는 부분 
+  };
 
   return (
     <div>
@@ -51,9 +72,17 @@ function Alignment({responseData, setTab}) {
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
           responseData={responseData}
-          setTab={setTab}
+          handleIndicesChange={handleIndicesChange}  
         />
       )}
+      <Modal 
+        isOpen={isModalOpen} 
+        onClose={() => setModalOpen(false)} 
+        selectedSequence={selectedSequence} 
+        onIndicesChange={handleIndicesChange}  
+        sequences={responseData?.aligned_sequences || []} 
+        alignmentIndex={responseData?.alignment_index || {}}  
+      />
     </div>
   );
 }
@@ -118,10 +147,11 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab }) => {
+const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, handleIndicesChange }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({ genome: '', protein: '' });
 
   useEffect(() => {
     if (responseData) {
@@ -143,6 +173,10 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab })
 
   const handleSequenceClick = (sequence) => {
     setSelectedSequence(sequence);
+    setModalData({
+      genome: sequence.label,  // 클릭한 genome의 이름을 모달에 전달
+      protein: selectedRegion   // 선택된 protein 정보를 모달에 전달
+    });
     setModalOpen(true);
   };
 
@@ -171,13 +205,15 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab })
         isOpen={isModalOpen} 
         onClose={() => setModalOpen(false)} 
         selectedSequence={selectedSequence} 
-        sequences={sequences}  // sequences 전달
-        selectedRegion={selectedRegion}  // selectedRegion 전달
-        setTab={setTab}
+        onIndicesChange={handleIndicesChange}
+        sequences={sequences}
+        alignmentIndex={responseData.alignment_index}
+        modalData={modalData}  // 모달에 초기값 전달
       />
     </div>
   );
 };
+
 
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
   useEffect(() => {
