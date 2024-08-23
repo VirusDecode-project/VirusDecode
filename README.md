@@ -36,6 +36,7 @@ sudo apt install openjdk-21-jdk
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install nodejs
 pip install biopython
+pip install requests
 ```
 ### 2. Install necessary alignment tool
 ```sh
@@ -57,23 +58,20 @@ git clone https://github.com/VirusDecode-project/VirusDecode.git
 cd VirusDecode/backend/src/main/resources/bioinformatics/LinearDesign
 make
 cd ../../../../../..
-
-# Build the frontend
-cd frontend
-npm install
-npm run build
-cd ..
 ```
 
 ## 4. Execution
 ```sh
+# Run the frontend
+cd frontend
+npm install
+npm start
+```
+
+```sh
+# Run the backend
 cd backend
 chmod +x gradlew
 ./gradlew bootRun
 ```
 
-```sh
-# Run the frontend server
-cd frontend
-npm start
-```
