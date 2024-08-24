@@ -58,8 +58,9 @@
   transition: background-color 0.3s, border-color 0.3s;
 }
 
-.sequence-box.gap {
-  background-color: yellow;
+.sequence-box.gap,
+.sequence-box.different.gap {
+  background-color: #ffffff; /* '-' 문자가 있는 박스의 배경색을 흰색으로 설정 */
   color: black;
 }
 
@@ -67,6 +68,8 @@
   background-color: #ffc700;
   color: #C11010;
 }
+
+
 
 .sequence:hover .sequence-box {
   background-color: #444;
