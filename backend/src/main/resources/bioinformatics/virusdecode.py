@@ -41,6 +41,76 @@ def get_metadata(reference_id):
     except HTTPError as e:
         sys.exit(1)
 
+def check_pdb_file_exists(pdb_id):
+    """
+    Check if the PDB file exists for the given pdb_id.
+    """
+    pdb_url = f"https://files.rcsb.org/download/{pdb_id}.pdb"
+    
+    try:
+        response = requests.head(pdb_url)  # Use HEAD request to check if file exists
+        return response.status_code == 200
+    except requests.RequestException as e:
+        print(f"An error occurred while checking PDB file existence: {e}")
+        return False
+
+def get_pdb_ids_by_sequence(sequence):
+    """
+    Retrieve a list of PDB IDs that match the given sequence.
+    """
+    get_id_url = "https://search.rcsb.org/rcsbsearch/v2/query"
+    query = {
+        "query": {
+            "type": "terminal",
+            "service": "sequence",
+            "parameters": {
+                "evalue_cutoff": 0.001,
+                "identity_cutoff": 0.9,
+                "sequence_type": "protein",
+                "value": sequence
+            }
+        },
+        "request_options": {
+            "paginate": {
+                "start": 0,
+                "rows": 100
+            }
+        },
+        "return_type": "entry"
+    }
+
+    try:
+        response = requests.post(get_id_url, json=query)
+        if response.status_code == 200:
+            results = response.json()
+            return [entry['identifier'] for entry in results.get('result_set', [])]
+        else:
+            print(f"Error fetching PDB IDs: {response.status_code}")
+            return []
+    except requests.RequestException as e:
+        print(f"An error occurred while fetching PDB IDs: {e}")
+        return []
+
+def get_pdb_info(pdb_id):
+    """
+    Get information about a PDB entry by its ID.
+    """
+    get_info_url = f"https://data.rcsb.org/rest/v1/core/entry/{pdb_id}"
+    
+    try:
+        response = requests.get(get_info_url)
+        if response.status_code == 200:
+            result = response.json()
+            return result.get('struct', {}).get('title', 'No title available')
+        else:
+            print(f"Error fetching PDB info for {pdb_id}: {response.status_code}")
+            return None
+    except requests.RequestException as e:
+        print(f"An error occurred while fetching PDB info for {pdb_id}: {e}")
+        return None
+
+
+
 class SequenceAlignment:
     def __init__(self, variant_sequences, reference_id, muscle_exe="muscle"):
         self.muscle_exe = muscle_exe
@@ -324,7 +394,7 @@ if __name__ == "__main__":
         alignment_data = get_json("alignment_data.json")
         alignment_index = alignment_data.get("alignment_index", None)
         alignment_dict = alignment_data.get("aligned_sequences", None)
-        
+
         # set gene, variant_id, start, end
         gene=sys.argv[2]
         variant_id=sys.argv[3]
@@ -347,38 +417,25 @@ if __name__ == "__main__":
 #         print(json.dumps(linearDesign_data))
 
 
-    elif option == 4:
-        # RCSB PDB API endpoint
-        url = "https://search.rcsb.org/rcsbsearch/v2/query"
+        # PDB search
+        sequence = alignment_dict[reference_id][alignment_index["S"][0]:alignment_index["S"][1]]
 
-        # get metadata
-        metadata = get_json("metadata.json")
-        reference_id = metadata.get("Sequence ID", None)
-        query = {
-            "query": {
-                "type": "terminal",
-                "service": "full_text",
-                "parameters": {
-                    "value": reference_id
-                }
-            },
-            "return_type": "entry"
-        }
+        pdb_dict = {}
+        pdb_ids = get_pdb_ids_by_sequence(sequence)
+        pdb_count = 0
 
-        # request API
-        response = requests.post(url, json=query)
+        for pdb_id in pdb_ids:
+            if check_pdb_file_exists(pdb_id):
+                print(f"PDB file {pdb_id} exists.")
+                title = get_pdb_info(pdb_id)
+                if title:
+                    pdb_dict[pdb_id] = title
+                pdb_count += 1
+            else:
+                print(f"PDB file {pdb_id} does not exist.")
+            
+            if pdb_count == 10:
+                break
 
-        # get PDB IDs (list)
-        if response.status_code == 200:
-            results = response.json()
-            pdb_dict={}
-            for entry in results['result_set']:
-                pdb_dict[entry['identifier']] = entry['score']
-#             print(json.dumps(pdb_dict, indent=4))
-            save_json(pdb_dict, "pdb_data.json")
-        else:
-            sys.exit(1)
-#             print(f"Error: {response.status_code}")
-
-
-
+        save_json(pdb_dict, "pdb_data.json")
+        # print(json.dumps(pdb_dict))
