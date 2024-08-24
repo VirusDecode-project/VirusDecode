@@ -65,6 +65,7 @@
   color: #333;
   font-size: 14px;
   width: 100%;
+  background-color: white;
 }
 
 .header-item {
@@ -79,6 +80,7 @@
   margin: 0;
   overflow: hidden;
   width: 100%;
+  background-color: white;
 }
 
 .list-row {
@@ -131,6 +133,9 @@
   padding: 8px;
   font-family: sans-serif;
   border-radius: 5px;
+  max-width: 300px;
+  word-wrap: break-word;
+  /* 단어 길면 줄바꿈 */
 }
 
 .representation-container select {
