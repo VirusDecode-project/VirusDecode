@@ -2,14 +2,14 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./image/logo.png";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import InputSeq from "./pages/inputSeq.js";
-import Analysis from "./pages/analysis.js";
+import InputSeq from "./pages/inputSeq";
+import Analysis from "./pages/analysis";
 import { React, useState, useEffect } from "react";
 import historyIcon from "./image/history.png";
 import editIcon from "./image/edit.png";
 
 function App() {
-  
+
   let navigate = useNavigate();
   let location = useLocation();
 
@@ -28,23 +28,23 @@ function App() {
       setShow(true);
     }
   }, [location.pathname]);
-// 백엔드에서 history 리스트 가져오기
-useEffect(() => {
-  const fetchHistory = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/history/list");
-      if (!response.ok) {
-        throw new Error('Failed to fetch history list');
+  // 백엔드에서 history 리스트 가져오기
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/history/list");
+        if (!response.ok) {
+          throw new Error('Failed to fetch history list');
+        }
+        const data = await response.json();
+        setHistory(data); // 가져온 데이터를 history 상태로 설정
+      } catch (error) {
+        console.error("Error fetching history:", error);
       }
-      const data = await response.json();
-      setHistory(data); // 가져온 데이터를 history 상태로 설정
-    } catch (error) {
-      console.error("Error fetching history:", error);
-    }
-  };
+    };
 
-  fetchHistory();
-}, []);
+    fetchHistory();
+  }, []);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -110,7 +110,7 @@ useEffect(() => {
 
       const responseData = await serverResponse.json();
       navigate("/analysis", { state: { responseData } });
-      
+
     } catch (error) {
       console.error("An error occurred while fetching history details: ", error.message);
     }
@@ -121,7 +121,7 @@ useEffect(() => {
     setActiveHistoryItem(activeHistoryItem === index ? null : index);
   };
 
-  const handleRename = async(index) => {
+  const handleRename = async (index) => {
     const newName = prompt("Enter a new name for the history item:");
     if (newName) {
 
@@ -161,7 +161,7 @@ useEffect(() => {
     setActiveHistoryItem(null); // Hide options after renaming
   };
 
-  const handleDelete = async(index) => {
+  const handleDelete = async (index) => {
     if (window.confirm("Are you sure you want to delete this history item?")) {
       const currentName = history[index]; // 선택한 history의 현재 이름 가져오기
       const requestData = { historyName: currentName };
@@ -217,7 +217,7 @@ useEffect(() => {
           <div className="history-list">
             {history.map((item, index) => (
               <div key={index} className="history-item">
-                 <span onClick={() => handleHistoryClick(index)} style={{ cursor: "pointer" }}>{item}</span> {/* index를 전달하도록 수정 */}
+                <span onClick={() => handleHistoryClick(index)} style={{ cursor: "pointer" }}>{item}</span> {/* index를 전달하도록 수정 */}
                 <button
                   className="ellipsis-button"
                   onClick={() => handleEllipsisClick(index)}
