@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
 import Modal from './Modal';
-/* helpModal */
 import helpIcon from '../image/help.png';
 import HelpModal from './HelpModal';
-/* helpModal */
+
+// GK - Loading 컴포넌트 추가
+import Loading from '../components/Loading';
+
 let lastHue = 0;
 
 const generatePastelColor = () => {
@@ -28,6 +30,7 @@ const generatePastelColor = () => {
 function Alignment({ responseData, setTab, onRegionUpdate }) {
   const [chartData, setChartData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (responseData) {
@@ -56,6 +59,11 @@ function Alignment({ responseData, setTab, onRegionUpdate }) {
 
   return (
     <div>
+    {isLoading ? (
+      // GK - Loading 컴포넌트로 변경
+      <Loading text="Converting"/>
+    ) : (
+    <div>
       <div className="stacked-bar-chart">
         <StackedBar data={chartData} onBarClick={setSelectedRegion} />
       </div>
@@ -66,8 +74,11 @@ function Alignment({ responseData, setTab, onRegionUpdate }) {
           setSelectedRegion={setSelectedRegion}
           responseData={responseData}
           setTab={setTab}
+          setIsLoading={setIsLoading}
         />
       )}
+    </div>
+    )}
     </div>
   );
 }
@@ -132,7 +143,8 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab }) => {
+
+const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -173,6 +185,7 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
   };
   /* helpModal */
   return (
+    
     <div className="protein-sequence-container">
       <div className="region-selector">
         {/* helpModal */}
@@ -217,8 +230,10 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
         alignmentIndex={responseData.alignment_index}
         modalData={modalData}  // 모달에 초기값 전달
         setTab={setTab}
+        setIsLoading={setIsLoading}  // setLoading 함수 전달
       />
     </div>
+
   );
 };
 

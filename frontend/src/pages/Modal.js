@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './Modal.css';
 
-const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab }) => {
+const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading}) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const [error, setError] = useState('');
+  // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (modalData) {
@@ -48,12 +49,11 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
       start: parseInt(startIndex, 10),
       end: parseInt(endIndex, 10),
     };
-    /* 3d */
     onRegionUpdate(data.region);
-    /* 3d */
     console.log("Data being sent to backend:", data);
 
     try {
+      setIsLoading(true);
       const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
         method: 'POST',
         headers: {
@@ -67,6 +67,7 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
       }
 
       const responseData = await response.json();
+      setIsLoading(false);
       console.log('Response from server:', responseData);
     } catch (error) {
       console.error('Error sending data:', error);

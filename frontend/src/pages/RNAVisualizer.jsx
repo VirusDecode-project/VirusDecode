@@ -10,7 +10,7 @@ const RNAVisualizer = ({ sequence, structure }) => {
             'allowPanningAndZooming': true,
             'circularizeExternal': true,
             'labelInterval': 10,
-            'initialSize':[500,500]
+            'initialSize':[600,500]
         };
 
         const container = new FornaContainer(containerRef.current, options);
@@ -22,7 +22,7 @@ const RNAVisualizer = ({ sequence, structure }) => {
         };
     }, [sequence, structure]);
 
-    return <div ref={containerRef} style={{ width: '500px', height: '500px' }} />;
+    return <div ref={containerRef} style={{ width: '600px', height: '500px' }} />;
 };
 
 export default RNAVisualizer;
