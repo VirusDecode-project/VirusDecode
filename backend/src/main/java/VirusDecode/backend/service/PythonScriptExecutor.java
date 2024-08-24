@@ -21,15 +21,14 @@ public class PythonScriptExecutor {
     public static ResponseEntity<String> executePythonScript(String jsonFilePath, String... args) {
         try {
             // Python 스크립트 리소스를 로드
-            ClassPathResource pythonResource = new ClassPathResource("bioinformatics/virusdecode.py");
-            if (!pythonResource.exists()) {
-                logger.error("Python 스크립트를 찾을 수 없음: {}", pythonResource.getPath());
+            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+            if (!resource.exists()) {
+                logger.error("Python 스크립트를 찾을 수 없음: {}", resource.getPath());
                 return ResponseEntity.status(404).body("Python script not found");
             }
 
-
             // Python 스크립트의 절대 경로 가져오기
-            String pythonScriptPath = pythonResource.getFile().getAbsolutePath();
+            String pythonScriptPath = resource.getFile().getAbsolutePath();
 
             // 명령어 리스트에 스크립트 경로 및 인자 추가
             List<String> command = new ArrayList<>();
