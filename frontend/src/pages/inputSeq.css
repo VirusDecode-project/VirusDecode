@@ -35,7 +35,7 @@
 .next-page-container.shrink {
   padding-left: 260px;
 } */
-
+/* 
 .next-page {
   margin-top: 1000px;
   bottom: 10px;
@@ -45,18 +45,31 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+} */
+
+.next-page {
+  position: fixed !important; /* 우측 하단 고정을 위해 position을 fixed로 설정 */
+  bottom: 20px !important; /* 하단에서의 거리 */
+  right: 20px !important; /* 우측에서의 거리 */
+  padding: 10px 20px; /* 버튼 안의 패딩 */
+  color: black;
+  background-color: #0fb9af; /* 배경색 지정 */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000; /* 다른 요소 위에 위치하도록 z-index 설정 */
+  width: auto; /* 버튼 폭이 내용을 기준으로 자동 조정되도록 설정 */
+  max-width: 200px; /* 버튼의 최대 너비를 제한 */
+  max-height: 50px;
+  text-align: center; /* 버튼 내 텍스트 중앙 정렬 */
+  white-space: nowrap; /* 버튼 텍스트가 줄바꿈되지 않도록 설정 */
 }
+
 
 .next-page:hover {
   background-color: #0fb9af;
   color: white;
 }
-
-/* .upload-box {
-  border: 2px dashed #ccc;
-  padding: 20px;
-  text-align: center;
-} */
 
 .upload-box {
   border: 2px dashed #ccc;
@@ -195,6 +208,8 @@ body {
 
 .RS-id {
   text-align: left; /* 좌측 정렬 설정 */
+  font-weight: 500;
+  font-size: 19px;
 }
 
 .done-button {
@@ -208,6 +223,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 45px;
 }
 
 .input-field {
@@ -262,6 +278,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  
 }
 .add-sequence-button {
   display: flex;
@@ -322,3 +339,26 @@ textarea {
   margin-left: 20px;
 }
 /* response message ( parkki ) */
+
+svg {
+  /* 비활성화하고 싶은 속성에 값을 설정하지 않으면 기본값으로 돌아감 */
+  display: inline !important;
+  width: auto !important;
+  min-width: auto !important;
+}
+
+.next-button{
+  position: fixed;
+  bottom: 40px; /* 하단에서의 거리 */
+  right: 50px; /* 우측에서의 거리 */
+  background-color: #0fb9af;
+  border: none;
+  border-radius: 10px;
+  width: 150px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.next-button:hover {
+  background-color: #0c9e94;
+}
