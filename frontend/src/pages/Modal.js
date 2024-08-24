@@ -112,7 +112,7 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab }
             </select>
           </label>
           <label>
-            Protein Region:
+           Select Coding Sequence:
             <select value={selectedRegion} onChange={handleRegionChange}>
               <option value="">Select a region</option>
               {Object.keys(alignmentIndex).map((region) => (
