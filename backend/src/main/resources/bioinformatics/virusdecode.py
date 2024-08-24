@@ -73,7 +73,7 @@ def get_pdb_ids_by_sequence(sequence):
         "request_options": {
             "paginate": {
                 "start": 0,
-                "rows": 100
+                "rows": 10
             }
         },
         "return_type": "entry"
@@ -418,8 +418,9 @@ if __name__ == "__main__":
 
 
         # PDB search
-        sequence = alignment_dict[reference_id][alignment_index["S"][0]:alignment_index["S"][1]]
+        sequence = alignment_dict[reference_id][alignment_index["S"][0]:alignment_index["S"][1]].replace("-", "")
 
+        print(sequence)
         pdb_dict = {}
         pdb_ids = get_pdb_ids_by_sequence(sequence)
         pdb_count = 0
