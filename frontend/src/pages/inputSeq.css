@@ -215,8 +215,8 @@ body {
 .done-button {
   background-color: #0fb9af;
   border: none;
-  border-radius: 10px;
-  padding: 10px 20px;
+  border-radius: 8px;
+  padding: 10px 17px;
   font-size: 16px;
   width: 150px;
   height: 38px; /* 높이를 입력 필드와 동일하게 설정 */
@@ -224,6 +224,7 @@ body {
   align-items: center;
   justify-content: center;
   margin-top: 45px;
+  margin-left: 20px;
 }
 
 .input-field {
@@ -316,6 +317,26 @@ textarea {
   width: 100%;
 }
 
+.uploaded-file {
+  text-align: left;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+
+}
+
+.uploaded-file span {
+  flex-grow: 1;
+  margin-right: 10px; 
+  color: #333; 
+}
+
+.delete-icon {
+  color: #646464;
+  font-size: 15px;
+  cursor: pointer;
+  margin-left: 10px; /* 파일명과 삭제 아이콘 사이의 간격 조정 */
+}
 
 
 /* response message ( parkki ) */
