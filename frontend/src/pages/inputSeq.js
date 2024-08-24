@@ -9,7 +9,8 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import uploadIcon from "../image/upload_icon.png";
-import loadingImage from "../image/loading.png";
+// GK - Loading 컴포넌트 추가
+import Loading from '../components/Loading';
 
 function InputSeq({ setUsername }) {
   let navigate = useNavigate();
@@ -28,8 +29,8 @@ function InputSeq({ setUsername }) {
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   let [isLoading, setIsLoading] = useState(false);
-  let [loadingText, setLoadingText] = useState("Analyzing");
   /*parkki */
+
 
   /*parkki */
   const handleDoneSubmit = async (e) => {
@@ -180,10 +181,12 @@ function InputSeq({ setUsername }) {
   return (
     <div>
       {isLoading ? (
-        <div className="loading-container">
-          <img src={loadingImage} alt="Loading..." className="loading-image" />
-          <div className="loading-text">{loadingText}</div>
-        </div>
+        // GK - Loading 컴포넌트로 변경
+        <Loading text="Analyzing"/>
+        // <div className="loading-container">
+        //   <img src={loadingImage} alt="Loading..." className="loading-image" />
+        //   <div className="loading-text">{loadingText}</div>
+        // </div>
       ) : (
         <div>
           <div className="container mt-4" style={{ marginLeft: "75px" }}>
