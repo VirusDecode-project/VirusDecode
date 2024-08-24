@@ -5,10 +5,10 @@
 .sequence-container {
   display: flex;
   flex-direction: column;
-  align-items: center; 
-  margin: 20px auto; 
+  align-items: center;
+  margin: 20px auto;
   position: relative;
-  width: 1000px; 
+  width: 1000px;
 }
 
 
@@ -32,7 +32,7 @@
   font-weight: bold;
   display: flex;
   align-items: center;
-  height: 20px; 
+  height: 20px;
 }
 
 .sequence-boxes {
@@ -61,7 +61,7 @@
 
 .sequence-box.gap,
 .sequence-box.different.gap {
-  background-color: #ffc700; 
+  background-color: #ffc700;
   color: black;
 }
 
@@ -81,7 +81,7 @@
 
 
 .sequence-box:empty {
-  background-color: white; 
+  background-color: white;
 }
 
 .sequence-indexes {
@@ -96,6 +96,23 @@
   text-align: right;
 }
 
+.region-selector-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  /* Ensure it doesn't exceed the width of the sequence-container */
+  margin: 0 auto;
+  /* Center the container within its parent */
+}
+
+.region-selector-container {
+  position: absolute;
+  right: -70px;
+  top: -60px;
+  /* Align to the right of the .region-selector-wrapper */
+  display: flex;
+  align-items: center;
+}
 
 
 .region-selector label {
@@ -130,12 +147,12 @@
 
 .stacked-bar {
   display: flex;
-  width: 1170px; 
+  width: 1170px;
   height: 50px;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   position: relative;
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
 .stacked-bar-segment {
@@ -173,12 +190,18 @@
   border-radius: 6px;
   font-size: 12px;
   z-index: 1000;
-  pointer-events: none; 
+  pointer-events: none;
   white-space: nowrap;
 }
 
 .stacked-bar-container {
   padding: 90px 0 60px 0;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
+}
+
+.help-icon {
+  margin-right: 10px;
+  width: 35px;
+  height: 35px;
 }
