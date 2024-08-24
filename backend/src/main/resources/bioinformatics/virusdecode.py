@@ -39,7 +39,7 @@ def get_metadata(reference_id):
         }
         return metadata
     except HTTPError as e:
-        sys.exit(1)
+        print(f"HTTPError: {e.code} - {e.reason}")
 
 def check_pdb_file_exists(pdb_id):
     """
@@ -73,7 +73,7 @@ def get_pdb_ids_by_sequence(sequence):
         "request_options": {
             "paginate": {
                 "start": 0,
-                "rows": 10
+                "rows": 100
             }
         },
         "return_type": "entry"
@@ -264,9 +264,9 @@ class SequenceAnalysis:
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
 
-        # else:
-            # print("Error executing command")
-            # print(stderr)
+        else:
+            print("Error executing command")
+            print(stderr)
 
     def set_protParam(self):
         # Protein sequence to analyze
@@ -340,27 +340,19 @@ class SequenceAnalysis:
         self.set_protParam()
 
 
-
-
 if __name__ == "__main__":
     option = int(sys.argv[1])
 
     # metadata
     if option == 1:
         reference_id = sys.argv[2]
-
         os.makedirs(current_dir+"/data", exist_ok=True)
-
         metadata = get_metadata(reference_id)
-        
         save_json(metadata, "metadata.json")  # JSON 파일로 저장
-#         print(json.dumps(metadata))
-
 
     # alignment
     elif option == 2:
         variant_sequences = {}
-
         # read fasta file
         for record in SeqIO.parse(current_dir+"/data/combined.fasta", "fasta"):
             variant_sequences[record.id] = record.seq
@@ -382,7 +374,6 @@ if __name__ == "__main__":
         }
 
         save_json(alignment_data, "alignment_data.json")  # JSON 파일로 저장
-#         print(json.dumps(alignment_data))
 
     # linearDesign, protparam data
     elif option == 3:
@@ -414,29 +405,22 @@ if __name__ == "__main__":
         }
 
         save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
-#         print(json.dumps(linearDesign_data))
-
 
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index["S"][0]:alignment_index["S"][1]].replace("-", "")
 
-        print(sequence)
         pdb_dict = {}
         pdb_ids = get_pdb_ids_by_sequence(sequence)
         pdb_count = 0
 
         for pdb_id in pdb_ids:
             if check_pdb_file_exists(pdb_id):
-                print(f"PDB file {pdb_id} exists.")
                 title = get_pdb_info(pdb_id)
                 if title:
                     pdb_dict[pdb_id] = title
                 pdb_count += 1
-            else:
-                print(f"PDB file {pdb_id} does not exist.")
             
             if pdb_count == 10:
                 break
 
         save_json(pdb_dict, "pdb_data.json")
-        # print(json.dumps(pdb_dict))
