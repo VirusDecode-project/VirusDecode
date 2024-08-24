@@ -50,11 +50,8 @@ public class AnalysisController {
 
     // /analysis/render3d 엔드포인트에 대한 GET 요청 처리
     @GetMapping("/render3d")
-    public ResponseEntity<Map<String, String>> return_pdb_list() {
-        // Python 스크립트를 실행하여 PDB 데이터 리스트를 얻음
-        Map<String, String> pdbResult = PythonScriptExecutor.executePythonScriptAsStringMap("bioinformatics/data/pdb_data.json","4");
-
-        // 결과를 상태 코드 200 OK와 함께 반환
-        return ResponseEntity.ok(pdbResult);
+    public ResponseEntity<String> return_pdb_list() {
+        // JSON 파일을 읽어서 반환
+        return jsonFileService.readJsonFile("bioinformatics/data/pdb_data.json");
     }
 }

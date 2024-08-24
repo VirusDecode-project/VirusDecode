@@ -17,6 +17,7 @@ public class JsonFileService {
             ClassPathResource resource = new ClassPathResource(filePath);
             String jsonContent = Files.readString(resource.getFile().toPath());  // 파일 내용을 문자열로 읽기
 
+//            System.out.println(jsonContent);
             // JSON 데이터를 HTTP 응답으로 반환
             return ResponseEntity.ok(jsonContent);
         } catch (IOException e) {
