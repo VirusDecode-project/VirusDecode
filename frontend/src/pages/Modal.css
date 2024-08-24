@@ -16,7 +16,7 @@
   background: #fff;
   padding: 24px; 
   border-radius: 12px; 
-  width: 600px;
+  width: 550px;
   max-width: 100%;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -47,12 +47,12 @@
 }
 
 .modal-inputs input[type="number"] {
-  width: 50%; /* Amino Acid Position 입력 필드의 폭을 50%로 줄임 */
+  width: 45%; /* Amino Acid Position 입력 필드의 폭을 50%로 줄임 */
   height: 50%;
 }
 
 .modal-inputs select {
-  width: 60%; /* Sublineage와 Protein Region의 선택 창 너비를 60%로 설정 */
+  width: 45%; /* Sublineage와 Protein Region의 선택 창 너비를 60%로 설정 */
 }
 
 .modal-button-group {
