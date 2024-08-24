@@ -2,30 +2,39 @@ import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
 import Modal from './Modal';
 
+let lastHue = 0;
+
 const generatePastelColor = () => {
-  const hue = Math.floor(Math.random() * 360);
+  // 이전 색상과의 최소 차이를 설정 (예: 60도 이상 차이)
+  const minDifference = 60;
+
+  // 무작위로 생성된 hue 값이 이전 hue 값과 충분히 다르지 않으면 다시 생성
+  let hue;
+  do {
+    hue = Math.floor(Math.random() * 360);
+  } while (Math.abs(hue - lastHue) < minDifference);
+
+  lastHue = hue;
+
   const saturation = 70 + Math.floor(Math.random() * 10);
   const lightness = 85 + Math.floor(Math.random() * 10);
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment({responseData, setTab}) {
+
+function Alignment({ responseData, setTab }) {
   const [chartData, setChartData] = useState([]);
-  const [selectedRegion, setSelectedRegion] = useState("ORF1ab");
-  
-  // GK
-  // const [responseData, setResponseData] = useState(null);
-  const [isModalOpen, setModalOpen] = useState(false);
-  const [selectedSequence, setSelectedSequence] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState('');
 
   useEffect(() => {
     if (responseData) {
+      // `alignment_index`에서 첫 번째 키를 가져와서 초기값으로 설정
+      const firstRegion = Object.keys(responseData.alignment_index)[0];
+      setSelectedRegion(firstRegion);
       try {
         console.log(responseData);
-
-        // alignment_index 데이터를 사용하여 datasets 생성
         const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
-          const value = end - start;  // 서열 길이 계산
+          const value = end - start;  
           return {
             label,
             value,
@@ -35,14 +44,13 @@ function Alignment({responseData, setTab}) {
           };
         });
 
-        // 차트 데이터 업데이트
         setChartData(data);
       } catch (error) {
         console.error('Error processing response data:', error);
       }
     }
-  }, [responseData]);  // responseData가 변경될 때마다 실행
-  
+  }, [responseData]); 
+
   return (
     <div>
       <div className="stacked-bar-chart">
@@ -156,7 +164,7 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab })
   return (
     <div className="protein-sequence-container">
       <div className="region-selector">
-        <label htmlFor="region-select">Select Protein Region: </label>
+        <label htmlFor="region-select">Select Coding Sequence: </label>
         <select id="region-select" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
           {Object.keys(responseData.alignment_index).map(region => (
             <option key={region} value={region}>
@@ -218,6 +226,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               key={index}
               className={`sequence ${selectedSequence && seq.label === selectedSequence.label ? 'selected' : ''}`}
               onClick={() => onSequenceClick(seq)}
+              style={index === 0 ? { borderBottom: '2px solid #aaaaaa', paddingBottom: '6px', marginBottom: '6px' } : {}}
             >
               <div className="sequence-label">{seq.label}</div>
               <div className="sequence-boxes">
@@ -251,6 +260,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
     </div>
   );
 };
+
 
 
 

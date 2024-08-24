@@ -41,42 +41,37 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab }
     return selectedSeq ? selectedSeq.sequence.length : 0;
   };
 
+  const handleConvertButton = async () => {
+    const data = {
+      region: selectedRegion,
+      varientName: selectedGenome,
+      start: parseInt(startIndex, 10),
+      end: parseInt(endIndex, 10),
+    };
 
-  // 백엔드 요청을 처리하는 함수
-const handleConvertButton = async () => {
-  // 데이터 객체 생성
-  const data = {
-    region: selectedRegion,   // region 필드에 해당하는 값
-    varientName: selectedGenome, // varientName 필드에 해당하는 값
-    start: parseInt(startIndex, 10),  // start 필드에 해당하는 값 (숫자형 변환)
-    end: parseInt(endIndex, 10),      // end 필드에 해당하는 값 (숫자형 변환)
+    console.log("Data being sent to backend:", data);
+
+    try {
+      const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const responseData = await response.json();
+      console.log('Response from server:', responseData);
+    } catch (error) {
+      console.error('Error sending data:', error);
+    }
   };
 
-  console.log("Data being sent to backend:", data); // 데이터 전송 전 로그 출력
-  
-  try {
-    const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data), // JSON으로 변환된 데이터 객체
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const responseData = await response.json();
-    console.log('Response from server:', responseData);
-  } catch (error) {
-    console.error('Error sending data:', error);
-    // 사용자에게 에러 메시지를 표시하는 로직을 추가할 수 있음
-  }
-};
-
-
-const handleNext = async () => {
+  const handleNext = async () => {
     const start = parseInt(startIndex, 10);
     const end = parseInt(endIndex, 10);
     const maxEndIndex = getMaxEndIndex();
@@ -96,7 +91,6 @@ const handleNext = async () => {
       return;
     }
 
-    // 백엔드로 데이터 전송
     await handleConvertButton();
     setTab(1);
     onClose();
@@ -108,7 +102,7 @@ const handleNext = async () => {
         <h2>Select Amino Acid Number for {selectedGenome}</h2>
         <div className="modal-inputs">
           <label>
-            Genome:
+            Sublineage:
             <select value={selectedGenome} onChange={handleGenomeChange}>
               {sequences.map((seq) => (
                 <option key={seq.label} value={seq.label}>
@@ -129,7 +123,7 @@ const handleNext = async () => {
             </select>
           </label>
           <label>
-            Start Index:
+            Start Amino Acid Position:
             <input
               type="number"
               value={startIndex}
@@ -138,7 +132,7 @@ const handleNext = async () => {
             />
           </label>
           <label>
-            End Index:
+            End Amino Acid Position:
             <input
               type="number"
               value={endIndex}
