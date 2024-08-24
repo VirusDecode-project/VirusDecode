@@ -226,7 +226,7 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
                     {line.map((charObj, charIndex) => (
                       <div 
                         key={charIndex} 
-                        className={`sequence-box ${charObj.different ? 'different' : ''} ${charObj.char === '-' ? 'gap' : ''}`}
+                        className={`sequence-box ${charObj.char === '-' ? 'gap' : ''} ${charObj.different ? 'different' : ''}`}
                       >
                         {charObj.char}
                       </div>
@@ -237,12 +237,11 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
             </div>
           ))}
           <div className="sequence-indexes">
-            {Array.from({ length: 5 }, (_, i) => {
-              // Start indices from 1 relative to the start of the region
-              const startPos = (chunkIndex * 50) + ((i + 1) * 10);
+            {Array.from({ length: 6 }, (_, i) => {
+              const startPos = i === 0 ? '' : ((chunkIndex * 50) + (i * 10)).toString().padStart(2, '0');
               return (
                 <div key={i} className="sequence-index">
-                  {startPos <= (regionIndices[1] - regionIndices[0]) ? startPos : '---'}
+                  {startPos || ' '}
                 </div>
               );
             })}
@@ -252,6 +251,9 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
     </div>
   );
 };
+
+
+
 
 // 서열을 나누는 함수
 const splitSequences = (sequences, referenceSequence, regionIndices) => {
