@@ -5,16 +5,17 @@
 .sequence-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin: 20px;
+  align-items: center; 
+  margin: 20px auto; 
   position: relative;
+  width: 1000px; 
 }
+
 
 .sequence-chunk {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  margin-left: 50px; 
 }
 
 .sequence {
@@ -31,7 +32,7 @@
   font-weight: bold;
   display: flex;
   align-items: center;
-  height: 20px; /* .sequence-box의 높이와 맞추기 */
+  height: 20px; 
 }
 
 .sequence-boxes {
@@ -60,7 +61,7 @@
 
 .sequence-box.gap,
 .sequence-box.different.gap {
-  background-color: #ffffff; /* '-' 문자가 있는 박스의 배경색을 흰색으로 설정 */
+  background-color: #ffc700; 
   color: black;
 }
 
@@ -80,24 +81,22 @@
 
 
 .sequence-box:empty {
-  background-color: white; /* 범위를 벗어난 경우 흰색 칸 */
+  background-color: white; 
 }
 
 .sequence-indexes {
   display: flex;
-  justify-content: space-between; /* 인덱스들 사이의 간격을 균일하게 */
-  width: 1000px; /* 고정 너비 설정 */
-  margin-top: 5px; /* 인덱스 위에 약간의 공간 추가 */
+  justify-content: space-between;
+  width: 1000px;
+  margin-top: 5px;
   font-size: 15px;
 }
 
 .sequence-index {
-  text-align: right; /* 텍스트를 오른쪽에 정렬 */
+  text-align: right;
 }
 
-.protein-sequence-container {
-  padding-left: 70px; 
-}
+
 
 .region-selector label {
   font-family: Arial, sans-serif;
@@ -131,11 +130,12 @@
 
 .stacked-bar {
   display: flex;
-  width: 100%;
+  width: 1170px; 
   height: 50px;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   position: relative;
+  box-sizing: border-box; 
 }
 
 .stacked-bar-segment {
@@ -178,5 +178,7 @@
 }
 
 .stacked-bar-container {
-  padding: 90px 100px 60px 130px;
+  padding: 90px 0 60px 0;
+  display: flex;
+  justify-content: center; 
 }
