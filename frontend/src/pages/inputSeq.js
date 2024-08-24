@@ -18,7 +18,8 @@ function InputSeq({ setUsername }) {
   const [editingFileIndex, setEditingFileIndex] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [sequences, setSequences] = useState([
-    { id: 1, name: "Sequence 1", value: "", visible: true },
+    //GK name에서 공백 제거
+    { id: 1, name: "Sequence1", value: "", visible: true },
   ]);
   const [editingId, setEditingId] = useState(null);
   const [nextId, setNextId] = useState(2);
@@ -102,6 +103,8 @@ function InputSeq({ setUsername }) {
     };
 
     try {
+      // GK - Loading 위치 이동
+      setIsLoading(true);
       const response = await fetch("http://localhost:8080/inputSeq/alignment", {
         method: "POST",
         headers: {
@@ -110,12 +113,13 @@ function InputSeq({ setUsername }) {
         body: JSON.stringify(jsonData),
       });
 
-      setIsLoading(true);
       const result = await response.json();
       setIsLoading(false);
       // console.log("분석이 끝났습니다!"+result);
       // window.alert("분석이 끝났습니다!\n"+JSON.stringify(result)); // 응답을 경고창으로 출력
-      window.alert("분석이 끝났습니다!");
+      
+      // GK - Loading 위치 이동
+      // window.alert("분석이 끝났습니다!");
       navigate("/analysis"); // 서버 응답의 body를 전달
     } catch (error) {
       console.error("요청 중 오류 발생:", error);
@@ -167,7 +171,8 @@ function InputSeq({ setUsername }) {
     event.preventDefault();
     setSequences([
       ...sequences,
-      { id: nextId, name: `Sequence ${nextId}`, value: "", visible: true },
+      //GK name에서 공백 제거
+      { id: nextId, name: `Sequence${nextId}`, value: "", visible: true },
     ]);
     setNextId(nextId + 1);
   };
