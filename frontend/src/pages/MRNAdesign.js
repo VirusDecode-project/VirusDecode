@@ -89,31 +89,40 @@ function MRNAdesign() {
       <p className="detail">
         The detailed description of mRNA conversion can be found{" "}
         <a
-          href="https://www.nature.com/articles/s41586-023-06127-z"
+          href="https://github.com/LinearDesignSoftware/LinearDesign"
           target="_blank"
         >
           here.
         </a>
       </p>
+
+
       <div className="mrna-container">
         <div className="mrna-column">
           {/*visualization 추가*/}
-          <h2 className="mrna-title">mRNA Visualization</h2>
-          <RNAVisualizer sequence={data.linearDesign.mRNA_sequence} structure={data.linearDesign.mRNA_structure} />
+          <h2 className="mrna-title">mRNA Parameters</h2>
+          <h3 className="mrna-subtitle">mRNA Visualization</h3>
+          <RNAVisualizer
+            sequence={data.linearDesign.mRNA_sequence}
+            structure={data.linearDesign.mRNA_structure}
+          />
           {/*visualization 끝*/}
-          <h2 className="mrna-title">mRNA Sequence</h2>
+
+        </div>
+
+        <div className="mrna-column">
+          <h3 className="mrna-subtitle-margintop">mRNA Sequence</h3>
           <div className="mrna-sequence">
             {showFullSequence
-              ? formatSequence(data.linearDesign.mRNA_sequence).map((seq, index) => (
-                  <div key={index}>{seq}</div>
-                ))
+              ? formatSequence(data.linearDesign.mRNA_sequence).map(
+                  (seq, index) => <div key={index}>{seq}</div>
+                )
               : `${data.linearDesign.mRNA_sequence.substring(0, 50)} ...`}
             {!showFullSequence && (
               <span
                 className="show-toggle"
                 onClick={() => setShowFullSequence(true)}
               >
-                
                 show
               </span>
             )}
@@ -126,13 +135,13 @@ function MRNAdesign() {
               </span>
             )}
           </div>
+          <h3 className="mrna-subtitle">mRNA Structure</h3>
 
-          <h2 className="mrna-title">mRNA Structure</h2>
           <p className="mrna-structure">
             {showFullStructure
-              ? formatStructure(data.linearDesign.mRNA_structure).map((seq, index) => (
-                  <div key={index}>{seq}</div>
-                ))
+              ? formatStructure(data.linearDesign.mRNA_structure).map(
+                  (seq, index) => <div key={index}>{seq}</div>
+                )
               : `${data.linearDesign.mRNA_structure.substring(0, 50)} `}
             {!showFullStructure && (
               <span
@@ -158,6 +167,13 @@ function MRNAdesign() {
           <h3 className="mrna-subtitle">mRNA CAI</h3>
           <p className="mrna-value">{data.linearDesign.cai}</p>
 
+          
+        </div>
+      </div>
+      <div className="mrna-container">
+        <div className="mrna-column">
+          <h2 className="mrna-title">Protein Parameters</h2>
+
           <h3 className="mrna-subtitle">Molecular Weight</h3>
           <p className="mrna-value">{data.protParam.molecular_weight} Da</p>
 
@@ -182,7 +198,6 @@ function MRNAdesign() {
           <h3 className="mrna-subtitle">Aromaticity</h3>
           <p className="mrna-value">{data.protParam.aromaticity} %</p>
         </div>
-
         <div className="mrna-column">
           <table className="amino-acid-table">
             <thead>
@@ -194,26 +209,25 @@ function MRNAdesign() {
             </thead>
             <tbody>
               {data && data.protParam.amino_acid_count ? (
-                Object.keys(data.protParam.amino_acid_count).map((amino, index) => (
-                  <tr key={index}>
-                    <td>{amino}</td>
-                    <td>{data.protParam.amino_acid_count[amino]}</td>
-                    <td>{(data.protParam.amino_acid_percent[amino] * 100).toFixed(2)}</td> 
-                  </tr>
-                ))
+                Object.keys(data.protParam.amino_acid_count).map(
+                  (amino, index) => (
+                    <tr key={index}>
+                      <td>{amino}</td>
+                      <td>{data.protParam.amino_acid_count[amino]}</td>
+                      <td>
+                        {(
+                          data.protParam.amino_acid_percent[amino] * 100
+                        ).toFixed(2)}
+                      </td>
+                    </tr>
+                  )
+                )
               ) : (
                 <tr>
                   <td colSpan="2">Loading...</td>
                 </tr>
               )}
 
-              {/* {data.Amino_Acid_Data.map((amino, index) => (
-                <tr key={index}>
-                  <td>{amino.Amino_Acid}</td>
-                  <td>{amino.Count}</td>
-                  <td>{amino.Percent}</td>
-                </tr>
-              ))} */}
             </tbody>
           </table>
         </div>
