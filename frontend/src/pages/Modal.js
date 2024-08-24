@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Modal.css';
 
-
-const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading}) => {
+const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading}) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -50,7 +49,7 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, 
       start: parseInt(startIndex, 10),
       end: parseInt(endIndex, 10),
     };
-
+    onRegionUpdate(data.region);
     console.log("Data being sent to backend:", data);
 
     try {
@@ -116,7 +115,7 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, 
             </select>
           </label>
           <label>
-           Select Coding Sequence:
+            Select Coding Sequence:
             <select value={selectedRegion} onChange={handleRegionChange}>
               <option value="">Select a region</option>
               {Object.keys(alignmentIndex).map((region) => (
