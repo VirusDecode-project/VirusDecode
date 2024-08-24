@@ -1,0 +1,20 @@
+/* Loading.css */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loading-image {
+  width: 300px;
+  height: 300px;
+  animation: loading-spin infinite 20s linear;
+}
+
+.loading-text {
+  margin-top: 24px;
+  font-size: 2em;
+  text-align: center;
+}
