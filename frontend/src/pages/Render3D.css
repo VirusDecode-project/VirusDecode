@@ -20,12 +20,14 @@
   left: 0;
 }
 
-h4 {
+.renderTitle {
   position: absolute;
   top: 0;
   left: 0;
   margin-top: 10px;
   margin-left: 5px;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 .style {
@@ -36,11 +38,12 @@ h4 {
   margin-left: 5px;
 }
 
-h5 {
+.PDBname {
   position: absolute;
   bottom: 0;
   right: 0;
   color: #999;
+  font-size: 20px;
 }
 
 .right-column {
@@ -49,34 +52,23 @@ h5 {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 320px;
+  width: 100px;
   position: relative;
-  /* 리스트 넓이 조정 */
 }
 
 .list-header {
   display: flex;
   justify-content: space-between;
-  padding: 12px 3px;
-  /* 리스트 항목과 동일한 패딩 설정 */
+  padding: 12px 8px;
   border-bottom: 2px solid #333;
   font-weight: bold;
-  background-color: #f9f9f9;
+  color: #333;
+  font-size: 14px;
 }
 
 .header-item {
   flex: 1;
   text-align: center;
-}
-
-.header-item:first-child {
-  flex: 1;
-  /* PDB ID gets less space */
-}
-
-.header-item:last-child {
-  flex: 2;
-  /* Score gets more space */
 }
 
 ul {
@@ -88,15 +80,16 @@ ul {
 li {
   display: flex;
   justify-content: space-between;
-  padding: 12px 3px;
-  /* 헤더와 일치하는 패딩 */
-  border-bottom: 1px solid #ccc;
-  transition: background-color 0.3s ease;
+  align-items: center;
+  padding: 12px 8px;
+  border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
+  position: relative;
 }
 
 li:hover {
-  background-color: #f0f0f0;
+  background-color: #e8e8e8;
 }
 
 .list-item {
@@ -105,12 +98,17 @@ li:hover {
 
 .list-item:first-child {
   flex: 1;
-  /* PDB ID gets less space */
 }
 
-.list-item:last-child {
-  flex: 2;
-  /* Score gets more space */
+.custom-tooltip {
+  position: fixed;
+  z-index: 2;
+  pointer-events: none;
+  background-color: white;
+  font-size: 18px;
+  padding: 8px;
+  font-family: sans-serif;
+  border-radius: 5px;
 }
 
 .representation-container select {
