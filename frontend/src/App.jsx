@@ -13,7 +13,6 @@ function App() {
   let location = useLocation();
   const [show, setShow] = useState(false);
   const [isHome, setIsHome] = useState(true);
-  const [username, setUsername] = useState(null);
   const [history, setHistory] = useState([]);
   const [activeHistoryItem, setActiveHistoryItem] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -299,7 +298,6 @@ function App() {
               VirusDecode
             </span>
           </div>
-          {username && <span className="username-display">{username}</span>}
         </div>
         <Routes>
           <Route
