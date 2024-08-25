@@ -1,78 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Viztein from 'viztein';
 import "./Render3D.css";
-import helpIcon from '../image/help.png';
-import helpImg1 from '../image/helpImg1.png'
-import helpImg2 from '../image/helpImg2.png'
-import helpImg3 from '../image/helpImg3.png'
-import HelpModal from './HelpModal';
 
-function Render3D() {
-  //const [PDBids, setPDBids] = useState(['8VCI', '8UYS', '7O7Y', '7O7Z', '7O81', '7O80']); //test
-  const [renderTitle, setRenderTitle] = useState("example");
-  const [PDBids, setPDBids] = useState([]); //test2 (backend)
-  /*
-      GK
-      1. selectedPDBid: PDBids 중 첫 번째 값으로 초기화 필요합니다.
-      2. RCSB PDB API endpoint에서 받아온 json 값에 socre도 있던데, 함께 받아와서 아래에 표시해주면 좋을 것 같습니다.
-      KY
-      --> 완료
-  */
+const Render3D = ({ region }) => {
+  const [PDBids, setPDBids] = useState([]);
   const [selectedPDBid, setSelectedPDBid] = useState("");
   const [PDBInfo, setPDBInfo] = useState([]);
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
-  //------------------------------helpIcon-----------------------//
-  const [isHelpModalOpen, setHelpModalOpen] = useState(false);
-  //------------------------------helpIcon-----------------------//
+  const [scrollIndex, setScrollIndex] = useState(0);
+  const itemsToShow = 3;
+  const listRef = useRef(null);
 
-  /*useEffect(() => {
-    const fetchData = async () => {
-      const url = 'url'; // backend url
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.status === 'success') {
-          setPDBids(data.PDBids); 
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);*/
-
-
-  /* backend 추가 코드 시작 */
   useEffect(() => {
-    // 서버로 GET 요청을 보내고, 응답을 받아와서 상태로 설정
     const fetchPDBids = async () => {
       try {
-        const response = await fetch('http://localhost:8080/analysis/render3d'); // 서버의 엔드포인트로 요청
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.statusText}`);
+        const serverResponse = await fetch('http://localhost:8080/analysis/re-render3d');
+        if (!serverResponse.ok) {
+          const errorMessage = await serverResponse.text();
+          throw new Error(errorMessage);
         }
-        const PDBlist = await response.json(); // JSON 객체를 받아옴
-        const keys = Object.keys(PDBlist);
+        const responseData = await serverResponse.json();
+
+        const keys = Object.keys(responseData);
         setPDBids(keys);
-        // value 값만 리스트로 모아서 상태에 저장
-        const values = Object.values(PDBlist);
-        setPDBInfo(values); // value들만 저장
-        // 리스트의 첫 번째 값으로 PDB id 초기화
+        const values = Object.values(responseData);
+        setPDBInfo(values);
+
         if (keys.length > 0) {
           setSelectedPDBid(keys[0]);
         }
-        // 백엔드에서 가져온 값으로 title 지정
-        // setRenderTitle(title);
       } catch (error) {
-        console.error('Error fetching PDB IDs:', error);
+        console.error("An error occurred during the request: ", error.message);
       }
     };
-
-    fetchPDBids(); // 데이터 가져오기
+    fetchPDBids();
   }, []);
-  /* backend 추가 코드 끝 */
 
   const viewportStyle = {
     width: '900px',
@@ -81,7 +45,7 @@ function Render3D() {
 
   const refData = {
     filename: `https://files.rcsb.org/download/${selectedPDBid}.pdb`,
-    ...(representation !== "default" && { // style 지정
+    ...(representation !== "default" && {
       config: [{
         type: 'addRepresentation',
         input: representation
@@ -104,7 +68,7 @@ function Render3D() {
     const exists = await checkPDBFileExists(pdbUrl);
     if (exists) {
       setSelectedPDBid(id);
-      setError(""); // 파일이 존재하므로 에러 메시지를 지웁니다.
+      setError("");
     } else {
       setError(`PDB file ${id}.pdb does not exist.`);
     }
@@ -123,44 +87,21 @@ function Render3D() {
     setTooltip({ visible: false, text: '', x: 0, y: 0 });
   };
 
-  const vizteinKey = `${selectedPDBid}-${representation}`; // PDBid 또는 style 변경 시 렌더링 업데이트에 필요한 key
-  //------------------------------helpIcon-----------------------//
-  const toggleHelpModal = () => {
-    setHelpModalOpen(!isHelpModalOpen);
+  const handleArrowClick = (direction) => {
+    if (direction === 'left' && scrollIndex > 0) {
+      setScrollIndex(scrollIndex - 1);
+    } else if (direction === 'right' && scrollIndex < PDBids.length - itemsToShow) {
+      setScrollIndex(scrollIndex + 1);
+    }
   };
-  //------------------------------helpIcon-----------------------//
+
+  const vizteinKey = `${selectedPDBid}-${representation}`;
+  const transformValue = -(scrollIndex * 150);
+
   return (
     <div className='reference3D'>
-      <div className="help-icon-container">
-        <img
-          className="help-icon"
-          src={helpIcon}
-          onClick={toggleHelpModal}
-          style={{ cursor: "pointer" }}
-        />
-      </div>
-      <HelpModal
-        isOpen={isHelpModalOpen}
-        onClose={toggleHelpModal}
-        content={
-          <div>
-            <p className='helpTitle'>mRNA Conversion Instructions</p>
-            <p className='helpLevel'>1. Select CDS</p>
-            <p className='helpContents'>Click on the CDS you wish to convert for mRNA design.</p>
-            <img className='helpImageWide' src={helpImg1} />
-            <p className='helpLevel'>2. Choose sublineage and input amino acid range</p>
-            <p className='helpContents'>- Click on the appropriate sublineage from the initial input sequence.</p>
-            <p className='helpContents'>- Enter the start and end positions for the amino acids.</p>
-            <p className='helpWarnning'>*Note: Do not exceed 500 amino acids.</p>
-            <img className='helpImage' src={helpImg2} />
-            <p className='helpLevel'>3. Convert</p>
-            <p className='helpContents'>Click the "Convert" button to proceed with the mRNA design.</p>
-            <img className='helpImage' src={helpImg3} />
-          </div>
-        }
-      />
       <div className='left-column'>
-        <p className='renderTitle'>{renderTitle}</p>
+        <p className='renderTitle'>{region}</p>
         <div className='representation-container'>
           <select
             className="style"
@@ -179,18 +120,23 @@ function Render3D() {
         <div className='list-header'>
           <span className='header-item'>PDB ID</span>
         </div>
-        <ul>
-          {PDBids && PDBids.map((id, index) => (
-            <li
+        <div className='list-container'>
+          {PDBids.map((id, index) => (
+            <div
               key={id}
+              className="list-row"
               onClick={() => handlePDBSelection(id)}
-              onMouseOver={(e) => handleMouseOver(e, PDBInfo[index])} // 이곳에 PDB 정보가 들어감
+              onMouseOver={(e) => handleMouseOver(e, PDBInfo[index])}
               onMouseOut={handleMouseOut}
             >
-              <span className='list-item'>{id}</span>
-            </li>
+              <div className="list-item">{id}</div>
+            </div>
           ))}
-        </ul>
+        </div>
+        <div className='arrow-container'>
+          <div className='arrow arrow-left' onClick={() => handleArrowClick('left')}>◀</div>
+          <div className='arrow arrow-right' onClick={() => handleArrowClick('right')}>▶</div>
+        </div>
         {tooltip.visible && (
           <div
             className="custom-tooltip"
@@ -200,6 +146,8 @@ function Render3D() {
           </div>
         )}
         {error && <div className="error-message">{error}</div>}
+
+
       </div>
     </div>
   );

@@ -12,21 +12,22 @@ function MRNAdesign() {
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/analysis/re-mrnadesign', {
+        const serverResponse = await fetch('http://localhost:8080/analysis/re-mrnadesign', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
         });
   
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+        if (!serverResponse.ok) {
+          const errorMessage = await serverResponse.text();
+          throw new Error(errorMessage);
         }
   
-        const jsonData = await response.json();
-        setData(jsonData); // JSON 데이터를 상태로 설정
+        const responseData = await serverResponse.json();
+        setData(responseData); // JSON 데이터를 상태로 설정
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("An error occurred during the request: ", error.message);
       }
     };
     fetchJsonData();

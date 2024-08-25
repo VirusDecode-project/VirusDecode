@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
 import Modal from './Modal';
+import helpIcon from '../image/help.png';
+import HelpModal from './HelpModal';
 
 // GK - Loading 컴포넌트 추가
 import Loading from '../components/Loading';
@@ -25,7 +27,7 @@ const generatePastelColor = () => {
 };
 
 
-function Alignment({ responseData, setTab }) {
+function Alignment({ responseData, setTab, onRegionUpdate }) {
   const [chartData, setChartData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +40,7 @@ function Alignment({ responseData, setTab }) {
       try {
         console.log(responseData);
         const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
-          const value = end - start;  
+          const value = end - start;
           return {
             label,
             value,
@@ -53,7 +55,7 @@ function Alignment({ responseData, setTab }) {
         console.error('Error processing response data:', error);
       }
     }
-  }, [responseData]); 
+  }, [responseData]);
 
   return (
     <div>
@@ -67,6 +69,7 @@ function Alignment({ responseData, setTab }) {
       </div>
       {responseData && (
         <ProteinSeq
+          onRegionUpdate={onRegionUpdate}
           selectedRegion={selectedRegion}
           setSelectedRegion={setSelectedRegion}
           responseData={responseData}
@@ -140,11 +143,15 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading }) => {
+
+const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState({ genome: '', protein: '' });
+  /* helpModal */
+  const [isHelpModalOpen, setHelpModalOpen] = useState(false);
+  /* helpModal */
 
   useEffect(() => {
     if (responseData) {
@@ -172,32 +179,53 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab, s
     });
     setModalOpen(true);
   };
-
+  /* helpModal */
+  const toggleHelpModal = () => {
+    setHelpModalOpen(!isHelpModalOpen);
+  };
+  /* helpModal */
   return (
     
     <div className="protein-sequence-container">
       <div className="region-selector">
-        <label htmlFor="region-select">Select Coding Sequence: </label>
-        <select id="region-select" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
-          {Object.keys(responseData.alignment_index).map(region => (
-            <option key={region} value={region}>
-              {region}
-            </option>
-          ))}
-        </select>
+        {/* helpModal */}
+        <div className='region-selector-wrapper'>
+          <div className='region-selector-container'>
+            <img
+              className="help-icon"
+              src={helpIcon}
+              onClick={toggleHelpModal}
+              style={{ cursor: "pointer" }}
+              alt="Help"
+            />
+            <label htmlFor="region-select">Select Coding Sequence: </label>
+            <select id="region-select" value={selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}>
+              {Object.keys(responseData.alignment_index).map(region => (
+                <option key={region} value={region}>
+                  {region}
+                </option>
+              ))}
+            </select>
+          </div>
+          <HelpModal
+            isOpen={isHelpModalOpen}
+            onClose={toggleHelpModal} />
+          {/* helpModal */}
+        </div>
       </div>
       <div>
-        <SequenceDisplay 
-          sequences={sequences} 
+        <SequenceDisplay
+          sequences={sequences}
           referenceSequence={regionSequence}
-          onSequenceClick={handleSequenceClick} 
+          onSequenceClick={handleSequenceClick}
           selectedSequence={selectedSequence}
           regionIndices={regionIndices}
         />
       </div>
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setModalOpen(false)} 
+      <Modal
+        onRegionUpdate={onRegionUpdate}
+        isOpen={isModalOpen}
+        onClose={() => setModalOpen(false)}
         sequences={sequences}
         alignmentIndex={responseData.alignment_index}
         modalData={modalData}  // 모달에 초기값 전달
@@ -213,7 +241,7 @@ const ProteinSeq = ({ selectedRegion, setSelectedRegion, responseData, setTab, s
 const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
   useEffect(() => {
     const labels = document.querySelectorAll('.sequence-label');
-    
+
     let maxWidth = 0;
     labels.forEach(label => {
       const labelWidth = label.offsetWidth;
@@ -248,8 +276,8 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
                 {seq.lines.map((line, lineIndex) => (
                   <div key={lineIndex} className="sequence-line">
                     {line.map((charObj, charIndex) => (
-                      <div 
-                        key={charIndex} 
+                      <div
+                        key={charIndex}
                         className={`sequence-box ${charObj.char === '-' ? 'gap' : ''} ${charObj.different ? 'different' : ''}`}
                       >
                         {charObj.char}
