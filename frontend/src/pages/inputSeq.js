@@ -53,10 +53,10 @@ function InputSeq({ setUsername }) {
       }
   
       // 서버에서 받은 응답을 텍스트로 처리한 후 JSON으로 파싱
-      const metaData = await serverResponse.json();
+      const responseData = await serverResponse.json();
 
       let formattedMessage = "";
-      for (const [key, value] of Object.entries(metaData)) {
+      for (const [key, value] of Object.entries(responseData)) {
         formattedMessage += `<span class="key">${key}:</span> <span class="value">${value}</span><br />`;
       }
   
@@ -120,7 +120,7 @@ function InputSeq({ setUsername }) {
       const responseData = await serverResponse.json();
 
       setIsLoading(false);
-      navigate("/analysis", { state: { alignmentData: responseData } });
+      navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
     }

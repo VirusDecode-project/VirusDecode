@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Modal.css';
 
-
-const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading}) => {
+const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading}) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -50,12 +49,12 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, 
       start: parseInt(startIndex, 10),
       end: parseInt(endIndex, 10),
     };
-
+    onRegionUpdate(data.region);
     console.log("Data being sent to backend:", data);
 
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
+      const serverResponse = await fetch('http://localhost:8080/analysis/mrnadesign', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,15 +62,16 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, 
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
       }
 
-      const responseData = await response.json();
+      const responseData = await serverResponse.json();
       setIsLoading(false);
       console.log('Response from server:', responseData);
     } catch (error) {
-      console.error('Error sending data:', error);
+      console.error("An error occurred during the request: ", error.message);
     }
   };
 
@@ -116,7 +116,7 @@ const Modal = ({ isOpen, onClose, sequences, alignmentIndex, modalData, setTab, 
             </select>
           </label>
           <label>
-           Select Coding Sequence:
+            Select Coding Sequence:
             <select value={selectedRegion} onChange={handleRegionChange}>
               <option value="">Select a region</option>
               {Object.keys(alignmentIndex).map((region) => (
