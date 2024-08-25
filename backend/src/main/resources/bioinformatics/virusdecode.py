@@ -221,27 +221,36 @@ class SequenceAnalysis:
         self.protParam = []
 
     def run_linear_design(self):
-        start=self.start
+        start=self.start-1
         end=self.end
 
         # Update region
         (idx_start,idx_end) = self.alignment_index[self.gene]
         input_sequence = self.alignment_dict[self.reference_id][idx_start:idx_end]
 
-        gap_count = input_sequence[:start].count("-")
-        start += gap_count
-        end += gap_count
+        while True:
+            initial_gap_count = input_sequence[:start].count("-")
+            updated_start = start + initial_gap_count
+            if updated_start == start:
+                break
+            start = updated_start
+            end += initial_gap_count
 
-        gap_count = input_sequence[start:end].count("-")
-        end += gap_count
+        while True:
+            gap_count_in_range = input_sequence[start:end].count("-")
+            updated_end = end + gap_count_in_range
+            if updated_end > idx_end:
+                end = idx_end
+                break
+            if updated_end == end:
+                break
+            end = updated_end
 
         # Get target sequence
-        input_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
-        input_sequence = input_sequence[start:end].replace("-", "")
-        self.target_sequence = input_sequence
+        target_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
+        self.target_sequence = target_sequence[start:end].replace("-", "")
         
         # Run LinearDesign
-
         # Execute the command and capture the result
         os.chdir(os.path.join(current_dir, "LinearDesign"))
         command = f"echo {input_sequence} | ./lineardesign"
