@@ -48,11 +48,12 @@ elif option == 4:
 
     # source_dir 디렉토리가 존재하는지 확인
     if os.path.exists(source_dir):
-        # data_dir의 모든 파일 삭제
-        for filename in os.listdir(data_dir):
-            file_path = os.path.join(data_dir, filename)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
+        if os.path.exists(data_dir):
+            # data_dir의 모든 파일 삭제
+            for filename in os.listdir(data_dir):
+                file_path = os.path.join(data_dir, filename)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
 
         # source_dir의 모든 파일을 data_dir로 복사
         for filename in os.listdir(source_dir):
@@ -61,6 +62,8 @@ elif option == 4:
                 shutil.copy(file_path, data_dir)
 # get history list
 elif option == 5:
+    data_dir = os.path.join(current_dir, "data")
+    os.makedirs(data_dir, exist_ok=True)
     history_list = os.listdir(os.path.join(current_dir, "history"))
     # JSON으로 변환
     history_json = json.dumps(history_list, indent=4)
