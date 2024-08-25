@@ -135,55 +135,76 @@
   margin-left: auto;
   padding-left: 20px;
 }
-
 .history-item {
+  position: relative;
   padding: 10px;
   transition: background-color 0.3s;
-  position: relative;
   border-radius: 15px;
+  z-index: 1;
 }
-
-.history-item:hover {
+.history-item:hover{
   background-color: lightgray;
   cursor: pointer;
+  z-index: 2; /* Ensure hover state is above default state */
+}
+
+.ellipsis-container {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ellipsis-container:hover {
+  visibility: visible;
 }
 
 .ellipsis-button {
-  position: absolute; /* Position within the history item */
-  right: 10px; /* Right align */
-  top: 50%; /* Center vertically */
-  transform: translateY(-50%);
-  background: none; /* No default background */
-  border: none; /* No border */
-  cursor: pointer; /* Pointer cursor */
-  font-size: 18px; /* Slightly larger font for better visibility */
-  display: none; /* Initially hidden */
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-60%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: none;
 }
 
-.history-item:hover .ellipsis-button {
-  display: block; /* Show on hover */
+.history-item:hover .ellipsis-button,
+.history-item.active .ellipsis-button {
+  display: block;
+  z-index: 2;
 }
 
 .options-menu {
-  position: absolute; /* Position relative to the ellipsis button */
-  right: 30px; /* Align with ellipsis button */
-  top: 50%; /* Align vertically */
-  background: white; /* Background color */
-  border: 1px solid #ccc; /* Border for separation */
-  padding: 5px 10px; /* Padding for better UX */
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  padding: 5px 10px;
   display: flex;
-  flex-direction: column; /* Stack options vertically */
-  gap: 5px; /* Space between options */
+  flex-direction: column;
+  gap: 5px;
+  transform: translateY(-50%);
+  z-index: 1000;
 }
 
 .option-button {
-  background: none; /* No default background */
-  border: none; /* No border */
-  cursor: pointer; /* Pointer cursor */
-  text-align: left; /* Align text left */
-  padding: 5px 0; /* Padding for better click area */
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 5px 0;
 }
 
-.option-button:hover {
-  background-color: #f0f0f0; /* Hover effect */
+.options-modal {
+  position: absolute;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 1000;
 }
