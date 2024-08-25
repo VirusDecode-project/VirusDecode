@@ -4,20 +4,22 @@ import logo from "./image/logo.png";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import InputSeq from "./pages/inputSeq";
 import Analysis from "./pages/analysis";
-import { React, useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import historyIcon from "./image/history.png";
 import editIcon from "./image/edit.png";
 
 function App() {
-
   let navigate = useNavigate();
   let location = useLocation();
 
   const [show, setShow] = useState(false);
   const [isHome, setIsHome] = useState(true);
-  const [username, setUsername] = useState(null); // User name state
-  const [history, setHistory] = useState([]); // State for history items
-  const [activeHistoryItem, setActiveHistoryItem] = useState(null); // State for active history item
+  const [username, setUsername] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [activeHistoryItem, setActiveHistoryItem] = useState(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+
+  const optionsMenuRef = useRef(null);
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -28,16 +30,16 @@ function App() {
       setShow(true);
     }
   }, [location.pathname]);
-  // 백엔드에서 history 리스트 가져오기
+
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const response = await fetch("http://localhost:8080/history/list");
         if (!response.ok) {
-          throw new Error('Failed to fetch history list');
+          throw new Error("Failed to fetch history list");
         }
         const data = await response.json();
-        setHistory(data); // 가져온 데이터를 history 상태로 설정
+        setHistory(data);
       } catch (error) {
         console.error("Error fetching history:", error);
       }
@@ -45,6 +47,24 @@ function App() {
 
     fetchHistory();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        optionsMenuRef.current &&
+        !optionsMenuRef.current.contains(event.target)
+      ) {
+        setActiveHistoryItem(null); // Deactivate the history item
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -53,13 +73,10 @@ function App() {
   };
 
   const handleEditClick = async () => {
-    // Prompt the user for a name
     const name = prompt("Enter a name for the new history item:");
     if (name) {
-      // Backend 호출
       const requestData = { historyName: name };
       try {
-        // GK - Loading 위치 이동
         const serverResponse = await fetch(
           "http://localhost:8080/history/create",
           {
@@ -76,32 +93,28 @@ function App() {
           throw new Error(errorMessage);
         }
 
-        await serverResponse.text()
-        setHistory((prevHistory) => [...prevHistory, name]); // Add the new history item
-        navigate("/inputSeq"); // Navigate to the inputSeq page
-
+        await serverResponse.text();
+        setHistory((prevHistory) => [...prevHistory, name]);
+        navigate("/inputSeq");
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
       }
     }
   };
+
   const handleHistoryClick = async (index) => {
-    // 선택한 history의 세부 정보를 가져오기 위한 함수
-    const historyName = history[index]; // index를 사용하여 선택된 history 항목의 이름을 가져옴
+    const historyName = history[index];
     const requestData = {
-      historyName: historyName
+      historyName: historyName,
     };
     try {
-      const serverResponse = await fetch(
-        `http://localhost:8080/history/get`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        }
-      );
+      const serverResponse = await fetch(`http://localhost:8080/history/get`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
 
       if (!serverResponse.ok) {
         const errorMessage = await serverResponse.text();
@@ -110,29 +123,34 @@ function App() {
 
       const responseData = await serverResponse.json();
       navigate("/analysis", { state: { responseData } });
-
     } catch (error) {
-      console.error("An error occurred while fetching history details: ", error.message);
+      console.error(
+        "An error occurred while fetching history details: ",
+        error.message
+      );
     }
   };
 
-  const handleEllipsisClick = (index) => {
-    // Toggle active history item to show/hide options
-    setActiveHistoryItem(activeHistoryItem === index ? null : index);
+  const handleEllipsisClick = (e, index) => {
+    e.stopPropagation(); // Prevents handleHistoryClick from being triggered
+    const { top, left } = e.currentTarget.getBoundingClientRect(); // Get the position of the clicked button
+    setMenuPosition({
+      top: top + window.scrollY,
+      left: left + e.currentTarget.offsetWidth + 10,
+    }); // Set menu position
+    setActiveHistoryItem(index);
   };
 
   const handleRename = async (index) => {
     const newName = prompt("Enter a new name for the history item:");
     if (newName) {
-
-      const historyName = history[index]; // 선택한 history의 현재 이름 가져오기
+      const historyName = history[index];
       const requestData = {
-        historyName: historyName, // 기존 이름을 포함
-        newName: newName, // 새 이름
+        historyName: historyName,
+        newName: newName,
       };
 
       try {
-        // GK - Loading 위치 이동
         const serverResponse = await fetch(
           "http://localhost:8080/history/rename",
           {
@@ -149,21 +167,20 @@ function App() {
           throw new Error(errorMessage);
         }
 
-        await serverResponse.text()
+        await serverResponse.text();
         setHistory((prevHistory) =>
           prevHistory.map((item, i) => (i === index ? newName : item))
         );
-
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
       }
     }
-    setActiveHistoryItem(null); // Hide options after renaming
+    setActiveHistoryItem(null);
   };
 
   const handleDelete = async (index) => {
     if (window.confirm("Are you sure you want to delete this history item?")) {
-      const currentName = history[index]; // 선택한 history의 현재 이름 가져오기
+      const currentName = history[index];
       const requestData = { historyName: currentName };
 
       try {
@@ -174,7 +191,7 @@ function App() {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestData), // 요청 데이터로 JSON 변환
+            body: JSON.stringify(requestData),
           }
         );
 
@@ -183,15 +200,13 @@ function App() {
           throw new Error(errorMessage);
         }
 
-        await serverResponse.text()
-        setHistory((prevHistory) =>
-          prevHistory.filter((_, i) => i !== index)
-        ); // Remove the deleted history item from state
+        await serverResponse.text();
+        setHistory((prevHistory) => prevHistory.filter((_, i) => i !== index));
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
       }
     }
-    setActiveHistoryItem(null); // Hide options after deleting
+    setActiveHistoryItem(null);
   };
 
   return (
@@ -208,38 +223,29 @@ function App() {
             src={editIcon}
             alt="Edit"
             className="edit-icon"
-            onClick={handleEditClick} // Add onClick handler
+            onClick={handleEditClick}
             style={{ cursor: "pointer" }}
           />
         </div>
         <div className="sidebar-body">
-          {/* Render history items */}
+          <br />
           <div className="history-list">
             {history.map((item, index) => (
-              <div key={index} className="history-item">
-                <span onClick={() => handleHistoryClick(index)} style={{ cursor: "pointer" }}>{item}</span> {/* index를 전달하도록 수정 */}
-                <button
-                  className="ellipsis-button"
-                  onClick={() => handleEllipsisClick(index)}
-                >
-                  ...
-                </button>
-                {activeHistoryItem === index && (
-                  <div className="options-menu">
-                    <button
-                      className="option-button"
-                      onClick={() => handleRename(index)}
-                    >
-                      Rename
-                    </button>
-                    <button
-                      className="option-button"
-                      onClick={() => handleDelete(index)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
+              <div
+                key={index}
+                className="history-item"
+                onClick={() => handleHistoryClick(index)}
+                style={{ cursor: "pointer" }}
+              >
+                <span>{item}</span>
+                <div className="ellipsis-container">
+                  <button
+                    className="ellipsis-button"
+                    onClick={(e) => handleEllipsisClick(e, index)} // Pass event and index
+                  >
+                    ...
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -262,7 +268,7 @@ function App() {
                   src={editIcon}
                   alt="Edit"
                   className="edit-icon"
-                  onClick={handleEditClick} // Add onClick handler here too
+                  onClick={handleEditClick}
                   style={{ cursor: "pointer" }}
                 />
               </>
@@ -307,7 +313,24 @@ function App() {
                 <button
                   className="image-button"
                   onClick={() => {
+                    const fetchHistory = async () => {
+                      try {
+                        const response = await fetch("http://localhost:8080/history/list");
+                        if (!response.ok) {
+                          throw new Error("Failed to fetch history list");
+                        }
+                        const data = await response.json();
+                        setHistory(data);
+                      } catch (error) {
+                        console.error("Error fetching history:", error);
+                      }
+                    };
+                
+                    fetchHistory();
+                    
                     handleNavigate("inputSeq");
+
+
                   }}
                 ></button>
               </div>
@@ -321,6 +344,36 @@ function App() {
           <Route path="/analysis" element={<Analysis />} />
         </Routes>
       </div>
+
+      {/* Modal for options */}
+      {activeHistoryItem !== null && (
+        <div
+          className="options-modal"
+          ref={optionsMenuRef}
+          style={{ top: menuPosition.top, left: menuPosition.left }} // Use dynamic positioning
+        >
+          <div className="options-menu">
+            <button
+              className="option-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleRename(activeHistoryItem);
+              }}
+            >
+              Rename
+            </button>
+            <button
+              className="option-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete(activeHistoryItem);
+              }}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

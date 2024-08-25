@@ -9,7 +9,6 @@ import sys
 import json
 from io import StringIO
 import requests
-import shutil
 Entrez.email = "your_email@example.com"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -221,30 +220,43 @@ class SequenceAnalysis:
         self.protParam = []
 
     def run_linear_design(self):
-        start=self.start
+        start=self.start-1
         end=self.end
 
         # Update region
         (idx_start,idx_end) = self.alignment_index[self.gene]
         input_sequence = self.alignment_dict[self.reference_id][idx_start:idx_end]
 
-        gap_count = input_sequence[:start].count("-")
-        start += gap_count
-        end += gap_count
+        while True:
+            initial_gap_count = input_sequence[:start].count("-")
+            gap_count = input_sequence[:start + initial_gap_count].count("-")
+            if initial_gap_count == gap_count:
+                start += initial_gap_count
+                end += initial_gap_count
+                break
 
-        gap_count = input_sequence[start:end].count("-")
-        end += gap_count
+        while True:
+            gap_count_in_range = input_sequence[start:end].count("-")
+            updated_end = end + gap_count_in_range
+            if updated_end > idx_end:
+                end = idx_end
+                break
+            
+            gap_count = input_sequence[start:end + gap_count_in_range].count("-")
+            
+            if gap_count_in_range == gap_count:
+                end += gap_count_in_range
+                break
+
 
         # Get target sequence
-        input_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
-        input_sequence = input_sequence[start:end].replace("-", "")
-        self.target_sequence = input_sequence
+        target_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
+        self.target_sequence = target_sequence[start:end].replace("-", "")
         
         # Run LinearDesign
-
         # Execute the command and capture the result
         os.chdir(os.path.join(current_dir, "LinearDesign"))
-        command = f"echo {input_sequence} | ./lineardesign"
+        command = f"echo {target_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         os.chdir(current_dir)
