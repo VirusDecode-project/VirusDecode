@@ -18,10 +18,10 @@ public class PythonScriptExecutor {
 
     private static final Logger logger = LoggerFactory.getLogger(PythonScriptExecutor.class);
 
-    public static ResponseEntity<String> executePythonScript(String jsonFilePath, String... args) {
+    public static ResponseEntity<String> executePythonScript(String pythonScript, String jsonFilePath, String... args) {
         try {
             // Python 스크립트 리소스를 로드
-            ClassPathResource resource = new ClassPathResource("bioinformatics/virusdecode.py");
+            ClassPathResource resource = new ClassPathResource("bioinformatics/"+pythonScript);
             if (!resource.exists()) {
                 logger.error("Python 스크립트를 찾을 수 없음: {}", resource.getPath());
                 return ResponseEntity.status(404).body("Python script not found");
@@ -57,6 +57,8 @@ public class PythonScriptExecutor {
                     output.append(line).append("\n");
                 }
 
+                logger.info("Python script output: \n{}", output);
+
                 StringBuilder errorOutput = new StringBuilder();
                 while ((line = stdError.readLine()) != null) {
                     errorOutput.append(line).append("\n");
@@ -85,6 +87,71 @@ public class PythonScriptExecutor {
         } catch (InterruptedException e) {
             logger.error("프로세스가 중단되었습니다: {}", e.getMessage());
             Thread.currentThread().interrupt();  // 인터럽트 상태 복원
+            return ResponseEntity.status(500).body("Process was interrupted");
+        } catch (Exception e) {
+            logger.error("알 수 없는 오류가 발생했습니다: {}", e.getMessage());
+            return ResponseEntity.status(500).body("An unknown error occurred");
+        }
+    }
+    public static ResponseEntity<String> executePythonScriptWithoutJson(String pythonScript, String... args) {
+        try {
+            ClassPathResource resource = new ClassPathResource("bioinformatics/" + pythonScript);
+            if (!resource.exists()) {
+                logger.error("Python 스크립트를 찾을 수 없음: {}", resource.getPath());
+                return ResponseEntity.status(404).body("Python script not found");
+            }
+
+            String pythonScriptPath = resource.getFile().getAbsolutePath();
+            List<String> command = new ArrayList<>();
+            command.add("python3");
+            command.add(pythonScriptPath);
+
+            if (args != null) {
+                for (String arg : args) {
+                    command.add(arg);
+                }
+            }
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            Process process = pb.start();
+
+            StringBuilder output = new StringBuilder();
+            StringBuilder errorOutput = new StringBuilder();
+
+            try (BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                 BufferedReader stdError = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+
+                String line;
+                while ((line = stdInput.readLine()) != null) {
+                    output.append(line).append("\n");
+                }
+
+                while ((line = stdError.readLine()) != null) {
+                    errorOutput.append(line).append("\n");
+                }
+
+                if (!output.isEmpty()) {
+                    logger.info("Python script output: \n{}", output);
+                }
+                if (!errorOutput.isEmpty()) {
+                    logger.error("Python script error output: \n{}", errorOutput);
+                }
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode != 0) {
+                logger.error("Python script 종료 코드: {}", exitCode);
+                return ResponseEntity.status(500).body("Error executing Python script: " + errorOutput);
+            }
+
+            return ResponseEntity.ok(output.toString());
+        } catch (IOException e) {
+            logger.error("IO 오류가 발생했습니다: {}", e.getMessage());
+            return ResponseEntity.status(500).body("Error executing Python script");
+        } catch (InterruptedException e) {
+            logger.error("프로세스가 중단되었습니다: {}", e.getMessage());
+            Thread.currentThread().interrupt();
             return ResponseEntity.status(500).body("Process was interrupted");
         } catch (Exception e) {
             logger.error("알 수 없는 오류가 발생했습니다: {}", e.getMessage());
