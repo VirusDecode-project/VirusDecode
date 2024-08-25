@@ -313,7 +313,24 @@ function App() {
                 <button
                   className="image-button"
                   onClick={() => {
+                    const fetchHistory = async () => {
+                      try {
+                        const response = await fetch("http://localhost:8080/history/list");
+                        if (!response.ok) {
+                          throw new Error("Failed to fetch history list");
+                        }
+                        const data = await response.json();
+                        setHistory(data);
+                      } catch (error) {
+                        console.error("Error fetching history:", error);
+                      }
+                    };
+                
+                    fetchHistory();
+                    
                     handleNavigate("inputSeq");
+
+
                   }}
                 ></button>
               </div>
