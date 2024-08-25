@@ -407,6 +407,20 @@ if __name__ == "__main__":
 
         save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
 
+
+    elif option == 4:
+        # get metadata
+        metadata = get_json("metadata.json")
+        reference_id = metadata.get("Sequence ID", None)
+        
+        # get alignment data
+        alignment_data = get_json("alignment_data.json")
+        alignment_index = alignment_data.get("alignment_index", None)
+        alignment_dict = alignment_data.get("aligned_sequences", None)
+
+        # set gene, variant_id, start, end
+        gene=sys.argv[2]
+        
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
 
@@ -425,4 +439,3 @@ if __name__ == "__main__":
                 break
 
         save_json(pdb_dict, "pdb_data.json")
-
