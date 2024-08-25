@@ -7,6 +7,7 @@ import Analysis from "./pages/analysis";
 import React, { useState, useEffect, useRef } from "react";
 import historyIcon from "./image/history.png";
 import editIcon from "./image/edit.png";
+import Tab from './components/Tab';
 
 function App() {
   let navigate = useNavigate();
@@ -20,6 +21,7 @@ function App() {
   const optionsMenuRef = useRef(null);
   const [mRNAReceived, setMRNAReceived] = useState(false);
   const [PDBReceived, setPDBReceived] = useState(false);
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -125,6 +127,7 @@ function App() {
 
       const responseData = await serverResponse.json();
       navigate("/analysis", { state: { responseData } });
+      setTab(0);
       setMRNAReceived(true);
       setPDBReceived(true);
     } catch (error) {
@@ -346,6 +349,8 @@ function App() {
             element={<InputSeq setUsername={setUsername} />}
           />
           <Route path="/analysis" element={<Analysis
+            tab={tab}
+            setTab={setTab}
             mRNAReceived={mRNAReceived} 
             setMRNAReceived={setMRNAReceived} 
             PDBReceived={PDBReceived} 
