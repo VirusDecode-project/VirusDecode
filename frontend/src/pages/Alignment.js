@@ -3,8 +3,6 @@ import './ProteinSeq.css';
 import Modal from '../components/Modal';
 import helpIcon from '../image/help.png';
 import HelpModal from '../components/HelpModal';
-
-// GK - Loading 컴포넌트 추가
 import Loading from '../components/Loading';
 
 let lastHue = 0;

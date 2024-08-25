@@ -7,14 +7,12 @@ import Analysis from "./pages/analysis";
 import React, { useState, useEffect, useRef } from "react";
 import historyIcon from "./image/history.png";
 import editIcon from "./image/edit.png";
-import Tab from './components/Tab';
 
 function App() {
   let navigate = useNavigate();
   let location = useLocation();
   const [show, setShow] = useState(false);
   const [isHome, setIsHome] = useState(true);
-  const [username, setUsername] = useState(null);
   const [history, setHistory] = useState([]);
   const [activeHistoryItem, setActiveHistoryItem] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
@@ -300,7 +298,6 @@ function App() {
               VirusDecode
             </span>
           </div>
-          {username && <span className="username-display">{username}</span>}
         </div>
         <Routes>
           <Route
@@ -346,7 +343,7 @@ function App() {
 
           <Route
             path="/inputSeq"
-            element={<InputSeq setUsername={setUsername} />}
+            element={<InputSeq setTab={setTab} />}
           />
           <Route path="/analysis" element={<Analysis
             tab={tab}
