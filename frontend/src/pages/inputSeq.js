@@ -12,7 +12,7 @@ import uploadIcon from "../image/upload_icon.png";
 // GK - Loading 컴포넌트 추가
 import Loading from '../components/Loading';
 
-function InputSeq({ setUsername }) {
+function InputSeq({ setTab }) {
   let navigate = useNavigate();
 
   /*-----------다솔님 코드 구현 함수, 변수---------------*/
@@ -122,7 +122,7 @@ function InputSeq({ setUsername }) {
       }
 
       const responseData = await serverResponse.json();
-
+      setTab(0);
       setIsLoading(false);
       navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {
