@@ -53,6 +53,9 @@
     width: 40%;
     height: auto;
     margin-left: 15px;
+    border-radius: 8px;
+    border: 2px solid #d6d6d6;
+
 }
 
 .close-button {

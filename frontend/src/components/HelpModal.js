@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import './HelpModal.css';
 import helpImg1 from '../image/helpImg1.png'
 import helpImg2 from '../image/helpImg2.png'
 import helpImg3 from '../image/helpImg3.png'
 
-function HelpModal({ isOpen, onClose, content }) {
+function HelpModal({ isOpen, onClose }) {
     useEffect(() => {
         const handleEsc = (event) => {
             if (event.key === 'Escape') {
