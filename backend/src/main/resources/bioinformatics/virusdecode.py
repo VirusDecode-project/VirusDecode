@@ -227,6 +227,7 @@ class SequenceAnalysis:
         (idx_start,idx_end) = self.alignment_index[self.gene]
         input_sequence = self.alignment_dict[self.reference_id][idx_start:idx_end]
 
+        # print(input_sequence)
         while True:
             initial_gap_count = input_sequence[:start].count("-")
             gap_count = input_sequence[:start + initial_gap_count].count("-")
@@ -248,15 +249,15 @@ class SequenceAnalysis:
                 end += gap_count_in_range
                 break
 
-
         # Get target sequence
         target_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
         self.target_sequence = target_sequence[start:end].replace("-", "")
         
+
         # Run LinearDesign
         # Execute the command and capture the result
         os.chdir(os.path.join(current_dir, "LinearDesign"))
-        command = f"echo {target_sequence} | ./lineardesign"
+        command = f"echo {self.target_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         os.chdir(current_dir)
@@ -265,6 +266,7 @@ class SequenceAnalysis:
         if process.returncode == 0:
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
+            print(output_lines)
             mRNA_sequence = output_lines[-4].replace('mRNA sequence:', '').strip()
             mRNA_structure = output_lines[-3].replace('mRNA structure:', '').strip()
             parts = output_lines[-2].split(';')
