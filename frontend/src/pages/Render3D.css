@@ -65,6 +65,8 @@
   color: #333;
   font-size: 14px;
   width: 100%;
+  background-color: white;
+  border-radius: 3px 3px 0 0;
 }
 
 .header-item {
@@ -79,6 +81,8 @@
   margin: 0;
   overflow: hidden;
   width: 100%;
+  background-color: white;
+  border-radius: 0 0 3px 3px;
 }
 
 .list-row {
@@ -131,6 +135,10 @@
   padding: 8px;
   font-family: sans-serif;
   border-radius: 5px;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: 350px;
 }
 
 .representation-container select {

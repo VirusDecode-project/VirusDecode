@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
-import Modal from './Modal';
+import Modal from '../components/Modal';
 import helpIcon from '../image/help.png';
-import HelpModal from './HelpModal';
+import HelpModal from '../components/HelpModal';
 
 // GK - Loading 컴포넌트 추가
 import Loading from '../components/Loading';
@@ -27,7 +27,7 @@ const generatePastelColor = () => {
 };
 
 
-function Alignment({ responseData, setTab, onRegionUpdate }) {
+function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived }) {
   const [chartData, setChartData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -59,26 +59,28 @@ function Alignment({ responseData, setTab, onRegionUpdate }) {
 
   return (
     <div>
-    {isLoading ? (
-      // GK - Loading 컴포넌트로 변경
-      <Loading text="Converting"/>
-    ) : (
-    <div>
-      <div className="stacked-bar-chart">
-        <StackedBar data={chartData} onBarClick={setSelectedRegion} />
-      </div>
-      {responseData && (
-        <ProteinSeq
-          onRegionUpdate={onRegionUpdate}
-          selectedRegion={selectedRegion}
-          setSelectedRegion={setSelectedRegion}
-          responseData={responseData}
-          setTab={setTab}
-          setIsLoading={setIsLoading}
-        />
+      {isLoading ? (
+        // GK - Loading 컴포넌트로 변경
+        <Loading text="Converting" />
+      ) : (
+        <div>
+          <div className="stacked-bar-chart">
+            <StackedBar data={chartData} onBarClick={setSelectedRegion} />
+          </div>
+          {responseData && (
+            <ProteinSeq
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              responseData={responseData}
+              setTab={setTab}
+              setIsLoading={setIsLoading}
+              onRegionUpdate={onRegionUpdate}
+              setMRNAReceived={setMRNAReceived}
+              setPDBReceived={setPDBReceived}
+            />
+          )}
+        </div>
       )}
-    </div>
-    )}
     </div>
   );
 }
@@ -144,7 +146,7 @@ const StackedBar = ({ data, onBarClick }) => {
 };
 
 
-const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading }) => {
+const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -185,7 +187,7 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
   };
   /* helpModal */
   return (
-    
+
     <div className="protein-sequence-container">
       <div className="region-selector">
         {/* helpModal */}
@@ -231,6 +233,8 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
         modalData={modalData}  // 모달에 초기값 전달
         setTab={setTab}
         setIsLoading={setIsLoading}  // setLoading 함수 전달
+        setMRNAReceived={setMRNAReceived}
+        setPDBReceived={setPDBReceived}
       />
     </div>
 
