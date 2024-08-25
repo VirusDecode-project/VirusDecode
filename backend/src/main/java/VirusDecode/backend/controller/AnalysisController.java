@@ -22,18 +22,18 @@ public class AnalysisController {
         String end = String.valueOf(request.getEnd());
 
         // Python 스크립트를 실행하여 mRNA 디자인 결과를 얻음
-        return PythonScriptExecutor.executePythonScript("bioinformatics/data/linearDesign_data.json","3", region, varientName, start, end);
+        return PythonScriptExecutor.executePythonScript("virusdecode.py","bioinformatics/data/linearDesign_data.json","3", region, varientName, start, end);
     }
 
     // /analysis/re-alignment 엔드포인트에 대한 POST 요청 처리
-    @PostMapping("/re-alignment")
+    @GetMapping("/re-alignment")
     public ResponseEntity<String> sendJsonFile() {
         // JSON 파일을 읽어서 반환
         return JsonFileService.readJsonFile("bioinformatics/data/alignment_data.json");
     }
 
     // /analysis/re-mrnadesign 엔드포인트에 대한 POST 요청 처리
-    @PostMapping("/re-mrnadesign")
+    @GetMapping("/re-mrnadesign")
     public ResponseEntity<String> re_mrna_design_json() {
         // JSON 파일을 읽어서 반환
         return JsonFileService.readJsonFile("bioinformatics/data/linearDesign_data.json");
