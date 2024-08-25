@@ -1,6 +1,7 @@
 package VirusDecode.backend.controller;
 
 import VirusDecode.backend.dto.LinearDesignDTO;
+import VirusDecode.backend.dto.PdbDTO;
 import VirusDecode.backend.service.PythonScriptExecutor;
 import VirusDecode.backend.service.JsonFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,14 @@ public class AnalysisController {
 
         // Python 스크립트를 실행하여 mRNA 디자인 결과를 얻음
         return PythonScriptExecutor.executePythonScript("virusdecode.py","bioinformatics/data/linearDesign_data.json","3", region, varientName, start, end);
+    }
+
+    // /analysis/mrnadesign 엔드포인트에 대한 POST 요청 처리
+    @PostMapping("/pdb")
+    public ResponseEntity<String> getPdb(@RequestBody PdbDTO request) {
+        String gene = request.getGene();
+
+        return PythonScriptExecutor.executePythonScriptWithoutJson("virusdecode.py","4", gene);
     }
 
     // /analysis/re-alignment 엔드포인트에 대한 POST 요청 처리

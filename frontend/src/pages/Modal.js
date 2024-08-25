@@ -43,14 +43,14 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
   };
 
   const handleConvertButton = async () => {
-    const data = {
+    const mRnaData = {
       region: selectedRegion,
       varientName: selectedGenome,
       start: parseInt(startIndex, 10),
       end: parseInt(endIndex, 10),
     };
-    onRegionUpdate(data.region);
-    console.log("Data being sent to backend:", data);
+    onRegionUpdate(mRnaData.region);
+    console.log("Data being sent to backend:", mRnaData);
 
     try {
       setIsLoading(true);
@@ -59,7 +59,7 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(mRnaData),
       });
 
       if (!serverResponse.ok) {
@@ -73,6 +73,29 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
     }
+
+    setTab(1);
+    
+    const pdbData = {gene: selectedRegion}
+    try {
+      const serverResponse = await fetch('http://localhost:8080/analysis/pdb', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pdbData),
+      });
+
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
+      }
+
+      await serverResponse.text();
+    } catch (error) {
+      console.error("An error occurred during the request: ", error.message);
+    }
+    
   };
 
   const handleNext = async () => {
@@ -96,7 +119,6 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
     }
 
     await handleConvertButton();
-    setTab(1);
     onClose();
   };
 
