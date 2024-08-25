@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./MRNAdesign.css";
-import RNAVisualizer from './RNAVisualizer';
+import RNAVisualizer from '../components/MRNAVisualizer';
 
 function MRNAdesign() {
   const [data, setData] = useState(null);
@@ -13,12 +13,12 @@ function MRNAdesign() {
     const fetchJsonData = async () => {
       try {
         const serverResponse = await fetch('http://localhost:8080/analysis/re-mrnadesign');
-  
+
         if (!serverResponse.ok) {
           const errorMessage = await serverResponse.text();
           throw new Error(errorMessage);
         }
-  
+
         const responseData = await serverResponse.json();
         setData(responseData); // JSON 데이터를 상태로 설정
       } catch (error) {
@@ -111,8 +111,8 @@ function MRNAdesign() {
           <div className="mrna-sequence">
             {showFullSequence
               ? formatSequence(data.linearDesign.mRNA_sequence).map(
-                  (seq, index) => <div key={index}>{seq}</div>
-                )
+                (seq, index) => <div key={index}>{seq}</div>
+              )
               : `${data.linearDesign.mRNA_sequence.substring(0, 50)} ...`}
             {!showFullSequence && (
               <span
@@ -136,8 +136,8 @@ function MRNAdesign() {
           <p className="mrna-structure">
             {showFullStructure
               ? formatStructure(data.linearDesign.mRNA_structure).map(
-                  (seq, index) => <div key={index}>{seq}</div>
-                )
+                (seq, index) => <div key={index}>{seq}</div>
+              )
               : `${data.linearDesign.mRNA_structure.substring(0, 50)} `}
             {!showFullStructure && (
               <span
@@ -163,7 +163,7 @@ function MRNAdesign() {
           <h3 className="mrna-subtitle">mRNA CAI</h3>
           <p className="mrna-value">{data.linearDesign.cai}</p>
 
-          
+
         </div>
       </div>
       <div className="mrna-container">

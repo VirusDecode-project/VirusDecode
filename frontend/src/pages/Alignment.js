@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './ProteinSeq.css';
-import Modal from './Modal';
+import Modal from '../components/Modal';
 import helpIcon from '../image/help.png';
-import HelpModal from './HelpModal';
+import HelpModal from '../components/HelpModal';
 
 // GK - Loading 컴포넌트 추가
 import Loading from '../components/Loading';
@@ -59,26 +59,26 @@ function Alignment({ responseData, setTab, onRegionUpdate }) {
 
   return (
     <div>
-    {isLoading ? (
-      // GK - Loading 컴포넌트로 변경
-      <Loading text="Converting"/>
-    ) : (
-    <div>
-      <div className="stacked-bar-chart">
-        <StackedBar data={chartData} onBarClick={setSelectedRegion} />
-      </div>
-      {responseData && (
-        <ProteinSeq
-          onRegionUpdate={onRegionUpdate}
-          selectedRegion={selectedRegion}
-          setSelectedRegion={setSelectedRegion}
-          responseData={responseData}
-          setTab={setTab}
-          setIsLoading={setIsLoading}
-        />
+      {isLoading ? (
+        // GK - Loading 컴포넌트로 변경
+        <Loading text="Converting" />
+      ) : (
+        <div>
+          <div className="stacked-bar-chart">
+            <StackedBar data={chartData} onBarClick={setSelectedRegion} />
+          </div>
+          {responseData && (
+            <ProteinSeq
+              onRegionUpdate={onRegionUpdate}
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              responseData={responseData}
+              setTab={setTab}
+              setIsLoading={setIsLoading}
+            />
+          )}
+        </div>
       )}
-    </div>
-    )}
     </div>
   );
 }
@@ -185,7 +185,7 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
   };
   /* helpModal */
   return (
-    
+
     <div className="protein-sequence-container">
       <div className="region-selector">
         {/* helpModal */}
