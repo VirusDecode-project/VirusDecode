@@ -16,21 +16,23 @@ const Render3D = ({ region }) => {
   useEffect(() => {
     const fetchPDBids = async () => {
       try {
-        const response = await fetch('http://localhost:8080/analysis/render3d');
-        if (!response.ok) {
-          throw new Error(`Network response was not ok: ${response.statusText}`);
+        const serverResponse = await fetch('http://localhost:8080/analysis/re-render3d');
+        if (!serverResponse.ok) {
+          const errorMessage = await serverResponse.text();
+          throw new Error(errorMessage);
         }
-        const PDBlist = await response.json();
-        const keys = Object.keys(PDBlist);
+        const responseData = await serverResponse.json();
+
+        const keys = Object.keys(responseData);
         setPDBids(keys);
-        const values = Object.values(PDBlist);
+        const values = Object.values(responseData);
         setPDBInfo(values);
 
         if (keys.length > 0) {
           setSelectedPDBid(keys[0]);
         }
       } catch (error) {
-        console.error('Error fetching PDB IDs:', error);
+        console.error("An error occurred during the request: ", error.message);
       }
     };
     fetchPDBids();
