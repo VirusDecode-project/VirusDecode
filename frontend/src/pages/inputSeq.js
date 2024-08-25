@@ -35,38 +35,36 @@ function InputSeq({ setUsername }) {
   /*parkki */
   const handleDoneSubmit = async (e) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
-    const data = { sequenceId: referenceSequenceId };
+    const requestData = { sequenceId: referenceSequenceId };
 
     try {
-      const response = await fetch("http://localhost:8080/inputSeq/reference", {
+      const serverResponse = await fetch("http://localhost:8080/inputSeq/reference", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(requestData),
       });
-
-      // 서버 응답 처리
-      const result = await response.text(); // 서버 응답을 텍스트로 처리
-      if (response.ok) {
-        // 텍스트를 JSON으로 파싱
-        const jsonResponse = JSON.parse(result);
-
-        // key-value 쌍을 한 줄씩 메시지로 변환하며, 키 부분만 굵게 표시
-        let formattedMessage = "";
-        for (const [key, value] of Object.entries(jsonResponse)) {
-          formattedMessage += `<span class="key">${key}:</span> <span class="value">${value}</span><br />`;
-        }
-
-        // 서버 응답 메시지 설정
-        setResponseMessage(formattedMessage);
-      } else {
-        console.error("서버 응답 오류:", response.statusText);
-        setResponseMessage("서버 응답 오류: " + response.statusText);
+  
+      // 서버 응답이 올바르지 않으면 오류 메시지 생성
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
       }
+  
+      // 서버에서 받은 응답을 텍스트로 처리한 후 JSON으로 파싱
+      const responseData = await serverResponse.json();
+
+      let formattedMessage = "";
+      for (const [key, value] of Object.entries(responseData)) {
+        formattedMessage += `<span class="key">${key}:</span> <span class="value">${value}</span><br />`;
+      }
+  
+      // 서버 응답 메시지 설정
+      setResponseMessage(formattedMessage);
     } catch (error) {
-      console.error("요청 중 오류 발생:", error);
-      setResponseMessage("요청 중 오류 발생: " + error.message);
+      console.error("An error occurred during the request: ", error.message);
+      setResponseMessage("An error occurred during the request: " + error.message);
     }
   };
 
@@ -106,25 +104,25 @@ function InputSeq({ setUsername }) {
     try {
       // GK - Loading 위치 이동
       setIsLoading(true);
-      const response = await fetch("http://localhost:8080/inputSeq/alignment", {
+      const serverResponse = await fetch("http://localhost:8080/inputSeq/alignment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(jsonData),
       });
-
-      const result = await response.json();
-      setIsLoading(false);
-      // console.log("분석이 끝났습니다!"+result);
-      // window.alert("분석이 끝났습니다!\n"+JSON.stringify(result)); // 응답을 경고창으로 출력
       
-      // GK - Loading 위치 이동
-      // window.alert("분석이 끝났습니다!");
-      navigate("/analysis"); // 서버 응답의 body를 전달
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
+      }
+
+      const responseData = await serverResponse.json();
+
+      setIsLoading(false);
+      navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {
-      console.error("요청 중 오류 발생:", error);
-      setResponseMessage("요청 중 오류 발생: " + error.message);
+      console.error("An error occurred during the request: ", error.message);
     }
   };
   /* parkki */

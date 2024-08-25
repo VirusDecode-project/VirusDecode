@@ -54,7 +54,7 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
 
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:8080/analysis/mrnadesign', {
+      const serverResponse = await fetch('http://localhost:8080/analysis/mrnadesign', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -62,15 +62,16 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
         body: JSON.stringify(data),
       });
 
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
       }
 
-      const responseData = await response.json();
+      const responseData = await serverResponse.json();
       setIsLoading(false);
       console.log('Response from server:', responseData);
     } catch (error) {
-      console.error('Error sending data:', error);
+      console.error("An error occurred during the request: ", error.message);
     }
   };
 
