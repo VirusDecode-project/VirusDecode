@@ -3,7 +3,7 @@ import Alignment from '../pages/Alignment';
 import MRNAdesign from '../pages/MRNAdesign';
 import Render3D from '../pages/Render3D';
 
-function Tab({ tab, setTab, responseData }) {
+function Tab({ tab, setTab, responseData, setMRNAReceived, setPDBReceived }) {
     const [modalRegion, setModalRegion] = useState('');
 
     const handleModalRegion = (region) => {
@@ -16,6 +16,8 @@ function Tab({ tab, setTab, responseData }) {
             {tab === 0 && (
                 <Alignment
                     responseData={responseData}
+                    setMRNAReceived={setMRNAReceived}
+                    setPDBReceived={setPDBReceived}
                     setTab={setTab}
                     onRegionUpdate={handleModalRegion}
                 />
