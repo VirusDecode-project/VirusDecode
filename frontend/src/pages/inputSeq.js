@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./inputSeq.css";
@@ -31,6 +31,8 @@ function InputSeq({ setUsername }) {
   let [isLoading, setIsLoading] = useState(false);
   /*parkki */
 
+  // next 비활성화
+  const [responseReceived, setResponseReceived] = useState(false);
 
   /*parkki */
   const handleDoneSubmit = async (e) => {
@@ -45,13 +47,13 @@ function InputSeq({ setUsername }) {
         },
         body: JSON.stringify(requestData),
       });
-  
+
       // 서버 응답이 올바르지 않으면 오류 메시지 생성
       if (!serverResponse.ok) {
         const errorMessage = await serverResponse.text();
         throw new Error(errorMessage);
       }
-  
+
       // 서버에서 받은 응답을 텍스트로 처리한 후 JSON으로 파싱
       const responseData = await serverResponse.json();
 
@@ -59,9 +61,11 @@ function InputSeq({ setUsername }) {
       for (const [key, value] of Object.entries(responseData)) {
         formattedMessage += `<span class="key">${key}:</span> <span class="value">${value}</span><br />`;
       }
-  
+
       // 서버 응답 메시지 설정
       setResponseMessage(formattedMessage);
+
+      setResponseReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
       setResponseMessage("An error occurred during the request: " + error.message);
@@ -111,7 +115,7 @@ function InputSeq({ setUsername }) {
         },
         body: JSON.stringify(jsonData),
       });
-      
+
       if (!serverResponse.ok) {
         const errorMessage = await serverResponse.text();
         throw new Error(errorMessage);
@@ -180,7 +184,7 @@ function InputSeq({ setUsername }) {
     <div>
       {isLoading ? (
         // GK - Loading 컴포넌트로 변경
-        <Loading text="Analyzing"/>
+        <Loading text="Analyzing" />
         // <div className="loading-container">
         //   <img src={loadingImage} alt="Loading..." className="loading-image" />
         //   <div className="loading-text">{loadingText}</div>
@@ -354,6 +358,7 @@ function InputSeq({ setUsername }) {
           <Button
             className="next-button"
             onClick={handleFileUploadToServer}
+            disabled={!responseReceived}
           >
             Next ➔
           </Button>

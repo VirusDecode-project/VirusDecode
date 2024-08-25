@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import Viztein from 'viztein';
 import "./Render3D.css";
 
@@ -9,10 +9,11 @@ const Render3D = ({ region }) => {
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
+  /*
   const [scrollIndex, setScrollIndex] = useState(0);
   const itemsToShow = 3;
   const listRef = useRef(null);
-
+*/
   useEffect(() => {
     const fetchPDBids = async () => {
       try {
@@ -86,17 +87,17 @@ const Render3D = ({ region }) => {
   const handleMouseOut = () => {
     setTooltip({ visible: false, text: '', x: 0, y: 0 });
   };
-
-  const handleArrowClick = (direction) => {
-    if (direction === 'left' && scrollIndex > 0) {
-      setScrollIndex(scrollIndex - 1);
-    } else if (direction === 'right' && scrollIndex < PDBids.length - itemsToShow) {
-      setScrollIndex(scrollIndex + 1);
-    }
-  };
-
+  /*
+    const handleArrowClick = (direction) => {
+      if (direction === 'left' && scrollIndex > 0) {
+        setScrollIndex(scrollIndex - 1);
+      } else if (direction === 'right' && scrollIndex < PDBids.length - itemsToShow) {
+        setScrollIndex(scrollIndex + 1);
+      }
+    };
+  */
   const vizteinKey = `${selectedPDBid}-${representation}`;
-  const transformValue = -(scrollIndex * 150);
+  //const transformValue = -(scrollIndex * 150);
 
   return (
     <div className='reference3D'>
@@ -132,10 +133,6 @@ const Render3D = ({ region }) => {
               <div className="list-item">{id}</div>
             </div>
           ))}
-        </div>
-        <div className='arrow-container'>
-          <div className='arrow arrow-left' onClick={() => handleArrowClick('left')}>◀</div>
-          <div className='arrow arrow-right' onClick={() => handleArrowClick('right')}>▶</div>
         </div>
         {tooltip.visible && (
           <div
