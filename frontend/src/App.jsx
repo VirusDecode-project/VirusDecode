@@ -7,7 +7,6 @@ import Analysis from "./pages/analysis";
 import React, { useState, useEffect, useRef } from "react";
 import historyIcon from "./image/history.png";
 import editIcon from "./image/edit.png";
-import Tab from './components/Tab';
 
 function App() {
   let navigate = useNavigate();
@@ -346,7 +345,7 @@ function App() {
 
           <Route
             path="/inputSeq"
-            element={<InputSeq setUsername={setUsername} />}
+            element={<InputSeq setTab={setTab} />}
           />
           <Route path="/analysis" element={<Analysis
             tab={tab}

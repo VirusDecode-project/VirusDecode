@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import './analysis.css';
-import Tab from '../components/Tab';
+import Alignment from '../pages/Alignment';
+import MRNAdesign from '../pages/MRNAdesign';
+import Render3D from '../pages/Render3D';
 
 function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived }) {
   
@@ -11,6 +13,10 @@ function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, set
   const [show, setShow] = useState(false);
   const location = useLocation();
   const responseData = location.state?.responseData || null;
+  const [modalRegion, setModalRegion] = useState('');
+  const handleModalRegion = (region) => {
+      setModalRegion(region);
+  };
 
   return (
     <div>
@@ -27,13 +33,19 @@ function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, set
               <Nav.Link eventKey="link2" active={tab === 2} onClick={() => setTab(2)} disabled={!PDBReceived}>3D viewer</Nav.Link>
             </Nav.Item>
           </Nav>
-          <Tab
-            tab={tab}
-            setTab={setTab}
-            responseData={responseData}
-            setMRNAReceived={setMRNAReceived}
-            setPDBReceived={setPDBReceived}
-          />
+          <div>
+            {tab === 0 && (
+                <Alignment
+                    responseData={responseData}
+                    setMRNAReceived={setMRNAReceived}
+                    setPDBReceived={setPDBReceived}
+                    setTab={setTab}
+                    onRegionUpdate={handleModalRegion}
+                />
+            )}
+            {tab === 1 && <MRNAdesign />}
+            {tab === 2 && <Render3D region={modalRegion} />}
+        </div>
         </>
       </div>
     </div>
