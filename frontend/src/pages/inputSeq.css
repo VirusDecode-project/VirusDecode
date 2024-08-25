@@ -48,21 +48,31 @@
 } */
 
 .next-page {
-  position: fixed !important; /* 우측 하단 고정을 위해 position을 fixed로 설정 */
-  bottom: 20px !important; /* 하단에서의 거리 */
-  right: 20px !important; /* 우측에서의 거리 */
-  padding: 10px 20px; /* 버튼 안의 패딩 */
+  position: fixed !important;
+  /* 우측 하단 고정을 위해 position을 fixed로 설정 */
+  bottom: 20px !important;
+  /* 하단에서의 거리 */
+  right: 20px !important;
+  /* 우측에서의 거리 */
+  padding: 10px 20px;
+  /* 버튼 안의 패딩 */
   color: black;
-  background-color: #0fb9af; /* 배경색 지정 */
+  background-color: #0fb9af;
+  /* 배경색 지정 */
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  z-index: 1000; /* 다른 요소 위에 위치하도록 z-index 설정 */
-  width: auto; /* 버튼 폭이 내용을 기준으로 자동 조정되도록 설정 */
-  max-width: 200px; /* 버튼의 최대 너비를 제한 */
+  z-index: 1000;
+  /* 다른 요소 위에 위치하도록 z-index 설정 */
+  width: auto;
+  /* 버튼 폭이 내용을 기준으로 자동 조정되도록 설정 */
+  max-width: 200px;
+  /* 버튼의 최대 너비를 제한 */
   max-height: 50px;
-  text-align: center; /* 버튼 내 텍스트 중앙 정렬 */
-  white-space: nowrap; /* 버튼 텍스트가 줄바꿈되지 않도록 설정 */
+  text-align: center;
+  /* 버튼 내 텍스트 중앙 정렬 */
+  white-space: nowrap;
+  /* 버튼 텍스트가 줄바꿈되지 않도록 설정 */
 }
 
 
@@ -99,7 +109,8 @@
 }
 
 .upload-icon {
-  width: 50px; /* 원하는 크기로 조정 */
+  width: 50px;
+  /* 원하는 크기로 조정 */
   height: auto;
   margin-bottom: 10px;
   margin-right: 15px;
@@ -124,6 +135,7 @@
   padding: 0;
   margin-top: 10px;
 }
+
 .file-list li {
   background-color: #f1f1f1;
   padding: 5px;
@@ -131,11 +143,13 @@
   border-radius: 3px;
   text-align: left;
 }
+
 .seq-list {
   list-style-type: none;
   padding: 0;
   margin-top: 10px;
 }
+
 .seq-list li {
   background-color: 'white';
   padding: 5px;
@@ -169,24 +183,34 @@ body {
 }
 
 .header-bar {
-  height: 60px; /* Set the height to 50px */
+  height: 60px;
+  /* Set the height to 50px */
   display: flex;
-  align-items: center; /* Center items vertically */
-  justify-content: flex-start; /* Center items horizontally */
-  font-size: 1.25rem; /* Optional: Adjust the font size */
+  align-items: center;
+  /* Center items vertically */
+  justify-content: flex-start;
+  /* Center items horizontally */
+  font-size: 1.25rem;
+  /* Optional: Adjust the font size */
   padding-left: 15px;
 }
 
 .history-icon {
-  margin-right: 10px; /* Adjust the margin to create space between the icon and text */
-  height: 24px; /* Adjust the height of the icon */
-  width: auto; /* Maintain the aspect ratio */
+  margin-right: 10px;
+  /* Adjust the margin to create space between the icon and text */
+  height: 24px;
+  /* Adjust the height of the icon */
+  width: auto;
+  /* Maintain the aspect ratio */
 }
 
 .edit-icon {
-  margin-right: 0px; /* Adjust the margin to create space between the icon and text */
-  height: 24px; /* Adjust the height of the icon */
-  width: auto; /* Maintain the aspect ratio */
+  margin-right: 0px;
+  /* Adjust the margin to create space between the icon and text */
+  height: 24px;
+  /* Adjust the height of the icon */
+  width: auto;
+  /* Maintain the aspect ratio */
 }
 
 
@@ -198,16 +222,20 @@ body {
   color: darkgray;
   text-align: center;
   text-decoration: underline;
-  cursor: pointer;  /* 마우스 커서를 포인터로 변경 */
-  margin: 0 auto;  /* 중앙 정렬 */
+  cursor: pointer;
+  /* 마우스 커서를 포인터로 변경 */
+  margin: 0 auto;
+  /* 중앙 정렬 */
 }
 
 .logged-out:hover {
-  color: gray;  /* 마우스 올렸을 때 색깔 조금 진하게 */
+  color: gray;
+  /* 마우스 올렸을 때 색깔 조금 진하게 */
 }
 
 .RS-id {
-  text-align: left; /* 좌측 정렬 설정 */
+  text-align: left;
+  /* 좌측 정렬 설정 */
   font-weight: 500;
   font-size: 19px;
 }
@@ -219,7 +247,8 @@ body {
   padding: 10px 17px;
   font-size: 16px;
   width: 150px;
-  height: 38px; /* 높이를 입력 필드와 동일하게 설정 */
+  height: 38px;
+  /* 높이를 입력 필드와 동일하게 설정 */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,7 +257,8 @@ body {
 }
 
 .input-field {
-  height: 38px; /* 높이를 버튼과 동일하게 설정 */
+  height: 38px;
+  /* 높이를 버튼과 동일하게 설정 */
 }
 
 .done-button:hover {
@@ -236,8 +266,10 @@ body {
 }
 
 .form-label {
-  text-align: left; /* 좌측 정렬 설정 */
-  display: block; /* 기본적으로 form-label은 inline 요소이므로 block으로 설정 */
+  text-align: left;
+  /* 좌측 정렬 설정 */
+  display: block;
+  /* 기본적으로 form-label은 inline 요소이므로 block으로 설정 */
 }
 
 /* 다솔님이 만든 코드 -----------시작---------------------*/
@@ -269,7 +301,8 @@ body {
   margin-bottom: 20px;
 }
 
-.delete-icon, .chevron-icon{
+.delete-icon,
+.chevron-icon {
   color: #646464;
   margin: 0px 5px 0px 5px;
   font-size: 15px;
@@ -279,12 +312,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  
+
 }
+
 .add-sequence-button {
   display: flex;
   font-size: 16px;
-  background-color:white;
+  background-color: white;
   border: none;
   cursor: pointer;
   color: rgb(55, 55, 55);
@@ -299,14 +333,15 @@ textarea {
   box-sizing: border-box;
   border: none;
   outline: none;
-  resize: none; 
-  overflow: auto; 
-  font-family:'Roboto';
+  resize: none;
+  overflow: auto;
+  font-family: 'Roboto';
 }
 
 textarea::placeholder {
-padding: 3px;
-color: #92929d; /* placeholder 색상 변경 */
+  padding: 3px;
+  color: #92929d;
+  /* placeholder 색상 변경 */
 }
 
 .text-left {
@@ -327,15 +362,16 @@ textarea {
 
 .uploaded-file span {
   flex-grow: 1;
-  margin-right: 10px; 
-  color: #333; 
+  margin-right: 10px;
+  color: #333;
 }
 
 .delete-icon {
   color: #646464;
   font-size: 15px;
   cursor: pointer;
-  margin-left: 10px; /* 파일명과 삭제 아이콘 사이의 간격 조정 */
+  margin-left: 10px;
+  /* 파일명과 삭제 아이콘 사이의 간격 조정 */
 }
 
 
@@ -345,20 +381,25 @@ textarea {
   text-align: left;
   margin-left: 20px;
 }
+
 .response-message .key {
   font-weight: bold;
 }
+
 .response-message .value {
-  display: inline; 
+  display: inline;
 }
+
 .metadata {
   margin-bottom: 0;
   margin-top: 10px;
-  font-weight: bold; 
+  font-weight: bold;
 }
+
 .metadata2 {
   margin-left: 20px;
 }
+
 /* response message ( parkki ) */
 
 svg {
@@ -368,10 +409,12 @@ svg {
   min-width: auto !important;
 }
 
-.next-button{
+.next-button {
   position: fixed;
-  bottom: 40px; /* 하단에서의 거리 */
-  right: 50px; /* 우측에서의 거리 */
+  bottom: 40px;
+  /* 하단에서의 거리 */
+  right: 50px;
+  /* 우측에서의 거리 */
   background-color: #0fb9af;
   border: none;
   border-radius: 10px;
@@ -382,4 +425,9 @@ svg {
 
 .next-button:hover {
   background-color: #0c9e94;
+}
+
+.next-button:disabled {
+  background-color: #d3d3d3;
+  color: #353535;
 }
