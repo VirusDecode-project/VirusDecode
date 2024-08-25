@@ -7,19 +7,21 @@ import Analysis from "./pages/analysis";
 import React, { useState, useEffect, useRef } from "react";
 import historyIcon from "./image/history.png";
 import editIcon from "./image/edit.png";
+import Tab from './components/Tab';
 
 function App() {
   let navigate = useNavigate();
   let location = useLocation();
-
   const [show, setShow] = useState(false);
   const [isHome, setIsHome] = useState(true);
   const [username, setUsername] = useState(null);
   const [history, setHistory] = useState([]);
   const [activeHistoryItem, setActiveHistoryItem] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
-
   const optionsMenuRef = useRef(null);
+  const [mRNAReceived, setMRNAReceived] = useState(false);
+  const [PDBReceived, setPDBReceived] = useState(false);
+  const [tab, setTab] = useState(0);
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -96,6 +98,8 @@ function App() {
         await serverResponse.text();
         setHistory((prevHistory) => [...prevHistory, name]);
         navigate("/inputSeq");
+        setMRNAReceived(false);
+        setPDBReceived(false);
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
       }
@@ -123,6 +127,9 @@ function App() {
 
       const responseData = await serverResponse.json();
       navigate("/analysis", { state: { responseData } });
+      setTab(0);
+      setMRNAReceived(true);
+      setPDBReceived(true);
     } catch (error) {
       console.error(
         "An error occurred while fetching history details: ",
@@ -341,7 +348,13 @@ function App() {
             path="/inputSeq"
             element={<InputSeq setUsername={setUsername} />}
           />
-          <Route path="/analysis" element={<Analysis />} />
+          <Route path="/analysis" element={<Analysis
+            tab={tab}
+            setTab={setTab}
+            mRNAReceived={mRNAReceived} 
+            setMRNAReceived={setMRNAReceived} 
+            PDBReceived={PDBReceived} 
+            setPDBReceived={setPDBReceived}  />} />
         </Routes>
       </div>
 

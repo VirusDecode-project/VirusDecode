@@ -4,10 +4,10 @@ import { Nav } from 'react-bootstrap';
 import './analysis.css';
 import Tab from '../components/Tab';
 
-function Analysis() {
-  let [tab, setTab] = useState(0);
-  const [mRNAReceived, setMRNAReceived] = useState(false);
-  const [PDBReceived, setPDBReceived] = useState(false);
+function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived }) {
+  
+  // const [mRNAReceived, setMRNAReceived] = useState(false);
+  // const [PDBReceived, setPDBReceived] = useState(false);
   const [show, setShow] = useState(false);
   const location = useLocation();
   const responseData = location.state?.responseData || null;
