@@ -21,7 +21,7 @@ public class InputSeqController {
     @PostMapping("/reference")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDTO request) {
         String sequenceId = request.getSequenceId();  // 요청에서 시퀀스 ID 추출
-        return PythonScriptExecutor.executePythonScript("bioinformatics/data/metadata.json","1", sequenceId);
+        return PythonScriptExecutor.executePythonScript("virusdecode.py", "bioinformatics/data/metadata.json","1", sequenceId);
     }
 
     // /inputSeq/alignment 엔드포인트에 대한 POST 요청 처리
@@ -32,7 +32,7 @@ public class InputSeqController {
             String savedFilePath = fastaFileService.saveFastaContent(request);
 
             // 결과를 상태 코드 200 OK와 함께 반환
-            return PythonScriptExecutor.executePythonScript("bioinformatics/data/alignment_data.json", "2");
+            return PythonScriptExecutor.executePythonScript("virusdecode.py","bioinformatics/data/alignment_data.json", "2");
         } catch (IOException e) {
             // 파일 저장 중 오류가 발생한 경우 상태 코드 500과 함께 오류 메시지 반환
 //            Map<String, Object> errorResponse = new HashMap<>();
