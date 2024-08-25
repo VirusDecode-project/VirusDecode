@@ -9,6 +9,7 @@ import sys
 import json
 from io import StringIO
 import requests
+import shutil
 Entrez.email = "your_email@example.com"
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -407,7 +408,7 @@ if __name__ == "__main__":
         save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
 
         # PDB search
-        sequence = alignment_dict[reference_id][alignment_index["S"][0]:alignment_index["S"][1]].replace("-", "")
+        sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
 
         pdb_dict = {}
         pdb_ids = get_pdb_ids_by_sequence(sequence)
@@ -424,3 +425,4 @@ if __name__ == "__main__":
                 break
 
         save_json(pdb_dict, "pdb_data.json")
+
