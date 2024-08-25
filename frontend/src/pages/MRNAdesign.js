@@ -12,12 +12,7 @@ function MRNAdesign() {
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const serverResponse = await fetch('http://localhost:8080/analysis/re-mrnadesign', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const serverResponse = await fetch('http://localhost:8080/analysis/re-mrnadesign');
   
         if (!serverResponse.ok) {
           const errorMessage = await serverResponse.text();
