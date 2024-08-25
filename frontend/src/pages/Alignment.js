@@ -27,7 +27,7 @@ const generatePastelColor = () => {
 };
 
 
-function Alignment({ responseData, setTab, onRegionUpdate }) {
+function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived }) {
   const [chartData, setChartData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -69,12 +69,14 @@ function Alignment({ responseData, setTab, onRegionUpdate }) {
           </div>
           {responseData && (
             <ProteinSeq
-              onRegionUpdate={onRegionUpdate}
               selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}
               responseData={responseData}
               setTab={setTab}
               setIsLoading={setIsLoading}
+              onRegionUpdate={onRegionUpdate}
+              setMRNAReceived={setMRNAReceived}
+              setPDBReceived={setPDBReceived}
             />
           )}
         </div>
@@ -144,7 +146,7 @@ const StackedBar = ({ data, onBarClick }) => {
 };
 
 
-const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading }) => {
+const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
   const [sequences, setSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
@@ -231,6 +233,8 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
         modalData={modalData}  // 모달에 초기값 전달
         setTab={setTab}
         setIsLoading={setIsLoading}  // setLoading 함수 전달
+        setMRNAReceived={setMRNAReceived}
+        setPDBReceived={setPDBReceived}
       />
     </div>
 

@@ -31,6 +31,8 @@ function InputSeq({ setUsername }) {
   let [isLoading, setIsLoading] = useState(false);
   /*parkki */
 
+  // next 비활성화
+  const [responseReceived, setResponseReceived] = useState(false);
 
   /*parkki */
   const handleDoneSubmit = async (e) => {
@@ -62,6 +64,8 @@ function InputSeq({ setUsername }) {
 
       // 서버 응답 메시지 설정
       setResponseMessage(formattedMessage);
+
+      setResponseReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
       setResponseMessage("An error occurred during the request: " + error.message);
@@ -354,6 +358,7 @@ function InputSeq({ setUsername }) {
           <Button
             className="next-button"
             onClick={handleFileUploadToServer}
+            disabled={!responseReceived}
           >
             Next ➔
           </Button>

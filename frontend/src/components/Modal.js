@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Modal.css';
 
-const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading}) => {
+const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -69,14 +69,15 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
 
       const responseData = await serverResponse.json();
       setIsLoading(false);
+      setTab(1);
+      setMRNAReceived(true);
       console.log('Response from server:', responseData);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
     }
 
-    setTab(1);
-    
-    const pdbData = {gene: selectedRegion}
+
+    const pdbData = { gene: selectedRegion }
     try {
       const serverResponse = await fetch('http://localhost:8080/analysis/pdb', {
         method: 'POST',
@@ -92,10 +93,11 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
       }
 
       await serverResponse.text();
+      setPDBReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
     }
-    
+
   };
 
   const handleNext = async () => {
