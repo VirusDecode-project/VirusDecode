@@ -32,8 +32,8 @@ const RenameModal = ({ show, onClose, onRename }) => {
   if (!show) return null;  // 모달이 보이지 않으면 렌더링하지 않음
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
+    <div className="history-modal-overlay">
+      <div className="history-modal-content" ref={modalRef}>
         <h2>Please enter a new name.</h2>
         <input
           type="text"
@@ -41,9 +41,9 @@ const RenameModal = ({ show, onClose, onRename }) => {
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Enter new name"
         />
-        <div className="modal-buttons">
-          <button onClick={handleRename}>Save</button>
-          <button onClick={onClose}>Cancle</button>
+        <div className="history-modal-buttons">
+          <button className="modal-next-button" onClick={handleRename}>Save</button>
+          <button className="modal-close-button" onClick={onClose}>Cancle</button>
         </div>
       </div>
     </div>

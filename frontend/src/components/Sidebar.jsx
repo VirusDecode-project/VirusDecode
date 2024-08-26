@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import '../styles/HistoryModal.css';
+
 import historyIcon from '../assets/history.png';
 import editIcon from '../assets/edit.png';
 import HistoryList from './HistoryList';

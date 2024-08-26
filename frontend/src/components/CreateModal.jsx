@@ -35,8 +35,8 @@ const CustomModal = ({ show, onClose, onSave }) => {
   if (!show) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
+    <div className="history-modal-overlay">
+      <div className="history-modal-content" ref={modalRef}>
         <h2>Do you want to save this to your history for future reference?</h2>
         <input
           type="text"
@@ -44,10 +44,10 @@ const CustomModal = ({ show, onClose, onSave }) => {
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Enter name to save"
         />
-        <div className="modal-buttons">
-          <button onClick={handleStartNew}>New</button> {/* New button */}
-          <button onClick={handleSave}>Save</button>
-          <button onClick={onClose}>Cancel</button>
+        <div className="history-modal-buttons">
+          <button className="modal-next-button" onClick={handleStartNew}>New</button> {/* New button */}
+          <button className="modal-next-button" onClick={handleSave}>Save</button>
+          <button className="modal-close-button"onClick={onClose}>Cancel</button>
         </div>
       </div>
     </div>
