@@ -7,33 +7,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PythonScriptExecutor {
-
+    private static final Path currentDir = Paths.get("").toAbsolutePath();
+    private static final Path pythonScriptPath = currentDir.resolve("../virusdecode.py").normalize();
     private static final Logger logger = LoggerFactory.getLogger(PythonScriptExecutor.class);
 
-    public static ResponseEntity<String> executePythonScript(String pythonScript, String jsonFilePath, String... args) {
+    public static ResponseEntity<String> executePythonScript(String jsonFile, String... args) {
         try {
-            // Python 스크립트 리소스를 로드
-            ClassPathResource resource = new ClassPathResource("bioinformatics/"+pythonScript);
-            if (!resource.exists()) {
-                logger.error("Python 스크립트를 찾을 수 없음: {}", resource.getPath());
-                return ResponseEntity.status(404).body("Python script not found");
-            }
-
-            // Python 스크립트의 절대 경로 가져오기
-            String pythonScriptPath = resource.getFile().getAbsolutePath();
 
             // 명령어 리스트에 스크립트 경로 및 인자 추가
             List<String> command = new ArrayList<>();
             command.add("python3");
-            command.add(pythonScriptPath);
+            command.add(pythonScriptPath.toString());
+            command.add(currentDir.toString());
 
             // 제공된 인자들을 명령어 리스트에 추가
             if (args != null) {
@@ -80,7 +74,7 @@ public class PythonScriptExecutor {
                 return ResponseEntity.status(500).body("Error executing Python script");
             }
 
-            return JsonFileService.readJsonFile(jsonFilePath);
+            return JsonFileService.readJsonFile(jsonFile);
         } catch (IOException e) {
             logger.error("IO 오류가 발생했습니다: {}", e.getMessage());
             return ResponseEntity.status(500).body("Error executing Python script");
@@ -93,18 +87,12 @@ public class PythonScriptExecutor {
             return ResponseEntity.status(500).body("An unknown error occurred");
         }
     }
-    public static ResponseEntity<String> executePythonScriptWithoutJson(String pythonScript, String... args) {
+    public static ResponseEntity<String> executePythonScriptWithoutJson(String... args) {
         try {
-            ClassPathResource resource = new ClassPathResource("bioinformatics/" + pythonScript);
-            if (!resource.exists()) {
-                logger.error("Python 스크립트를 찾을 수 없음: {}", resource.getPath());
-                return ResponseEntity.status(404).body("Python script not found");
-            }
-
-            String pythonScriptPath = resource.getFile().getAbsolutePath();
             List<String> command = new ArrayList<>();
             command.add("python3");
-            command.add(pythonScriptPath);
+            command.add(pythonScriptPath.toString());
+            command.add(currentDir.toString());
 
             if (args != null) {
                 for (String arg : args) {

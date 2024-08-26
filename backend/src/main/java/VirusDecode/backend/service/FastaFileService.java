@@ -5,12 +5,13 @@ import VirusDecode.backend.dto.VarientDTO;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
 @Service
 public class FastaFileService {
-
+    private static final Path currentDir = Paths.get("").toAbsolutePath();
     // FASTA 형식의 콘텐츠를 저장하는 메서드
     public String saveFastaContent(VarientDTO request) throws IOException {
         StringBuilder fastaContent = new StringBuilder();  // FASTA 콘텐츠를 저장할 StringBuilder 객체
@@ -38,9 +39,9 @@ public class FastaFileService {
         }
 
         // 파일 저장 경로 설정
-        String currentDir = System.getProperty("user.dir");  // 현재 작업 디렉토리 경로
-        String varient_fasta_Path = Paths.get(currentDir, "build/resources/main/bioinformatics/data/combined.fasta").toString();
-
+//        String currentDir = System.getProperty("user.dir");  // 현재 작업 디렉토리 경로
+//        String varient_fasta_Path = Paths.get(currentDir, "build/resources/main/bioinformatics/data/combined.fasta").toString();
+        String varient_fasta_Path = currentDir.resolve("data/combined.fasta").toString();
         // FASTA 콘텐츠를 파일로 저장
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(varient_fasta_Path))) {
             writer.write(fastaContent.toString());  // 파일에 콘텐츠 쓰기
