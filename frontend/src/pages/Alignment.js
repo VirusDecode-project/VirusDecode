@@ -269,7 +269,8 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
                     {line.map((charObj, charIndex) => (
                       <div
                         key={charIndex}
-                        className={`sequence-box ${charObj.char === '-' ? 'gap' : ''} ${charObj.different ? 'different' : ''}`}
+                        className={`sequence-box ${charObj.char === '-' ? 'gap' : ''} ${charObj.different ? 'different' : ''} ${charObj.char === '' ? 'empty' : ''}`}
+                        style={charObj.char === '' ? { border: 'none' } : {}}
                       >
                         {charObj.char}
                       </div>

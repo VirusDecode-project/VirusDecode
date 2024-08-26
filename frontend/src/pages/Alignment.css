@@ -67,6 +67,11 @@
 }
 
 
+/* 빈 char에 대해 hover 색상 제거 */
+.sequence:hover .sequence-box.empty {
+  background-color: transparent; /* 색상을 투명하게 설정 */
+  border-color:transparent;
+}
 
 .sequence:hover .sequence-box {
   background-color: #444;
