@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "../styles/InputSeq.css";
@@ -11,7 +11,7 @@ import {
 import uploadIcon from "../assets/upload_icon.png";
 import Loading from '../components/Loading';
 
-function InputSeq({ setTab }) {
+function InputSeq({ setTab}) {
   let navigate = useNavigate();
 
   /*-----------다솔님 코드 구현 함수, 변수---------------*/
@@ -32,6 +32,28 @@ function InputSeq({ setTab }) {
 
   // next 비활성화
   const [responseReceived, setResponseReceived] = useState(false);
+
+
+// Add useEffect to fetch history details on component mount
+useEffect(() => {
+  const fetchHistoryDetails = async () => {
+    try {
+      const serverResponse = await fetch("http://localhost:8080/history/deleteData");
+
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
+      }
+
+      await serverResponse.text();
+    } catch (error) {
+      console.error("An error occurred while fetching history details: ", error.message);
+    }
+  };
+
+  fetchHistoryDetails();
+}, [navigate]);  // Include all dependencies
+
 
   /*parkki */
   const handleDoneSubmit = async (e) => {
@@ -121,7 +143,34 @@ function InputSeq({ setTab }) {
       }
 
       const responseData = await serverResponse.json();
+      
+      
       setTab(0);
+
+
+      try {
+        // GK - Loading 위치 이동
+        const historyName = referenceSequenceId;
+        const requestData = { historyName: historyName };
+        setIsLoading(true);
+        const serverResponse = await fetch("http://localhost:8080/history/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        });
+  
+        if (!serverResponse.ok) {
+          const errorMessage = await serverResponse.text();
+          throw new Error(errorMessage);
+        }
+  
+        await serverResponse.text();
+
+      } catch (error) {
+        console.error("An error occurred during the request: ", error.message);
+      }
       setIsLoading(false);
       navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {

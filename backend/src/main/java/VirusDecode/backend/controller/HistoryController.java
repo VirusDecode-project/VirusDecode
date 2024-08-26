@@ -75,6 +75,16 @@ public class HistoryController {
         }
     }
 
+    @GetMapping("/deleteData")
+    public ResponseEntity<String> deleteData() {
+        try {
+            getDeleteData();
+            return ResponseEntity.ok("Data delete successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to delete data: " + e.getMessage());
+        }
+    }
+
 
     private void createHistory(String historyName) throws IOException {
         Path newDir = currentDir.resolve("history").resolve(historyName);
@@ -127,6 +137,7 @@ public class HistoryController {
                     }
                 }
             }
+            Files.createDirectories(dataDir);
 
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceDir)) {
                 for (Path filePath : stream) {
@@ -153,5 +164,18 @@ public class HistoryController {
         // 리스트를 JSON 문자열로 변환
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(historyList);
+    }
+
+    private void getDeleteData() throws IOException {
+        Path newDir = currentDir.resolve("data");
+
+
+        if (Files.exists(newDir)) {
+            Files.walk(newDir)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        }
+
     }
 }

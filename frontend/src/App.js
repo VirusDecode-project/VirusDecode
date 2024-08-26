@@ -37,14 +37,14 @@ function App() {
           throw new Error("Failed to fetch history list");
         }
         const responseData = await serverResponse.json();
-        setHistory(responseData);
+        setHistory(responseData.reverse());
       } catch (error) {
         console.error("Error fetching history:", error);
       }
     };
 
     fetchHistory();
-  }, []);
+  }, [navigate]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -76,7 +76,7 @@ function App() {
           />
           <Route
             path="/inputSeq"
-            element={<InputSeq setTab={setTab} />}
+            element={<InputSeq setTab={setTab}/>}
           />
           <Route
             path="/analysis"
