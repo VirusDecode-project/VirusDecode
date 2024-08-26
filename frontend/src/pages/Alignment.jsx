@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import './Alignment.css';
-import Modal from '../components/Modal';
-import helpIcon from '../image/help.png';
+import '../styles/Alignment.css';
+import ConvertModal from '../components/ConvertModal';
+import helpIcon from '../assets/help.png';
 import HelpModal from '../components/HelpModal';
 import Loading from '../components/Loading';
 
@@ -223,7 +223,7 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
           selectedRegion={selectedRegion}
         />
       </div>
-      <Modal
+      <ConvertModal
         onRegionUpdate={onRegionUpdate}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}

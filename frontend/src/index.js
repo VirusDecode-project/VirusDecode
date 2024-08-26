@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'; // version downgrade (18->16)
-import './index.css';
+import './styles/index.css';
 import App from './App';
 import { BrowserRouter as Router } from 'react-router-dom';
 

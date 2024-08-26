@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Modal.css';
+import '../styles/Modal.css';
 
 const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
   const [startIndex, setStartIndex] = useState('');
@@ -7,7 +7,6 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
   const [selectedGenome, setSelectedGenome] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const [error, setError] = useState('');
-  // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (modalData) {

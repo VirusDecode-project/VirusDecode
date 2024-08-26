@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
-import './analysis.css';
-import Alignment from '../pages/Alignment';
-import MRNAdesign from '../pages/MRNAdesign';
-import Render3D from '../pages/Render3D';
+import '../styles/Analysis.css';
+import Alignment from './Alignment';
+import MRNAdesign from './MRNAdesign';
+import Render3D from './Render3D';
 
 function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived }) {
-  
-  // const [mRNAReceived, setMRNAReceived] = useState(false);
-  // const [PDBReceived, setPDBReceived] = useState(false);
-  // const [show, setShow] = useState(false);
   const location = useLocation();
   const responseData = location.state?.responseData || null;
   const [modalRegion, setModalRegion] = useState('');

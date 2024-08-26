@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./MRNAdesign.css";
+import "../styles/MRNAdesign.css";
 import RNAVisualizer from '../components/MRNAVisualizer';
 
 function MRNAdesign() {

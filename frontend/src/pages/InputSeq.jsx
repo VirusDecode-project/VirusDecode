@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import "./inputSeq.css";
+import "../styles/InputSeq.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronDown,
   faChevronRight,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import uploadIcon from "../image/upload_icon.png";
-// GK - Loading 컴포넌트 추가
+import uploadIcon from "../assets/upload_icon.png";
 import Loading from '../components/Loading';
 
 function InputSeq({ setTab }) {
