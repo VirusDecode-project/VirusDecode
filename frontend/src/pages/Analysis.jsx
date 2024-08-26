@@ -6,7 +6,7 @@ import Alignment from './Alignment';
 import MRNAdesign from './MRNAdesign';
 import Render3D from './Render3D';
 
-function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived }) {
+function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory }) {
   const location = useLocation();
   const responseData = location.state?.responseData || null;
   const [modalRegion, setModalRegion] = useState('');
@@ -37,6 +37,7 @@ function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, set
                     setPDBReceived={setPDBReceived}
                     setTab={setTab}
                     onRegionUpdate={handleModalRegion}
+                    workingHistory={workingHistory}
                 />
             )}
             {tab === 1 && <MRNAdesign />}

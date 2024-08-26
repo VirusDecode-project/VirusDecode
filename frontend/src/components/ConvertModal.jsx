@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Modal.css';
 
-const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
+const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -93,6 +93,31 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
 
       await serverResponse.text();
       setPDBReceived(true);
+    } catch (error) {
+      console.error("An error occurred during the request: ", error.message);
+    }
+
+    const requestData = {
+      historyName: workingHistory,
+    }
+    try {
+      const serverResponse = await fetch(
+        "http://localhost:8080/history/create",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
+      }
+
+      await serverResponse.text();
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
     }

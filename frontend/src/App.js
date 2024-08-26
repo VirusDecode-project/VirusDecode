@@ -18,6 +18,7 @@ function App() {
   const [mRNAReceived, setMRNAReceived] = useState(false);
   const [PDBReceived, setPDBReceived] = useState(false);
   const [tab, setTab] = useState(0);
+  const [workingHistory, setWorkingHistory] = useState(null);
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -60,6 +61,8 @@ function App() {
         setMRNAReceived={setMRNAReceived}
         setPDBReceived={setPDBReceived}
         setTab={setTab}
+        workingHistory={workingHistory}
+        setWorkingHistory={setWorkingHistory}
       />
 
       <div className={`content-container ${show ? "shrink" : ""}`}>
@@ -76,7 +79,7 @@ function App() {
           />
           <Route
             path="/inputSeq"
-            element={<InputSeq setTab={setTab}/>}
+            element={<InputSeq setTab={setTab} setWorkingHistory={setWorkingHistory}/>}
           />
           <Route
             path="/analysis"
@@ -87,6 +90,7 @@ function App() {
               setMRNAReceived={setMRNAReceived}
               PDBReceived={PDBReceived}
               setPDBReceived={setPDBReceived}
+              workingHistory={workingHistory}
             />}
           />
         </Routes>

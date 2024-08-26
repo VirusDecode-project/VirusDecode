@@ -23,12 +23,6 @@ const CreateModal = ({ show, onClose, onSave }) => {
     };
   }, [show, onClose]);
 
-  const handleSave = () => {
-    onSave(inputValue);
-    setInputValue('');
-    onClose();
-  };
-
   const handleClose = () => {
     onClose();
     setInputValue('');
@@ -45,16 +39,10 @@ const CreateModal = ({ show, onClose, onSave }) => {
   return (
     <div className="history-modal-overlay">
       <div className="history-modal-content" ref={modalRef}>
-        <h2>Do you want to save this to your history?</h2>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter name to save"
-        />
+        <h2>Your history was saved. Do you want to restart?</h2>
+
         <div className="history-modal-buttons">
-          <button className="modal-next-button" onClick={handleStartNew}>New</button> {/* New button */}
-          <button className="modal-next-button" onClick={handleSave}>Save</button>
+          <button className="modal-next-button" onClick={handleStartNew}>restart</button> {/* New button */}
           <button className="modal-close-button"onClick={handleClose}>Cancel</button>
         </div>
       </div>
