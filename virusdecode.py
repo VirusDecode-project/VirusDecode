@@ -248,11 +248,14 @@ class SequenceAnalysis:
             if gap_count_in_range == gap_count:
                 end += gap_count_in_range
                 break
-
+        
         # Get target sequence
         target_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
         self.target_sequence = target_sequence[start:end].replace("-", "")
         
+        if(self.target_sequence == ""):
+            print("Error: No sequence found")
+            sys.exit(1)
 
         # Run LinearDesign
         # Execute the command and capture the result
@@ -261,11 +264,11 @@ class SequenceAnalysis:
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
 
+
         # Check if the command was executed successfully
         if process.returncode == 0:
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
-            print(output_lines)
             mRNA_sequence = output_lines[-4].replace('mRNA sequence:', '').strip()
             mRNA_structure = output_lines[-3].replace('mRNA structure:', '').strip()
             parts = output_lines[-2].split(';')
