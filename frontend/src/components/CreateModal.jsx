@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 
-const CustomModal = ({ show, onClose, onSave }) => {
+const CreateModal = ({ show, onClose, onSave }) => {
   const [inputValue, setInputValue] = useState('');
   const modalRef = useRef(null);
   const navigate = useNavigate(); // Initialize the navigate function
@@ -10,6 +10,7 @@ const CustomModal = ({ show, onClose, onSave }) => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose();
+        setInputValue('');
       }
     };
 
@@ -24,11 +25,18 @@ const CustomModal = ({ show, onClose, onSave }) => {
 
   const handleSave = () => {
     onSave(inputValue);
+    setInputValue('');
     onClose();
   };
 
+  const handleClose = () => {
+    onClose();
+    setInputValue('');
+  }
+
   const handleStartNew = () => {
     navigate('/InputSeq'); // Navigate to the InputSeq page
+    setInputValue('');
     onClose(); // Close the modal after navigation
   };
 
@@ -47,11 +55,11 @@ const CustomModal = ({ show, onClose, onSave }) => {
         <div className="history-modal-buttons">
           <button className="modal-next-button" onClick={handleStartNew}>New</button> {/* New button */}
           <button className="modal-next-button" onClick={handleSave}>Save</button>
-          <button className="modal-close-button"onClick={onClose}>Cancel</button>
+          <button className="modal-close-button"onClick={handleClose}>Cancel</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default CustomModal;
+export default CreateModal;
