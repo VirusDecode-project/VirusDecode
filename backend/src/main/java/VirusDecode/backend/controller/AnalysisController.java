@@ -26,7 +26,7 @@ public class AnalysisController {
         return PythonScriptExecutor.executePythonScript("linearDesign_data.json","3", region, varientName, start, end);
     }
 
-    // /analysis/mrnadesign 엔드포인트에 대한 POST 요청 처리
+    // /analysis/pdb 엔드포인트에 대한 POST 요청 처리
     @PostMapping("/pdb")
     public ResponseEntity<String> getPdb(@RequestBody PdbDTO request) {
         String gene = request.getGene();

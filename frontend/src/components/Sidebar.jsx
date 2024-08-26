@@ -50,7 +50,7 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
         }
 
         await serverResponse.text();
-        setHistory((prevHistory) => [...prevHistory, name]);
+        setHistory((prevHistory) => [name, ...prevHistory]);
         navigate("/inputSeq");
         setMRNAReceived(false);
         setPDBReceived(false);

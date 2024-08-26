@@ -45,7 +45,7 @@ const CreateModal = ({ show, onClose, onSave }) => {
   return (
     <div className="history-modal-overlay">
       <div className="history-modal-content" ref={modalRef}>
-        <h2>Do you want to save this to your history for future reference?</h2>
+        <h2>Do you want to save this to your history?</h2>
         <input
           type="text"
           value={inputValue}
