@@ -9,7 +9,7 @@ const Loading = ({text}) => {
   useEffect(() => {
     let intervalId = setInterval(() => {
       setLoadingText((prev) => {
-        if (prev.endsWith('...')) return text;
+        if (prev.endsWith('...')) return loadingText;
         return prev + '.';
       });
     }, 500);
@@ -17,7 +17,7 @@ const Loading = ({text}) => {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [loadingText]);
 
   return (
     <div className="loading-container">

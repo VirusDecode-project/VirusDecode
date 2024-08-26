@@ -138,7 +138,7 @@
 .history-item {
   position: relative;
   padding: 10px;
-  transition: background-color 0.3s;
+  /* transition: background-color 0.3s; */
   border-radius: 15px;
   z-index: 1;
 }
@@ -157,11 +157,12 @@
 
 .ellipsis-container:hover {
   visibility: visible;
+  
 }
 
 .ellipsis-button {
   position: absolute;
-  right: 10px;
+  right: 1px;
   top: 50%;
   transform: translateY(-60%);
   background: none;
@@ -175,6 +176,7 @@
 .history-item.active .ellipsis-button {
   display: block;
   z-index: 2;
+  background-color: lightgray;
 }
 
 .options-menu {
@@ -196,6 +198,7 @@
   cursor: pointer;
   text-align: left;
   padding: 5px 0;
+  
 }
 
 .options-modal {

@@ -10,7 +10,7 @@ function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, set
   
   // const [mRNAReceived, setMRNAReceived] = useState(false);
   // const [PDBReceived, setPDBReceived] = useState(false);
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
   const location = useLocation();
   const responseData = location.state?.responseData || null;
   const [modalRegion, setModalRegion] = useState('');
@@ -20,7 +20,7 @@ function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, set
 
   return (
     <div>
-      <div className={`analysis-container ${show ? 'shrink' : ''}`}>
+      <div className={"analysis-container"}>
         <>
           <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-start">
             <Nav.Item>

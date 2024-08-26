@@ -223,13 +223,14 @@ function App() {
             src={historyIcon}
             onClick={handleClose}
             style={{ cursor: "pointer" }}
+            alt="History Icon"
           />
           <img
             src={editIcon}
-            alt="Edit"
             className="edit-icon"
             onClick={handleEditClick}
             style={{ cursor: "pointer" }}
+            alt="Edit Icon"
           />
         </div>
         <div className="sidebar-body">
