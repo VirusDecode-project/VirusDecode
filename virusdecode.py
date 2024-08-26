@@ -215,7 +215,7 @@ class SequenceAnalysis:
         self.variant_id = variant_id
         self.start = start
         self.end = end
-        self.target_sequence = None
+        self.amino_acid_sequence = None
         self.linearDesign = []
         self.protParam = []
 
@@ -250,17 +250,16 @@ class SequenceAnalysis:
                 break
         
         # Get target sequence
-        target_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
-        self.target_sequence = target_sequence[start:end].replace("-", "")
+        amino_acid_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end][start:end].replace("-", "")
         
-        if(self.target_sequence == ""):
+        if(amino_acid_sequence == ""):
             print("Error: No sequence found")
             sys.exit(1)
 
         # Run LinearDesign
         # Execute the command and capture the result
         os.chdir(os.path.join(current_dir, "../../LinearDesign"))
-        command = f"echo {self.target_sequence} | ./lineardesign"
+        command = f"echo {amino_acid_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
 
@@ -276,21 +275,20 @@ class SequenceAnalysis:
             cai = parts[1].replace('mRNA CAI:', '').strip()
 
             # Set the linear design data
+            self.linearDesign.append(amino_acid_sequence)
             self.linearDesign.append(mRNA_sequence)
             self.linearDesign.append(mRNA_structure)
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
+            self.amino_acid_sequence = amino_acid_sequence
 
         else:
             print("Error executing command")
             print(stderr)
 
     def set_protParam(self):
-        # Protein sequence to analyze
-        sequence = self.target_sequence
-
         # Create a protein analysis object
-        protein_analysis = ProteinAnalysis(sequence)
+        protein_analysis = ProteinAnalysis(self.amino_acid_sequence)
 
         # Calculate molecular weight
         molecular_weight = protein_analysis.molecular_weight()
@@ -317,7 +315,6 @@ class SequenceAnalysis:
         aromaticity = protein_analysis.aromaticity()
 
         # Return the protein parameters
-        self.protParam.append(sequence)
         self.protParam.append(molecular_weight)
         self.protParam.append(amino_acid_count)
         self.protParam.append(amino_acid_percent)
@@ -328,8 +325,9 @@ class SequenceAnalysis:
         self.protParam.append(aromaticity)
 
     def get_linearDesign(self):
-        mRNA_sequence, mRNA_structure, free_energy, cai = self.linearDesign
+        amino_acid_sequence, mRNA_sequence, mRNA_structure, free_energy, cai= self.linearDesign
         linearDesign_dict = {
+            "amino_acid_sequence": amino_acid_sequence,
             "mRNA_sequence": mRNA_sequence,
             "mRNA_structure": mRNA_structure,
             "free_energy": free_energy,
@@ -338,9 +336,8 @@ class SequenceAnalysis:
         return linearDesign_dict
 
     def get_protParam(self):
-        sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = self.protParam
+        molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = self.protParam
         protParam_dict = {
-            "sequence": sequence,
             "molecular_weight": molecular_weight,
             "amino_acid_count": amino_acid_count,
             "amino_acid_percent": amino_acid_percent,
