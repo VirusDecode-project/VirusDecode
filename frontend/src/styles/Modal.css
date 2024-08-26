@@ -111,3 +111,64 @@
   margin-bottom: 30px; 
   text-align: center;  
 }
+
+
+
+
+.history-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Ensure the modal appears above other content */
+}
+
+.history-modal-content {
+  background: #ffffff; /* White background */
+  padding: 20px 30px; /* More padding for better spacing */
+  border-radius: 12px; /* Slightly more rounded corners */
+  width: 400px; /* Slightly wider for more content space */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  text-align: center; /* Center align text */
+}
+
+.history-modal-content h2 {
+  font-size: 22px; /* Slightly larger font for better readability */
+  margin-bottom: 15px; /* Add some space below the heading */
+  color: #333; /* Darker color for the heading */
+}
+
+.history-modal-content input {
+  width: 100%; /* Full width input */
+  padding: 10px; /* Padding for better spacing */
+  margin-bottom: 15px; /* Space below the input field */
+  border: 1px solid #ccc; /* Light grey border */
+  border-radius: 4px; /* Slightly rounded input corners */
+  font-size: 16px; /* Font size for input text */
+}
+
+.history-modal-buttons {
+  height: 40px;
+  margin-top: 20px; /* More space above buttons */
+  display: flex; /* Flexbox for button alignment */
+  justify-content: center; /* Center buttons horizontally */
+}
+
+.history-modal-buttons button {
+  padding: 8px 16px; /* Button padding */
+  margin: 0 8px; /* Spacing between buttons */
+  border: none; /* Remove default border */
+  border-radius: 4px; /* Rounded corners */
+  color: white; /* White text */
+  font-size: 18px; /* Font size for button text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+
+

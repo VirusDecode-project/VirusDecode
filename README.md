@@ -75,3 +75,96 @@ chmod +x gradlew
 ./gradlew bootRun
 ```
 
+
+
+
+
+
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Development Environment](#development-environment)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+
+
+
+## Installation
+
+To set up the development environment for VirusDecode, follow these steps:
+
+1. **Alignment Tool**
+    - Download and install [MUSCLE v3.8.1551](https://drive5.com/muscle/):
+      ```bash
+      mkdir muscle
+      cd muscle
+      wget https://www.drive5.com/muscle/muscle_src_3.8.1551.tar.gz
+      tar -xvzf muscle_src_3.8.1551.tar.gz
+      make
+      sudo cp muscle /usr/local/bin/
+      cd ..
+      rm -rf muscle
+      ```
+
+2. **Python Environment**
+    - Install Python 3.11.9 and Python 2.7.
+    - Set up a virtual environment and install required packages:
+      ```bash
+      python3.11 -m venv venv
+      source venv/bin/activate
+      pip install biopython==1.83
+      ```
+    - If using LinearDesign, ensure Python 2.7 is correctly configured.
+
+3. **Clone the Repository**
+    - Clone the project
+      ```bash
+      git clone https://github.com/VirusDecode-project/VirusDecode.git
+      cd VirusDecode
+      ```
+
+4. **Backend Setup**
+    - Ensure Java 21 (JDK 21) is installed.
+    - Install [Spring Boot](https://spring.io/guides/gs/spring-boot/) if necessary.
+    - Navigate to the backend directory and run the Spring Boot application:
+      ```bash
+      cd backend
+      cd src/main/resources/bioinformatics/LinearDesign
+      make
+      cd ../../../../
+      ```
+
+5. **Frontend Setup**
+    - Install [Node.js and npm](https://nodejs.org/).
+    - Navigate to the frontend directory and install dependencies:
+      ```bash
+      cd frontend
+      npm install
+      ```
+
+
+
+
+
+## Usage
+
+To run the VirusDecode application:
+
+1. **Start the Backend Server**
+    ```bash
+    cd backend
+    chmod +x gradlew
+    ./gradlew bootRun
+    ```
+
+2. **Start the Frontend Development Server**
+    ```bash
+    cd frontend
+    npm start
+    ```
+
+3. **Analyzing Virus Sequences**
+    - Use the web interface to upload and analyze virus sequences. Follow the on-screen instructions for different types of analysis.

@@ -20,38 +20,6 @@
   font-style: normal;
 }
 
-/* 다른 폰트 스타일을 정의할 수 있습니다 */
-
-
-.main-bg {
-  height: 400px;
-  background-image: url(./image/bg.png);
-  background-position: center;
-  background-repeat: repeat;
-}
-
-.text-box {
-  line-height: 3;  
-  width: 420px;
-  margin: 30px auto; /* 수평 가운데 정렬 */
-}
-
-.text-box p {
-  text-align: left; 
-}
-
-.image-button {
-  background-image: url('./image/start_btn.png'); /* 이미지 파일 경로 수정 */
-  background-size: cover;    /* 이미지 크기 맞춤 */
-  background-repeat: no-repeat;
-  width: 200px;              /* 버튼 너비 설정 */
-  height: 50px;              /* 버튼 높이 설정 */
-  border: none;              /* 기본 버튼 테두리 제거 */
-  cursor: pointer;           /* 마우스 커서 변경 */
-  border-radius: 15px;
-
-}
-
 
 
 .App {

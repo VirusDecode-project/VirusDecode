@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Viztein from 'viztein';
-import "./Render3D.css";
+import "../styles/Render3D.css";
 
 const Render3D = ({ region }) => {
   const [PDBids, setPDBids] = useState([]);

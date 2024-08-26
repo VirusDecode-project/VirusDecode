@@ -1,29 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import './ProteinSeq.css';
-import Modal from '../components/Modal';
-import helpIcon from '../image/help.png';
+import '../styles/Alignment.css';
+import ConvertModal from '../components/ConvertModal';
+import helpIcon from '../assets/help.png';
 import HelpModal from '../components/HelpModal';
 import Loading from '../components/Loading';
 
 let lastHue = 0;
 
 const generatePastelColor = () => {
-  // 이전 색상과의 최소 차이를 설정 (예: 60도 이상 차이)
   const minDifference = 60;
-
-  // 무작위로 생성된 hue 값이 이전 hue 값과 충분히 다르지 않으면 다시 생성
   let hue;
   do {
     hue = Math.floor(Math.random() * 360);
   } while (Math.abs(hue - lastHue) < minDifference);
 
   lastHue = hue;
-
   const saturation = 70 + Math.floor(Math.random() * 10);
   const lightness = 85 + Math.floor(Math.random() * 10);
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
-
 
 function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived }) {
   const [chartData, setChartData] = useState([]);
@@ -32,11 +27,9 @@ function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setP
 
   useEffect(() => {
     if (responseData) {
-      // `alignment_index`에서 첫 번째 키를 가져와서 초기값으로 설정
       const firstRegion = Object.keys(responseData.alignment_index)[0];
       setSelectedRegion(firstRegion);
       try {
-        console.log(responseData);
         const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
           const value = end - start;
           return {
@@ -47,7 +40,6 @@ function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setP
             end,
           };
         });
-
         setChartData(data);
       } catch (error) {
         console.error('Error processing response data:', error);
@@ -58,7 +50,6 @@ function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setP
   return (
     <div>
       {isLoading ? (
-        // GK - Loading 컴포넌트로 변경
         <Loading text="Converting" />
       ) : (
         <div>
@@ -143,15 +134,16 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-
 const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
   const [sequences, setSequences] = useState([]);
+  const [displayedSequences, setDisplayedSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState({ genome: '', protein: '' });
-  /* helpModal */
   const [isHelpModalOpen, setHelpModalOpen] = useState(false);
-  /* helpModal */
+  const [showMore, setShowMore] = useState(false); // New state for show more
+
+  const SEQUENCES_TO_SHOW = 10; // Number of sequences to show initially and incrementally
 
   useEffect(() => {
     if (responseData) {
@@ -160,10 +152,18 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
         sequence,
       }));
       setSequences(sequenceData);
+      setDisplayedSequences(sequenceData.slice(0, SEQUENCES_TO_SHOW)); // Show initial set of sequences
     }
   }, [responseData]);
 
-  if (!sequences.length || !responseData.alignment_index[selectedRegion]) {
+  const handleShowMore = () => {
+    setDisplayedSequences(prevDisplayed => [
+      ...prevDisplayed,
+      ...sequences.slice(prevDisplayed.length, prevDisplayed.length + SEQUENCES_TO_SHOW),
+    ]);
+  };
+
+  if (!displayedSequences.length || !responseData.alignment_index[selectedRegion]) {
     return <p>Loading sequences...</p>;
   }
 
@@ -174,21 +174,19 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
   const handleSequenceClick = (sequence) => {
     setSelectedSequence(sequence);
     setModalData({
-      genome: sequence.label,  // 클릭한 genome의 이름을 모달에 전달
-      protein: selectedRegion   // 선택된 protein 정보를 모달에 전달
+      genome: sequence.label,
+      protein: selectedRegion,
     });
     setModalOpen(true);
   };
-  /* helpModal */
+
   const toggleHelpModal = () => {
     setHelpModalOpen(!isHelpModalOpen);
   };
-  /* helpModal */
-  return (
 
+  return (
     <div className="protein-sequence-container">
       <div className="region-selector">
-        {/* helpModal */}
         <div className='region-selector-wrapper'>
           <div className='region-selector-container'>
             <img
@@ -209,58 +207,45 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
           </div>
           <HelpModal
             isOpen={isHelpModalOpen}
-            onClose={toggleHelpModal} />
-          {/* helpModal */}
+            onClose={toggleHelpModal}
+          />
         </div>
       </div>
       <div>
         <SequenceDisplay
-          sequences={sequences}
+          sequences={displayedSequences} // Display the sliced list of sequences
           referenceSequence={regionSequence}
           onSequenceClick={handleSequenceClick}
           selectedSequence={selectedSequence}
           regionIndices={regionIndices}
+          selectedRegion={selectedRegion}
         />
+        {displayedSequences.length < sequences.length && (
+          <button className="show-more-button" onClick={handleShowMore}>
+            Show More
+          </button>
+        )}
       </div>
-      <Modal
+      <ConvertModal
         onRegionUpdate={onRegionUpdate}
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         sequences={sequences}
         alignmentIndex={responseData.alignment_index}
-        modalData={modalData}  // 모달에 초기값 전달
+        modalData={modalData}
         setTab={setTab}
-        setIsLoading={setIsLoading}  // setLoading 함수 전달
+        setIsLoading={setIsLoading}
         setMRNAReceived={setMRNAReceived}
         setPDBReceived={setPDBReceived}
       />
     </div>
-
   );
 };
 
-
-const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
-  useEffect(() => {
-    const labels = document.querySelectorAll('.sequence-label');
-
-    let maxWidth = 0;
-    labels.forEach(label => {
-      const labelWidth = label.offsetWidth;
-      if (labelWidth > maxWidth) {
-        maxWidth = labelWidth;
-      }
-    });
-    maxWidth += 10;
-    labels.forEach(label => {
-      label.style.width = `${maxWidth}px`;
-    });
-
-    const indexesContainers = document.querySelectorAll('.sequence-indexes');
-    indexesContainers.forEach((container) => {
-      container.style.marginLeft = `${maxWidth}px`;
-    });
-  }, [sequences]);
+const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices, selectedRegion }) => {
+  const maxLabelWidth = Math.max(
+    ...sequences.map(seq => seq.label.length)
+  ) + 1;
 
   return (
     <div className="sequence-container">
@@ -273,14 +258,20 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               onClick={() => onSequenceClick(seq)}
               style={index === 0 ? { borderBottom: '2px solid #aaaaaa', paddingBottom: '6px', marginBottom: '6px' } : {}}
             >
-              <div className="sequence-label">{seq.label}</div>
+              <div
+                className="sequence-label"
+                style={{ width: `${maxLabelWidth}ch` }}
+              >
+                {seq.label}
+              </div>
               <div className="sequence-boxes">
                 {seq.lines.map((line, lineIndex) => (
                   <div key={lineIndex} className="sequence-line">
                     {line.map((charObj, charIndex) => (
                       <div
                         key={charIndex}
-                        className={`sequence-box ${charObj.char === '-' ? 'gap' : ''} ${charObj.different ? 'different' : ''}`}
+                        className={`sequence-box ${charObj.char === '-' ? 'gap' : ''} ${charObj.different ? 'different' : ''} ${charObj.char === '' ? 'empty' : ''}`}
+                        style={charObj.char === '' ? { border: 'none' } : {}}
                       >
                         {charObj.char}
                       </div>
@@ -290,9 +281,9 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               </div>
             </div>
           ))}
-          <div className="sequence-indexes">
+          <div className="sequence-indexes" style={{ marginLeft: `${maxLabelWidth + 1}ch` }}>
             {Array.from({ length: 6 }, (_, i) => {
-              const startPos = i === 0 ? '' : ((chunkIndex * 50) + (i * 10)).toString().padStart(2, '0');
+              const startPos = i === 0 ? chunkIndex * 50 + 1 : ((chunkIndex * 50) + (i * 10)).toString().padStart(2, '0');
               return (
                 <div key={i} className="sequence-index">
                   {startPos || ' '}
@@ -306,15 +297,10 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
   );
 };
 
-
-
-
-
-// 서열을 나누는 함수
 const splitSequences = (sequences, referenceSequence, regionIndices) => {
-  const chunkSize = 50; // 각 청크의 크기 설정
+  const chunkSize = 50;
   const result = [];
-  const numChunks = Math.ceil((regionIndices[1] - regionIndices[0]) / chunkSize); // 청크 수 계산
+  const numChunks = Math.ceil((regionIndices[1] - regionIndices[0]) / chunkSize);
 
   for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
     const chunk = sequences.map((seq) => ({
@@ -327,8 +313,8 @@ const splitSequences = (sequences, referenceSequence, regionIndices) => {
             const globalIndex = regionIndices[0] + chunkIndex * chunkSize + index;
             const isInRange = globalIndex >= regionIndices[0] && globalIndex < regionIndices[1];
             return {
-              char: isInRange ? char : '', // 범위 밖일 경우 공백 출력
-              different: isInRange && char !== referenceSequence[chunkIndex * chunkSize + index] // 참조 서열과 다른지 확인
+              char: isInRange ? char : '',
+              different: isInRange && char !== referenceSequence[chunkIndex * chunkSize + index]
             };
           })
       ]

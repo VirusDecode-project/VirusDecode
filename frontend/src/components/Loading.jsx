@@ -1,7 +1,7 @@
 // Loading.js
 import React, { useState, useEffect } from 'react';
-import loadingImage from '../image/loading.png'; // Adjust the path as necessary
-import './Loading.css'; // Optional: You can add styles for the loading component
+import loadingImage from '../assets/loading.png'; // Adjust the path as necessary
+import '../styles/Loading.css'; // Optional: You can add styles for the loading component
 
 const Loading = ({text}) => {
   const [loadingText, setLoadingText] = useState(text);
@@ -9,7 +9,7 @@ const Loading = ({text}) => {
   useEffect(() => {
     let intervalId = setInterval(() => {
       setLoadingText((prev) => {
-        if (prev.endsWith('...')) return loadingText;
+        if (prev.endsWith('...')) return text;
         return prev + '.';
       });
     }, 500);
