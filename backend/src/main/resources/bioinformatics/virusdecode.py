@@ -256,7 +256,7 @@ class SequenceAnalysis:
 
         # Run LinearDesign
         # Execute the command and capture the result
-        os.chdir(os.path.join(current_dir, "LinearDesign"))
+        os.chdir(os.path.join(current_dir, "../../../../../../LinearDesign"))
         command = f"echo {self.target_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
