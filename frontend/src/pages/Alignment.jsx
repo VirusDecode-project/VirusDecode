@@ -142,7 +142,6 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
   const [isModalOpen, setModalOpen] = useState(false);
   const [modalData, setModalData] = useState({ genome: '', protein: '' });
   const [isHelpModalOpen, setHelpModalOpen] = useState(false);
-  const [showMore, setShowMore] = useState(false); // New state for show more
 
   const SEQUENCES_TO_SHOW = 10; // Number of sequences to show initially and incrementally
 
