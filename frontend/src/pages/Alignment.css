@@ -1,7 +1,3 @@
-.ProteinSeq {
-  text-align: center;
-}
-
 .sequence-container {
   display: flex;
   flex-direction: column;

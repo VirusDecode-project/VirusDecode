@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './ProteinSeq.css';
+import './Alignment.css';
 import Modal from '../components/Modal';
 import helpIcon from '../image/help.png';
 import HelpModal from '../components/HelpModal';
@@ -220,6 +220,7 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
           onSequenceClick={handleSequenceClick}
           selectedSequence={selectedSequence}
           regionIndices={regionIndices}
+          selectedRegion={selectedRegion}
         />
       </div>
       <Modal
@@ -240,27 +241,10 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
 };
 
 
-const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices }) => {
-  useEffect(() => {
-    const labels = document.querySelectorAll('.sequence-label');
-
-    let maxWidth = 0;
-    labels.forEach(label => {
-      const labelWidth = label.offsetWidth;
-      if (labelWidth > maxWidth) {
-        maxWidth = labelWidth;
-      }
-    });
-    maxWidth += 10;
-    labels.forEach(label => {
-      label.style.width = `${maxWidth}px`;
-    });
-
-    const indexesContainers = document.querySelectorAll('.sequence-indexes');
-    indexesContainers.forEach((container) => {
-      container.style.marginLeft = `${maxWidth}px`;
-    });
-  }, [sequences]);
+const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, selectedSequence, regionIndices, selectedRegion }) => {
+  const maxLabelWidth = Math.max(
+    ...sequences.map(seq => seq.label.length)
+  )+1;
 
   return (
     <div className="sequence-container">
@@ -273,7 +257,12 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               onClick={() => onSequenceClick(seq)}
               style={index === 0 ? { borderBottom: '2px solid #aaaaaa', paddingBottom: '6px', marginBottom: '6px' } : {}}
             >
-              <div className="sequence-label">{seq.label}</div>
+              <div
+                className="sequence-label"
+                style={{ width: `${maxLabelWidth}ch` }} // Use `ch` to set width based on character count
+              >
+                {seq.label}
+              </div>
               <div className="sequence-boxes">
                 {seq.lines.map((line, lineIndex) => (
                   <div key={lineIndex} className="sequence-line">
@@ -290,9 +279,9 @@ const SequenceDisplay = ({ sequences, referenceSequence, onSequenceClick, select
               </div>
             </div>
           ))}
-          <div className="sequence-indexes">
+          <div className="sequence-indexes" style={{ marginLeft: `${maxLabelWidth+1}ch` }}>
             {Array.from({ length: 6 }, (_, i) => {
-              const startPos = i === 0 ? '' : ((chunkIndex * 50) + (i * 10)).toString().padStart(2, '0');
+              const startPos = i === 0 ? chunkIndex * 50 + 1 : ((chunkIndex * 50) + (i * 10)).toString().padStart(2, '0');
               return (
                 <div key={i} className="sequence-index">
                   {startPos || ' '}
