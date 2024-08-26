@@ -12,12 +12,8 @@
     position: relative;
     height: 100vh;
     transition: padding-left 0.3s ease;
-    padding-left: 0px;
 }
 
-.analysis-container.shrink {
-    padding-left: 260px;
-}
 
 /* Custom Tab Styles */
 
