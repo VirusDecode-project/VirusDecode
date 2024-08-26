@@ -15,7 +15,7 @@ const Home = ({ setHistory, setShow, setMRNAReceived, setPDBReceived }) => {
         </p>
       </div>
       <button
-        className="image-button"
+        className="decode-button"
         onClick={() => {
           const fetchHistory = async () => {
             try {
