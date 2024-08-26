@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 
-const CreateModal = ({ show, onClose, onSave }) => {
-  const [inputValue, setInputValue] = useState('');
+const CreateModal = ({ show, onClose }) => {
   const modalRef = useRef(null);
   const navigate = useNavigate(); // Initialize the navigate function
 
@@ -10,7 +9,6 @@ const CreateModal = ({ show, onClose, onSave }) => {
     const handleClickOutside = (event) => {
       if (modalRef.current && !modalRef.current.contains(event.target)) {
         onClose();
-        setInputValue('');
       }
     };
 
@@ -25,12 +23,10 @@ const CreateModal = ({ show, onClose, onSave }) => {
 
   const handleClose = () => {
     onClose();
-    setInputValue('');
   }
 
   const handleStartNew = () => {
     navigate('/InputSeq'); // Navigate to the InputSeq page
-    setInputValue('');
     onClose(); // Close the modal after navigation
   };
 
