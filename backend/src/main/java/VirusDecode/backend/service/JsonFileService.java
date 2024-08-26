@@ -9,23 +9,25 @@ import org.slf4j.LoggerFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class JsonFileService {
 
+    private static final Path currentDir = Paths.get("").toAbsolutePath();
     private static final Logger logger = LoggerFactory.getLogger(JsonFileService.class);
 
     // 주어진 파일 경로의 JSON 파일을 읽어들여 그 내용을 반환하는 메서드
-    public static ResponseEntity<String> readJsonFile(String jsonFilePath) {
+    public static ResponseEntity<String> readJsonFile(String jsonFile) {
         try {
-            // ClassPathResource를 사용하여 클래스패스 내의 JSON 파일을 로드
-            ClassPathResource resource = new ClassPathResource(jsonFilePath);
-            if (!resource.exists()) {
+            Path jsonFilePath = currentDir.resolve("data").resolve(jsonFile); // 파일 시스템 경로 사용
+            if (!Files.exists(jsonFilePath)) {
                 logger.error("결과 JSON 파일을 찾을 수 없음: {}", jsonFilePath);
                 return ResponseEntity.status(404).body("Result JSON file not found");
             }
 
-            String jsonContent = Files.readString(resource.getFile().toPath());  // 파일 내용을 문자열로 읽기
+            String jsonContent = Files.readString(jsonFilePath);
 
             logger.info("Read JSON content: {}", jsonContent);
 

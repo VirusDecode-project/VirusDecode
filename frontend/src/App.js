@@ -59,6 +59,7 @@ function App() {
         navigate={navigate}
         setMRNAReceived={setMRNAReceived}
         setPDBReceived={setPDBReceived}
+        setTab={setTab}
       />
 
       <div className={`content-container ${show ? "shrink" : ""}`}>

@@ -11,7 +11,7 @@ from io import StringIO
 import requests
 Entrez.email = "your_email@example.com"
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+
 # JSON 데이터를 파일로 저장하는 함수
 def save_json(data, file_path):
     file_path = current_dir +"/data/"+ file_path
@@ -256,11 +256,10 @@ class SequenceAnalysis:
 
         # Run LinearDesign
         # Execute the command and capture the result
-        os.chdir(os.path.join(current_dir, "../../../../../../LinearDesign"))
+        os.chdir(os.path.join(current_dir, "../../LinearDesign"))
         command = f"echo {self.target_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        os.chdir(current_dir)
 
         # Check if the command was executed successfully
         if process.returncode == 0:
@@ -356,11 +355,12 @@ class SequenceAnalysis:
 
 
 if __name__ == "__main__":
-    option = int(sys.argv[1])
+    current_dir=sys.argv[1]
+    option = int(sys.argv[2])
 
     # metadata
     if option == 1:
-        reference_id = sys.argv[2]
+        reference_id = sys.argv[3]
         os.makedirs(current_dir+"/data", exist_ok=True)
         metadata = get_metadata(reference_id)
         save_json(metadata, "metadata.json")  # JSON 파일로 저장
@@ -402,10 +402,10 @@ if __name__ == "__main__":
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
         # set gene, variant_id, start, end
-        gene=sys.argv[2]
-        variant_id=sys.argv[3]
-        start = int(sys.argv[4])
-        end = int(sys.argv[5])
+        gene=sys.argv[3]
+        variant_id=sys.argv[4]
+        start = int(sys.argv[5])
+        end = int(sys.argv[6])
 
         # run sequence analysis
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
@@ -433,7 +433,7 @@ if __name__ == "__main__":
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
         # set gene, variant_id, start, end
-        gene=sys.argv[2]
+        gene=sys.argv[3]
         
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")

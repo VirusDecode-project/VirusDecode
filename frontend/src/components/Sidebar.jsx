@@ -7,7 +7,7 @@ import CreateModal from './CreateModal';
 import RenameModal from './RenameModal';
 import DeleteModal from './DeleteModal';
 
-const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNAReceived, setPDBReceived }) => {
+const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNAReceived, setPDBReceived, setTab}) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -80,6 +80,8 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
       }
 
       const responseData = await serverResponse.json();
+      console.log("History details fetched successfully: ", responseData);
+      setTab(0);
       navigate("/analysis", { state: { responseData } });
       setMRNAReceived(true);
       setPDBReceived(true);
