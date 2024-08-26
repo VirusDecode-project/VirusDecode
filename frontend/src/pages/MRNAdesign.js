@@ -29,24 +29,6 @@ function MRNAdesign() {
   }, []);
 
 
-  /* backend 수정 코드 끝 */
-
-
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await fetch("/mRNA.json"); //이부분이 백엔드 링크로 수정되어야함.
-  //       const result = await response.json();
-  //       setData(result);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   }
-
-  //   fetchData();
-  // }, []);
-
-
   if (!data) {
     return <div>Loading...</div>;
   }
@@ -87,6 +69,7 @@ function MRNAdesign() {
         <a
           href="https://github.com/LinearDesignSoftware/LinearDesign"
           target="_blank"
+          rel="noopener noreferrer"  // 'rel' 속성 추가
         >
           here.
         </a>
