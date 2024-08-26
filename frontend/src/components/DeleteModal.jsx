@@ -23,12 +23,12 @@ const DeleteModal = ({ show, onClose, onDelete }) => {
   if (!show) return null; // 모달이 보이지 않으면 렌더링하지 않음
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content" ref={modalRef}>
+    <div className="history-modal-overlay">
+      <div className="history-modal-content" ref={modalRef}>
         <h2>Are you sure you want to delete this history?</h2>
-        <div className="modal-buttons">
-          <button onClick={onDelete}>Delete</button>
-          <button onClick={onClose}>Cancle</button>
+        <div className="history-modal-buttons">
+          <button className="modal-next-button" onClick={onDelete}>Delete</button>
+          <button className="modal-close-button" onClick={onClose}>Cancle</button>
         </div>
       </div>
     </div>

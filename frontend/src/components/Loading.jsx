@@ -9,7 +9,7 @@ const Loading = ({text}) => {
   useEffect(() => {
     let intervalId = setInterval(() => {
       setLoadingText((prev) => {
-        if (prev.endsWith('...')) return loadingText;
+        if (prev.endsWith('...')) return text;
         return prev + '.';
       });
     }, 500);
