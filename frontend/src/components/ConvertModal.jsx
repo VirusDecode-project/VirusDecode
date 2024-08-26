@@ -66,11 +66,10 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
         throw new Error(errorMessage);
       }
 
-      const responseData = await serverResponse.json();
+      await serverResponse.text();
       setIsLoading(false);
       setTab(1);
       setMRNAReceived(true);
-      console.log('Response from server:', responseData);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
     }

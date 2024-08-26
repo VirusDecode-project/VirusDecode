@@ -4,6 +4,7 @@ import RNAVisualizer from '../components/MRNAVisualizer';
 
 function MRNAdesign() {
   const [data, setData] = useState(null);
+  const [showFullAminoAcidSequence, setShowFullAminoAcidSequence] = useState(false);
   const [showFullSequence, setShowFullSequence] = useState(false);
   const [showFullStructure, setShowFullStructure] = useState(false);
   const zeroWidthSpace = "\u200B";
@@ -90,7 +91,32 @@ function MRNAdesign() {
         </div>
 
         <div className="mrna-column">
-          <h3 className="mrna-subtitle-margintop">mRNA Sequence</h3>
+          <h3 className="mrna-subtitle-margintop">Amino Acid Sequence</h3>
+          <div className="mrna-sequence">
+            {showFullAminoAcidSequence
+              ? formatSequence(data.linearDesign.amino_acid_sequence).map(
+                (seq, index) => <div key={index}>{seq}</div>
+              )
+              : `${data.linearDesign.amino_acid_sequence.substring(0, 50)} ...`}
+            {!showFullAminoAcidSequence && (
+              <span
+                className="show-toggle"
+                onClick={() => setShowFullAminoAcidSequence(true)}
+              >
+                show
+              </span>
+            )}
+            {showFullAminoAcidSequence && (
+              <span
+                className="show-toggle"
+                onClick={() => setShowFullAminoAcidSequence(false)}
+              >
+                ...hide
+              </span>
+            )}
+          </div>
+          <h3 className="mrna-subtitle">mRNA Sequence</h3>
+
           <div className="mrna-sequence">
             {showFullSequence
               ? formatSequence(data.linearDesign.mRNA_sequence).map(

@@ -23,7 +23,7 @@ public class AnalysisController {
         String end = String.valueOf(request.getEnd());
 
         // Python 스크립트를 실행하여 mRNA 디자인 결과를 얻음
-        return PythonScriptExecutor.executePythonScript("linearDesign_data.json","3", region, varientName, start, end);
+        return PythonScriptExecutor.executePythonScriptWithoutJson("3", region, varientName, start, end);
     }
 
     // /analysis/pdb 엔드포인트에 대한 POST 요청 처리
