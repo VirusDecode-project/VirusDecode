@@ -11,7 +11,7 @@ import {
 import uploadIcon from "../assets/upload_icon.png";
 import Loading from '../components/Loading';
 
-function InputSeq({ setTab}) {
+function InputSeq({ setTab, setWorkingHistory }) {
   let navigate = useNavigate();
 
   /*-----------다솔님 코드 구현 함수, 변수---------------*/
@@ -165,7 +165,7 @@ useEffect(() => {
           const errorMessage = await serverResponse.text();
           throw new Error(errorMessage);
         }
-  
+        setWorkingHistory(historyName);
         await serverResponse.text();
 
       } catch (error) {

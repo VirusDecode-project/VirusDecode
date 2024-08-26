@@ -18,6 +18,8 @@ const Sidebar = ({
   setMRNAReceived,
   setPDBReceived,
   setTab,
+  workingHistory,
+  setWorkingHistory,
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
@@ -46,37 +48,6 @@ const Sidebar = ({
     setShowEditModal(true); // 편집 모달 열기
   };
 
-  const handleSave = async (name) => {
-    if (name) {
-      const requestData = { historyName: name };
-      try {
-        const serverResponse = await fetch(
-          "http://localhost:8080/history/create",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(requestData),
-          }
-        );
-
-        if (!serverResponse.ok) {
-          const errorMessage = await serverResponse.text();
-          throw new Error(errorMessage);
-        }
-
-        await serverResponse.text();
-        setHistory((prevHistory) => [name, ...prevHistory]);
-        navigate("/inputSeq");
-        setMRNAReceived(false);
-        setPDBReceived(false);
-      } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
-      }
-    }
-  };
-
   const handleHistoryClick = async (index) => {
     const historyName = history[index];
     const requestData = {
@@ -100,6 +71,7 @@ const Sidebar = ({
       console.log("History details fetched successfully: ", responseData);
       setTab(0);
       navigate("/analysis", { state: { responseData } });
+      setWorkingHistory(historyName)
       setMRNAReceived(true);
       setPDBReceived(true);
     } catch (error) {
@@ -152,6 +124,10 @@ const Sidebar = ({
             i === activeHistoryItem ? newName : item
           )
         );
+
+        if(historyName === workingHistory) {
+          setWorkingHistory(newName);
+        }
         setShowRenameModal(false); // 이름 변경 모달 닫기
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
@@ -266,7 +242,6 @@ const Sidebar = ({
       <CreateModal
         show={showEditModal}
         onClose={() => setShowEditModal(false)}
-        onSave={handleSave}
       />
       <RenameModal
         show={showRenameModal}

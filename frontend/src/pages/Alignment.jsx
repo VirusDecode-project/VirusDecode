@@ -20,7 +20,7 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived }) {
+function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory }) {
   const [chartData, setChartData] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +66,7 @@ function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setP
               onRegionUpdate={onRegionUpdate}
               setMRNAReceived={setMRNAReceived}
               setPDBReceived={setPDBReceived}
+              workingHistory={workingHistory}
             />
           )}
         </div>
@@ -134,7 +135,7 @@ const StackedBar = ({ data, onBarClick }) => {
   );
 };
 
-const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading, setMRNAReceived, setPDBReceived }) => {
+const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, responseData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
   const [sequences, setSequences] = useState([]);
   const [displayedSequences, setDisplayedSequences] = useState([]);
   const [selectedSequence, setSelectedSequence] = useState(null);
@@ -237,6 +238,7 @@ const ProteinSeq = ({ onRegionUpdate, selectedRegion, setSelectedRegion, respons
         setIsLoading={setIsLoading}
         setMRNAReceived={setMRNAReceived}
         setPDBReceived={setPDBReceived}
+        workingHistory={workingHistory}
       />
     </div>
   );
