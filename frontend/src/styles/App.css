@@ -161,6 +161,8 @@
 }
 
 .option-button {
+  display: flex;
+  align-items: center;
   background: none;
   border: none;
   cursor: pointer;
@@ -178,4 +180,10 @@
   flex-direction: column;
   gap: 5px;
   z-index: 1000;
+}
+
+.option-button img {
+  width: 16px;  /* 아이콘 크기 조절 */
+  height: 16px;  /* 아이콘 크기 조절 */
+  margin-right: 8px;  /* 이미지와 텍스트 사이의 간격 */
 }

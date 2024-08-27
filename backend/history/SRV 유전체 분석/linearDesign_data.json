@@ -1,0 +1,65 @@
+{
+    "linearDesign": {
+        "amino_acid_sequence": "MSKTKDQRTAKTLERTWDTLNHLLFISSCLYKLNLKSIAQITLSILAMIISTSLIIAAIIFIASANHKVTLTTAIIQDATNQIKNTTPTYLTQNPQLGISFSNLSGTTSQSTTILASTTPSAESTPQSTTVKIKNTTTTQILPSKPTTKQRQNKPQNKPNNDFHFEVFNFVPCSICSNNPTCWAICKRIPNKKPGKKTTTKPTKKQTLKTTKKDPKPQTTKPKEVLTTKPTGKPTINTTKTNIRTTLITSNTKGNPEHTSQEETLHSTTSEGYPSQSQVYTTS",
+        "mRNA_sequence": "AUGUCGAAGACGAAAGACCAGCGGACUGCGAAGACUCUUGAGAGGACUUGGGAUACCCUUAACCAUUUGCUCUUUAUCAGCAGUUGUCUGUAUAAGUUGAAUCUUAAGUCGAUUGCUCAGAUCACGCUUUCCAUCUUGGCUAUGAUCAUCAGCACCUCCUUGAUUAUUGCGGCGAUCAUCUUCAUCGCGUCGGCUAACCACAAGGUCACUCUUACCACGGCUAUUAUUCAGGAUGCGACUAAUCAGAUCAAGAACACCACGCCGACUUAUUUGACGCAGAACCCGCAGCUUGGUAUCAGCUUCUCGAAUCUGAGUGGUACGACUUCACAGUCGACGACUAUCCUGGCGUCGACGACGCCGUCGGCGGAGUCGACGCCACAGUCGACGACUGUGAAGAUCAAGAACACCACUACCACUCAGAUUCUGCCGAGCAAGCCGACUACCAAGCAGCGGCAGAACAAGCCACAGAAUAAGCCUAAUAAUGACUUUCAUUUCGAGGUUUUCAAUUUUGUGCCUUGUUCUAUCUGCUCAAAUAACCCGACGUGCUGGGCGAUCUGUAAGCGCAUCCCGAAUAAGAAGCCGGGUAAGAAGACCACGACCAAGCCGACGAAGAAGCAGACGCUUAAGACGACGAAGAAGGAUCCGAAGCCGCAAACCACUAAGCCCAAGGAGGUGCUGACGACAAAGCCAACUGGAAAGCCGACGAUCAAUACGACUAAGACCAACAUACGGACAACGCUGAUAACGAGCAAUACUAAGGGUAAUCCCGAGCACACCUCUCAAGAGGAGACCCUUCACUCGACGACGAGUGAAGGGUAUCCUUCGCAGUCCCAGGUCUAUACGACUUCG",
+        "mRNA_structure": "....(((((.(((.(((((.(.(((((((((((.(((((((((((.(((((((((((((((.....((((((.((((((((.(((((((((((..((((..(((((.((((((((.((.(.((..((((((((..((((((.((.((.((((((((((((((.((((((((((((((.(((((.(((((((((((........((((..(((((((.(((((.((((((.(((((((.((...((((((..(..((.((((.((..((((((((.(((((..((((.((((((((((.(((((((((((((((((((((.(((((((((((((.(((((....((((((((((..((((...))))..)))))))))).))))).))))))))))).))...........))))))))))))))....))).)))).)).)))))))).)))).((((((((.((((((((((((((...(((((...)))))...))))))...)))))))).)))))))).)))))))))))))..)).)))).))..)))))))..))))))))).))))))..)))))))))))).)))).......))))))))...((((....))))....))).)))))..))))....))))))).....)))...)))))))))))))).)))).)))))).)))))))).))))).)))).))))))))).))))))))))))))))))))))).))))))...))))))).))))))))....)))))))))))((.((((((((((((....)))))))))))).)))))))))))))).))))).).)).)))))",
+        "free_energy": "-427.90 kcal/mol",
+        "cai": "0.666"
+    },
+    "protParam": {
+        "molecular_weight": 31185.291100000068,
+        "amino_acid_count": {
+            "A": 12,
+            "C": 5,
+            "D": 5,
+            "E": 8,
+            "F": 7,
+            "G": 6,
+            "H": 5,
+            "I": 24,
+            "K": 31,
+            "L": 20,
+            "M": 2,
+            "N": 20,
+            "P": 20,
+            "Q": 17,
+            "R": 5,
+            "S": 27,
+            "T": 57,
+            "V": 6,
+            "W": 2,
+            "Y": 4
+        },
+        "amino_acid_percent": {
+            "A": 0.04240282685512368,
+            "C": 0.0176678445229682,
+            "D": 0.0176678445229682,
+            "E": 0.028268551236749116,
+            "F": 0.024734982332155476,
+            "G": 0.02120141342756184,
+            "H": 0.0176678445229682,
+            "I": 0.08480565371024736,
+            "K": 0.10954063604240283,
+            "L": 0.0706713780918728,
+            "M": 0.007067137809187279,
+            "N": 0.0706713780918728,
+            "P": 0.0706713780918728,
+            "Q": 0.06007067137809187,
+            "R": 0.0176678445229682,
+            "S": 0.09540636042402827,
+            "T": 0.20141342756183744,
+            "V": 0.02120141342756184,
+            "W": 0.007067137809187279,
+            "Y": 0.014134275618374558
+        },
+        "isoelectric_point": 9.995581245422365,
+        "instability_index": 28.58374558303888,
+        "secondary_structure_fraction": [
+            0.2579505300353357,
+            0.2756183745583039,
+            0.42402826855123676
+        ],
+        "gravy": -0.6028268551236753,
+        "aromaticity": 0.04593639575971731
+    }
+}

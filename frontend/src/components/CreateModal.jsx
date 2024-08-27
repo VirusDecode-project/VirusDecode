@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 
-const CustomModal = ({ show, onClose, onSave }) => {
-  const [inputValue, setInputValue] = useState('');
+const CreateModal = ({ show, onClose }) => {
   const modalRef = useRef(null);
   const navigate = useNavigate(); // Initialize the navigate function
 
@@ -22,10 +21,9 @@ const CustomModal = ({ show, onClose, onSave }) => {
     };
   }, [show, onClose]);
 
-  const handleSave = () => {
-    onSave(inputValue);
+  const handleClose = () => {
     onClose();
-  };
+  }
 
   const handleStartNew = () => {
     navigate('/InputSeq'); // Navigate to the InputSeq page
@@ -37,21 +35,15 @@ const CustomModal = ({ show, onClose, onSave }) => {
   return (
     <div className="history-modal-overlay">
       <div className="history-modal-content" ref={modalRef}>
-        <h2>Do you want to save this to your history for future reference?</h2>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Enter name to save"
-        />
+        <h2>Your history was saved. Do you want to restart?</h2>
+
         <div className="history-modal-buttons">
-          <button className="modal-next-button" onClick={handleStartNew}>New</button> {/* New button */}
-          <button className="modal-next-button" onClick={handleSave}>Save</button>
-          <button className="modal-close-button"onClick={onClose}>Cancel</button>
+          <button className="modal-next-button" onClick={handleStartNew}>restart</button> {/* New button */}
+          <button className="modal-close-button"onClick={handleClose}>Cancel</button>
         </div>
       </div>
     </div>
   );
 };
 
-export default CustomModal;
+export default CreateModal;

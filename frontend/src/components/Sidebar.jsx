@@ -1,13 +1,26 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 
-import historyIcon from '../assets/history.png';
-import editIcon from '../assets/edit.png';
-import HistoryList from './HistoryList';
-import CreateModal from './CreateModal';
-import RenameModal from './RenameModal';
-import DeleteModal from './DeleteModal';
+import historyIcon from "../assets/history.png";
+import editIcon from "../assets/edit.png";
+import renameIcon from "../assets/rename.png";
+import deleteIcon from "../assets/delete.png";
+import HistoryList from "./HistoryList";
+import CreateModal from "./CreateModal";
+import RenameModal from "./RenameModal";
+import DeleteModal from "./DeleteModal";
 
-const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNAReceived, setPDBReceived }) => {
+const Sidebar = ({
+  show,
+  handleClose,
+  history,
+  setHistory,
+  navigate,
+  setMRNAReceived,
+  setPDBReceived,
+  setTab,
+  workingHistory,
+  setWorkingHistory,
+}) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -18,46 +31,21 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (optionsMenuRef.current && !optionsMenuRef.current.contains(event.target)) {
+      if (
+        optionsMenuRef.current &&
+        !optionsMenuRef.current.contains(event.target)
+      ) {
         setShowOptionsModal(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   const handleEditClick = () => {
     setShowEditModal(true); // 편집 모달 열기
-  };
-
-  const handleSave = async (name) => {
-    if (name) {
-      const requestData = { historyName: name };
-      try {
-        const serverResponse = await fetch("http://localhost:8080/history/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
-
-        if (!serverResponse.ok) {
-          const errorMessage = await serverResponse.text();
-          throw new Error(errorMessage);
-        }
-
-        await serverResponse.text();
-        setHistory((prevHistory) => [...prevHistory, name]);
-        navigate("/inputSeq");
-        setMRNAReceived(false);
-        setPDBReceived(false);
-      } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
-      }
-    }
   };
 
   const handleHistoryClick = async (index) => {
@@ -80,11 +68,17 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
       }
 
       const responseData = await serverResponse.json();
+      console.log("History details fetched successfully: ", responseData);
+      setTab(0);
       navigate("/analysis", { state: { responseData } });
+      setWorkingHistory(historyName)
       setMRNAReceived(true);
       setPDBReceived(true);
     } catch (error) {
-      console.error("An error occurred while fetching history details: ", error.message);
+      console.error(
+        "An error occurred while fetching history details: ",
+        error.message
+      );
     }
   };
 
@@ -126,8 +120,14 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
 
         await serverResponse.text();
         setHistory((prevHistory) =>
-          prevHistory.map((item, i) => (i === activeHistoryItem ? newName : item))
+          prevHistory.map((item, i) =>
+            i === activeHistoryItem ? newName : item
+          )
         );
+
+        if(historyName === workingHistory) {
+          setWorkingHistory(newName);
+        }
         setShowRenameModal(false); // 이름 변경 모달 닫기
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
@@ -160,7 +160,9 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
         }
 
         await serverResponse.text();
-        setHistory((prevHistory) => prevHistory.filter((_, i) => i !== activeHistoryItem));
+        setHistory((prevHistory) =>
+          prevHistory.filter((_, i) => i !== activeHistoryItem)
+        );
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
       }
@@ -169,29 +171,29 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
   };
 
   return (
-    <div className={`sidebar ${show ? 'show' : ''}`}>
+    <div className={`sidebar ${show ? "show" : ""}`}>
       <div className="sidebar-header">
         <img
           className="history-icon"
           src={historyIcon}
           onClick={handleClose}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
           alt="History Icon"
         />
         <img
           src={editIcon}
           className="edit-icon"
           onClick={handleEditClick}
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
           alt="Edit Icon"
         />
       </div>
       <div className="sidebar-body">
         <br />
-        <HistoryList 
-          history={history} 
-          handleHistoryClick={handleHistoryClick} 
-          handleEllipsisClick={handleEllipsisClick} 
+        <HistoryList
+          history={history}
+          handleHistoryClick={handleHistoryClick}
+          handleEllipsisClick={handleEllipsisClick}
         />
         {showOptionsModal && (
           <div
@@ -208,6 +210,11 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
                   setShowRenameModal(true);
                 }}
               >
+                <img
+                  src={renameIcon}
+                  style={{ cursor: "pointer" }}
+                  alt="rename Icon"
+                />
                 Rename
               </button>
               <button
@@ -218,16 +225,34 @@ const Sidebar = ({ show, handleClose, history, setHistory, navigate, setMRNARece
                   setShowDeleteModal(true);
                 }}
               >
-                Delete
+                <div>
+                  <img
+                    src={deleteIcon}
+                    style={{ cursor: "pointer" }}
+                    alt="delete Icon"
+                  />
+                  Delete
+                </div>
               </button>
             </div>
           </div>
         )}
       </div>
       {/* 커스텀 모달들을 추가 */}
-      <CreateModal show={showEditModal} onClose={() => setShowEditModal(false)} onSave={handleSave} />
-      <RenameModal show={showRenameModal} onClose={() => setShowRenameModal(false)} onRename={handleRename} />
-      <DeleteModal show={showDeleteModal} onClose={() => setShowDeleteModal(false)} onDelete={handleDelete} />
+      <CreateModal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
+      />
+      <RenameModal
+        show={showRenameModal}
+        onClose={() => setShowRenameModal(false)}
+        onRename={handleRename}
+      />
+      <DeleteModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };

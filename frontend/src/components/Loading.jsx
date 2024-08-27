@@ -17,7 +17,7 @@ const Loading = ({text}) => {
     return () => {
       clearInterval(intervalId);
     };
-  }, [loadingText]);
+  }, [text]);
 
   return (
     <div className="loading-container">

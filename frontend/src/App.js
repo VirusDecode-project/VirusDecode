@@ -1,5 +1,5 @@
 // App.js
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./styles/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -18,6 +18,7 @@ function App() {
   const [mRNAReceived, setMRNAReceived] = useState(false);
   const [PDBReceived, setPDBReceived] = useState(false);
   const [tab, setTab] = useState(0);
+  const [workingHistory, setWorkingHistory] = useState(null);
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -37,14 +38,14 @@ function App() {
           throw new Error("Failed to fetch history list");
         }
         const responseData = await serverResponse.json();
-        setHistory(responseData);
+        setHistory(responseData.reverse());
       } catch (error) {
         console.error("Error fetching history:", error);
       }
     };
 
     fetchHistory();
-  }, []);
+  }, [navigate]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -59,6 +60,9 @@ function App() {
         navigate={navigate}
         setMRNAReceived={setMRNAReceived}
         setPDBReceived={setPDBReceived}
+        setTab={setTab}
+        workingHistory={workingHistory}
+        setWorkingHistory={setWorkingHistory}
       />
 
       <div className={`content-container ${show ? "shrink" : ""}`}>
@@ -75,7 +79,7 @@ function App() {
           />
           <Route
             path="/inputSeq"
-            element={<InputSeq setTab={setTab} />}
+            element={<InputSeq setTab={setTab} setWorkingHistory={setWorkingHistory}/>}
           />
           <Route
             path="/analysis"
@@ -86,6 +90,7 @@ function App() {
               setMRNAReceived={setMRNAReceived}
               PDBReceived={PDBReceived}
               setPDBReceived={setPDBReceived}
+              workingHistory={workingHistory}
             />}
           />
         </Routes>

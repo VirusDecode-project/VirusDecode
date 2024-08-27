@@ -11,7 +11,7 @@ from io import StringIO
 import requests
 Entrez.email = "your_email@example.com"
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
+
 # JSON 데이터를 파일로 저장하는 함수
 def save_json(data, file_path):
     file_path = current_dir +"/data/"+ file_path
@@ -215,7 +215,7 @@ class SequenceAnalysis:
         self.variant_id = variant_id
         self.start = start
         self.end = end
-        self.target_sequence = None
+        self.amino_acid_sequence = None
         self.linearDesign = []
         self.protParam = []
 
@@ -248,25 +248,26 @@ class SequenceAnalysis:
             if gap_count_in_range == gap_count:
                 end += gap_count_in_range
                 break
-
-        # Get target sequence
-        target_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end]
-        self.target_sequence = target_sequence[start:end].replace("-", "")
         
+        # Get target sequence
+        amino_acid_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end][start:end].replace("-", "")
+        
+        if(amino_acid_sequence == ""):
+            print("Error: No sequence found")
+            sys.exit(1)
 
         # Run LinearDesign
         # Execute the command and capture the result
-        os.chdir(os.path.join(current_dir, "LinearDesign"))
-        command = f"echo {self.target_sequence} | ./lineardesign"
+        os.chdir(os.path.join(current_dir, "../../LinearDesign"))
+        command = f"echo {amino_acid_sequence} | ./lineardesign"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        os.chdir(current_dir)
+
 
         # Check if the command was executed successfully
         if process.returncode == 0:
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
-            print(output_lines)
             mRNA_sequence = output_lines[-4].replace('mRNA sequence:', '').strip()
             mRNA_structure = output_lines[-3].replace('mRNA structure:', '').strip()
             parts = output_lines[-2].split(';')
@@ -274,21 +275,20 @@ class SequenceAnalysis:
             cai = parts[1].replace('mRNA CAI:', '').strip()
 
             # Set the linear design data
+            self.linearDesign.append(amino_acid_sequence)
             self.linearDesign.append(mRNA_sequence)
             self.linearDesign.append(mRNA_structure)
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
+            self.amino_acid_sequence = amino_acid_sequence
 
         else:
             print("Error executing command")
             print(stderr)
 
     def set_protParam(self):
-        # Protein sequence to analyze
-        sequence = self.target_sequence
-
         # Create a protein analysis object
-        protein_analysis = ProteinAnalysis(sequence)
+        protein_analysis = ProteinAnalysis(self.amino_acid_sequence)
 
         # Calculate molecular weight
         molecular_weight = protein_analysis.molecular_weight()
@@ -315,7 +315,6 @@ class SequenceAnalysis:
         aromaticity = protein_analysis.aromaticity()
 
         # Return the protein parameters
-        self.protParam.append(sequence)
         self.protParam.append(molecular_weight)
         self.protParam.append(amino_acid_count)
         self.protParam.append(amino_acid_percent)
@@ -326,8 +325,9 @@ class SequenceAnalysis:
         self.protParam.append(aromaticity)
 
     def get_linearDesign(self):
-        mRNA_sequence, mRNA_structure, free_energy, cai = self.linearDesign
+        amino_acid_sequence, mRNA_sequence, mRNA_structure, free_energy, cai= self.linearDesign
         linearDesign_dict = {
+            "amino_acid_sequence": amino_acid_sequence,
             "mRNA_sequence": mRNA_sequence,
             "mRNA_structure": mRNA_structure,
             "free_energy": free_energy,
@@ -336,9 +336,8 @@ class SequenceAnalysis:
         return linearDesign_dict
 
     def get_protParam(self):
-        sequence, molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = self.protParam
+        molecular_weight, amino_acid_count, amino_acid_percent, isoelectric_point, instability_index, secondary_structure_fraction, gravy, aromaticity = self.protParam
         protParam_dict = {
-            "sequence": sequence,
             "molecular_weight": molecular_weight,
             "amino_acid_count": amino_acid_count,
             "amino_acid_percent": amino_acid_percent,
@@ -356,11 +355,12 @@ class SequenceAnalysis:
 
 
 if __name__ == "__main__":
-    option = int(sys.argv[1])
+    current_dir=sys.argv[1]
+    option = int(sys.argv[2])
 
     # metadata
     if option == 1:
-        reference_id = sys.argv[2]
+        reference_id = sys.argv[3]
         os.makedirs(current_dir+"/data", exist_ok=True)
         metadata = get_metadata(reference_id)
         save_json(metadata, "metadata.json")  # JSON 파일로 저장
@@ -402,10 +402,10 @@ if __name__ == "__main__":
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
         # set gene, variant_id, start, end
-        gene=sys.argv[2]
-        variant_id=sys.argv[3]
-        start = int(sys.argv[4])
-        end = int(sys.argv[5])
+        gene=sys.argv[3]
+        variant_id=sys.argv[4]
+        start = int(sys.argv[5])
+        end = int(sys.argv[6])
 
         # run sequence analysis
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
@@ -433,7 +433,7 @@ if __name__ == "__main__":
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
         # set gene, variant_id, start, end
-        gene=sys.argv[2]
+        gene=sys.argv[3]
         
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
