@@ -25,7 +25,7 @@
 }
 
 .text-box {
-  /* line-height: 3;   */
+  line-height: 2;  
   width: 450px;
   margin: 30px auto; /* 수평 가운데 정렬 */
 }
