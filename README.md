@@ -43,6 +43,9 @@ To set up the development environment for VirusDecode, follow these steps:
       ```
     - Note: The LinearDesign code is free for academic, non-profit, and research use. Redistribution of the code with or without modification is not permitted without explicit written permission from the lead corresponding author. If you intend to use this software for commercial purposes, please contact the lead corresponding author for licensing.
 
+
+
+
 #### Usage
 To run the VirusDecode application:
 1. **Clone our Repository**
@@ -51,7 +54,18 @@ To run the VirusDecode application:
       git clone https://github.com/VirusDecode-project/VirusDecode.git
       cd VirusDecode
       ```
-
+    - Integration with Project Directory: After cloning the repository, it should appear in the project directory structure as follows:
+      ``` bash
+      .
+      ├── LinearDesign
+      │   ...
+      └── VirusDecode
+          ├── backend
+          │   ...
+          ├── frontend
+          │   ...
+          └── virusdecode.py
+      ```
 
 2. **Start the Backend Server**
     - Ensure Java 21 (JDK 21) is installed.

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/Modal.css';
 
-const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
+const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -206,4 +206,4 @@ const Modal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, mod
   );
 };
 
-export default Modal;
+export default ConvertModal;

@@ -47,6 +47,10 @@ function Alignment({ responseData, setTab, onRegionUpdate, setMRNAReceived, setP
     }
   }, [responseData]);
 
+  if(chartData.length === 0) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       {isLoading ? (

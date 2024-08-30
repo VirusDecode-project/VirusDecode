@@ -39,6 +39,9 @@ const Render3D = ({ region }) => {
     fetchPDBids();
   }, []);
 
+  if (PDBids.length === 0) {
+    return <div>Loading...</div>;
+  }
   const viewportStyle = {
     width: '900px',
     height: '900px',

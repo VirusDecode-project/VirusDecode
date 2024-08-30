@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import '../styles/HelpModal.css';
 import helpImg1 from '../assets/helpImg1.png';
 import helpImg2 from '../assets/helpImg2.png';
 import helpImg3 from '../assets/helpImg3.png';
