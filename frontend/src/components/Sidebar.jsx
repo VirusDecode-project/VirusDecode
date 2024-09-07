@@ -105,7 +105,7 @@ const Sidebar = ({
         const serverResponse = await fetch(
           "http://localhost:8080/history/rename",
           {
-            method: "POST",
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
             },
@@ -146,7 +146,7 @@ const Sidebar = ({
         const serverResponse = await fetch(
           "http://localhost:8080/history/delete",
           {
-            method: "POST",
+            method: "DELETE",
             headers: {
               "Content-Type": "application/json",
             },
