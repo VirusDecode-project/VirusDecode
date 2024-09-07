@@ -2,6 +2,7 @@ package VirusDecode.backend.controller;
 
 import VirusDecode.backend.dto.HistoryDTO;
 import VirusDecode.backend.service.JsonFileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/history")
 public class HistoryController {
+    private final JsonFileService jsonFileService;
+
+    @Autowired
+    public HistoryController(JsonFileService jsonFileService) {
+        this.jsonFileService = jsonFileService;
+    }
     private static final Path currentDir = Paths.get("").toAbsolutePath();
 
     @PostMapping("/create")
@@ -59,7 +66,7 @@ public class HistoryController {
         String historyName = request.getHistoryName();
         try {
             getHistory(historyName);
-            return JsonFileService.readJsonFile("alignment_data.json");
+            return jsonFileService.readJsonFile("alignment_data.json");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to get history: " + e.getMessage());
         }
