@@ -36,8 +36,12 @@ public class HistoryController {
         try {
                 performCreateHistory(historyName);
             return ResponseEntity.ok("History created successfully.");
+        } catch (FileAlreadyExistsException e) {
+            return ResponseEntity.status(409).body("History already exists: " + historyName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to create history: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -47,8 +51,12 @@ public class HistoryController {
         try {
             performDeleteHistory(historyName);
             return ResponseEntity.ok("History deleted successfully.");
+        } catch (NoSuchFileException e) {
+            return ResponseEntity.status(404).body("History not found: " + historyName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to delete history: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -59,8 +67,14 @@ public class HistoryController {
         try {
             performRenameHistory(historyName, newName);
             return ResponseEntity.ok("History renamed successfully.");
+        } catch (NoSuchFileException e) {
+            return ResponseEntity.status(404).body("History not found: " + historyName);
+        } catch (FileAlreadyExistsException e) {
+            return ResponseEntity.status(409).body("History with new name already exists: " + newName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to rename history: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -68,10 +82,19 @@ public class HistoryController {
     public ResponseEntity<String> getHistory(@RequestBody HistoryDTO request) {
         String historyName = request.getHistoryName();
         try {
-            performGetHistory(historyName);
+            Path sourceDir = HISTORY_DIR.resolve(historyName);
+            if (Files.notExists(sourceDir)) {
+                // 404 Not Found 반환
+                return ResponseEntity.status(404).body("History not found: " + historyName);
+            }
+            performGetHistory(sourceDir);
             return jsonFileService.readJsonFile("alignment_data.json");
+        } catch (NoSuchFileException e) {
+            return ResponseEntity.status(404).body("History file not found: " + historyName);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to get history: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -82,6 +105,8 @@ public class HistoryController {
             return ResponseEntity.ok(jsonHistoryList);
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to list history: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -92,6 +117,8 @@ public class HistoryController {
             return ResponseEntity.ok("Data delete successfully.");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Failed to delete data: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
         }
     }
 
@@ -119,6 +146,8 @@ public class HistoryController {
                     .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
+        }else {
+            throw new NoSuchFileException("History directory not found: " + historyName);
         }
     }
 
@@ -128,12 +157,12 @@ public class HistoryController {
 
         if (Files.exists(oldDir)) {
             Files.move(oldDir, newDir, StandardCopyOption.REPLACE_EXISTING);
+        }else {
+            throw new NoSuchFileException("History directory not found: " + historyName);
         }
     }
 
-    private void performGetHistory(String historyName) throws IOException {
-        Path sourceDir = HISTORY_DIR.resolve(historyName);
-
+    private void performGetHistory(Path sourceDir) throws IOException {
         if (Files.exists(sourceDir)) {
             if (Files.exists(DATA_DIR)) {
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(DATA_DIR)) {
@@ -153,6 +182,8 @@ public class HistoryController {
                     }
                 }
             }
+        }else {
+            throw new NoSuchFileException("History directory not found: " + sourceDir.getFileName().toString());
         }
     }
 
