@@ -1,10 +1,10 @@
 # VirusDecode
 VirusDecode is an open-source project that integrates various bioinformatics tools to streamline virus sequence analysis and support rapid mRNA vaccine development. Built with a Java Spring backend, React frontend, and Python scripts, it addresses the inefficiencies of traditional genome analysis, enabling quick responses to viral mutations and fostering collaboration in the scientific community.
 
-#### Development Environment
-  - Linux
+## 1. Development Environment
+  - Linux (Ubuntu 22.04 LTS)
 
-#### Installation
+## 2. Installation
 
 To set up the development environment for VirusDecode, follow these steps:
 
@@ -13,7 +13,7 @@ To set up the development environment for VirusDecode, follow these steps:
     - Set up a virtual environment and install required packages:
       ```bash
       sudo apt install python2
-      sudo apt install python3
+      sudo apt install python3.11
       pip install biopython==1.83
       pip install requests
       ```
@@ -52,7 +52,7 @@ To set up the development environment for VirusDecode, follow these steps:
 
 
 
-#### Usage
+## 3. Usage
 To run the VirusDecode application:
 1. **Clone our Repository**
     - Clone the project
@@ -74,22 +74,75 @@ To run the VirusDecode application:
       ```
 
 2. **Start the Backend Server**
-    - Ensure Java 21 (JDK 21) is installed.
-    - Navigate to the backend directory and run the Spring Boot application:
-      ```bash
-      cd backend
-      chmod +x gradlew
-      ./gradlew bootRun
-      ```
+
+    - Build the Backend
+      - Ensure Java 21 (JDK 21) is installed.
+      - Navigate to the backend directory and build the Spring Boot application:
+        ```bash
+        cd backend
+        chmod +x gradlew
+        ./gradlew build
+        ```
+
+    - Run the Backend
+      - After building, run the Spring Boot application:
+        ```bash
+        java -jar build/libs/virusdecode.jar
+        ```
 
 3. **Start the Frontend Development Server**
-    - Install [Node.js and npm](https://nodejs.org/).
-    - Navigate to the frontend directory and install dependencies:
-      ```bash
-      cd frontend
-      npm install
-      npm start
-      ```
 
-3. **Analyzing Virus Sequences**
-    - Use the web interface to upload and analyze virus sequences. Follow the on-screen instructions for different types of analysis.
+    - Build the Frontend
+      - Install [Node.js and npm](https://nodejs.org/).
+      - `serve` Pre-install the package globally (run once):
+        ```bash
+        sudo npm install -g serve
+        ```
+      - Navigate to the frontend directory and install dependencies:
+        ```bash
+        cd frontend
+        npm install
+        npm run build
+        ```
+
+    - Run the Frontend
+      - Serve the built frontend using the `serve` package:
+        ```bash
+        serve -s build
+        ```
+
+4. **Analyzing Virus Sequences**
+   - Use the web interface to upload and analyze virus sequences. Follow the on-screen instructions for different types of analysis.
+
+
+<br/>
+<br/>
+
+## Docker Setup for Easy Usage
+Follow these steps to get started with Docker for VirusDecode:
+## 1. Initial Setup (Run Once)
+1. **Install Docker**
+    - Follow the official Docker installation guide: [Docker Installation](https://docs.docker.com/get-docker/)
+
+2. **Clone the VirusDecode repository and Create the Docker containers**
+    ```bash
+    git clone https://github.com/VirusDecode-project/VirusDecode.git
+    cd VirusDecode
+    docker compose create
+    ```
+## 2. Running the Application
+  1. **Run only the Backend on port 8080**
+      ```bash
+      docker compose up backend
+      ```
+  2. **Run only the Frontend on port 3000**
+      ```bash
+      docker compose up frontend
+      ```
+  3. **Run both Backend and Frontend simultaneously**
+      ```bash
+      docker compose up
+      ```
+  Note: Access the Application
+      Backend will be accessible at: http://localhost:8080
+      Frontend will be accessible at: http://localhost:3000
