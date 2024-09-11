@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,8 +32,8 @@ public class HistoryController {
     public ResponseEntity<String> createHistory(@RequestBody HistoryDTO request) {
         String historyName = request.getHistoryName();
         try {
-                performCreateHistory(historyName);
-            return ResponseEntity.ok("History created successfully.");
+            String createdHistoryName = performCreateHistory(historyName);
+            return ResponseEntity.ok(createdHistoryName);  // Return the created directory name
         } catch (FileAlreadyExistsException e) {
             return ResponseEntity.status(409).body("History already exists: " + historyName);
         } catch (IOException e) {
@@ -122,9 +120,47 @@ public class HistoryController {
         }
     }
 
+    @PostMapping("/save")
+    public ResponseEntity<String> saveHistory(@RequestBody HistoryDTO request) {
+        String historyName = request.getHistoryName();
+        try {
+            performSaveHistory(historyName);
+            return ResponseEntity.ok("History save successfully.");  // Return the created directory name
+        } catch (FileAlreadyExistsException e) {
+            return ResponseEntity.status(409).body("History already exists: " + historyName);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Failed to create history: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unexpected error: " + e.getMessage());
+        }
+    }
 
-    private void performCreateHistory(String historyName) throws IOException {
+    @GetMapping("/checkFiles")
+    public ResponseEntity<Map<String, Boolean>> checkFiles() {
+        Map<String, Boolean> fileStatus = new HashMap<>();
+
+        // File paths
+        Path pdbFilePath = DATA_DIR.resolve("pdb_data.json");
+        Path linearDesignFilePath = DATA_DIR.resolve("linearDesign_data.json");
+
+        // Check if files exist
+        fileStatus.put("pdb_data.json", Files.exists(pdbFilePath));
+        fileStatus.put("linearDesign_data.json", Files.exists(linearDesignFilePath));
+
+        return ResponseEntity.ok(fileStatus);
+    }
+
+    private String performCreateHistory(String historyName) throws IOException {
         Path newDir = HISTORY_DIR.resolve(historyName);
+
+        // 동일한 이름이 존재하면 숫자를 붙임
+        int counter = 1;
+        while (Files.exists(newDir)) {
+            String newHistoryName = historyName + "_" + counter;
+            newDir = HISTORY_DIR.resolve(newHistoryName);
+            counter++;
+        }
+
         Files.createDirectories(newDir);
 
         if (Files.exists(DATA_DIR)) {
@@ -136,6 +172,8 @@ public class HistoryController {
                 }
             }
         }
+
+        return newDir.getFileName().toString();  // Return the directory name
     }
 
     private void performDeleteHistory(String historyName) throws IOException {
@@ -210,5 +248,19 @@ public class HistoryController {
                     .forEach(File::delete);
         }
 
+    }
+
+    private void performSaveHistory(String historyName) throws IOException {
+        Path newDir = HISTORY_DIR.resolve(historyName);
+
+        if (Files.exists(DATA_DIR)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(DATA_DIR)) {
+                for (Path filePath : stream) {
+                    if (Files.isRegularFile(filePath)) {
+                        Files.copy(filePath, newDir.resolve(filePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                    }
+                }
+            }
+        }
     }
 }
