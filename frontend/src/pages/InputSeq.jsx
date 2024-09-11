@@ -11,24 +11,20 @@ import {
 import uploadIcon from "../assets/upload_icon.png";
 import Loading from '../components/Loading';
 
-function InputSeq({ setTab, setWorkingHistory }) {
+function InputSeq({ setTab, setWorkingHistory, setMRNAReceived, setPDBReceived }) {
   let navigate = useNavigate();
 
-  /*-----------다솔님 코드 구현 함수, 변수---------------*/
   const [editingFileIndex, setEditingFileIndex] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [sequences, setSequences] = useState([
-    //GK name에서 공백 제거
     { id: 1, name: "Sequence1", value: "", visible: true },
   ]);
   const [editingId, setEditingId] = useState(null);
   const [nextId, setNextId] = useState(2);
 
-  /*parkki */
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   let [isLoading, setIsLoading] = useState(false);
-  /*parkki */
 
   // next 비활성화
   const [responseReceived, setResponseReceived] = useState(false);
@@ -36,6 +32,8 @@ function InputSeq({ setTab, setWorkingHistory }) {
 
 // Add useEffect to fetch history details on component mount
 useEffect(() => {
+  setMRNAReceived(false);
+  setPDBReceived(false);
   const fetchHistoryDetails = async () => {
     try {
       const serverResponse = await fetch("http://localhost:8080/history/deleteData");
@@ -165,8 +163,9 @@ useEffect(() => {
           const errorMessage = await serverResponse.text();
           throw new Error(errorMessage);
         }
-        setWorkingHistory(historyName);
-        await serverResponse.text();
+        const createdHistoryName = await serverResponse.text();
+        setWorkingHistory(createdHistoryName);
+        // await serverResponse.text();
 
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);

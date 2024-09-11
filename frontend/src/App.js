@@ -79,7 +79,7 @@ function App() {
           />
           <Route
             path="/inputSeq"
-            element={<InputSeq setTab={setTab} setWorkingHistory={setWorkingHistory}/>}
+            element={<InputSeq setTab={setTab} setWorkingHistory={setWorkingHistory} setMRNAReceived={setMRNAReceived} setPDBReceived={setPDBReceived}/>}
           />
           <Route
             path="/analysis"

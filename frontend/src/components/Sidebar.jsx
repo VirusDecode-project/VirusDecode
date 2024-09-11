@@ -50,10 +50,10 @@ const Sidebar = ({
 
   const handleHistoryClick = async (index) => {
     const historyName = history[index];
-    const requestData = {
-      historyName: historyName,
-    };
+    const requestData = { historyName: historyName };
+  
     try {
+      // Fetch history details
       const serverResponse = await fetch("http://localhost:8080/history/get", {
         method: "POST",
         headers: {
@@ -61,26 +61,38 @@ const Sidebar = ({
         },
         body: JSON.stringify(requestData),
       });
-
+  
       if (!serverResponse.ok) {
         const errorMessage = await serverResponse.text();
         throw new Error(errorMessage);
       }
-
+  
       const responseData = await serverResponse.json();
       console.log("History details fetched successfully: ", responseData);
+  
+      // Check for file existence
+      const fileStatusResponse = await fetch("http://localhost:8080/history/checkFiles");
+      if (!fileStatusResponse.ok) {
+        throw new Error("Failed to check files");
+      }
+  
+      const fileStatus = await fileStatusResponse.json();
+      console.log("File Status:", fileStatus);
+  
+      // Set the state based on file existence
+      setMRNAReceived(fileStatus["linearDesign_data.json"] || false);
+      setPDBReceived(fileStatus["pdb_data.json"] || false);
+  
+      // Navigate to the analysis page with response data
       setTab(0);
+      setWorkingHistory(historyName);
       navigate("/analysis", { state: { responseData } });
-      setWorkingHistory(historyName)
-      setMRNAReceived(true);
-      setPDBReceived(true);
+  
     } catch (error) {
-      console.error(
-        "An error occurred while fetching history details: ",
-        error.message
-      );
+      console.error("An error occurred: ", error.message);
     }
   };
+  
 
   const handleEllipsisClick = (e, index) => {
     e.stopPropagation(); // Prevents handleHistoryClick from being triggered

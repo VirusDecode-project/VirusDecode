@@ -74,6 +74,31 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
       console.error("An error occurred during the request: ", error.message);
     }
 
+    const requestData = {
+      historyName: workingHistory,
+    }
+    try {
+      const serverResponse = await fetch(
+        "http://localhost:8080/history/save",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
+      }
+
+      await serverResponse.text();
+    } catch (error) {
+      console.error("An error occurred during the request: ", error.message);
+    }
+
 
     const pdbData = { gene: selectedRegion }
     try {
@@ -96,12 +121,10 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
       console.error("An error occurred during the request: ", error.message);
     }
 
-    const requestData = {
-      historyName: workingHistory,
-    }
+
     try {
       const serverResponse = await fetch(
-        "http://localhost:8080/history/create",
+        "http://localhost:8080/history/save",
         {
           method: "POST",
           headers: {
