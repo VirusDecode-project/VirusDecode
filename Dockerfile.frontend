@@ -1,0 +1,35 @@
+# Stage 1: Base image with essential tools for frontend
+FROM ubuntu:22.04 AS base
+
+# Install Node.js and npm
+RUN apt-get update && \
+    apt-get install -y \
+    curl \
+    wget \
+    build-essential \
+    git && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g serve && \
+    apt-get clean
+
+# Stage 2: Build the frontend (React)
+FROM base AS frontend
+
+# Set the working directory to the frontend folder
+WORKDIR /VirusDecode/frontend
+
+# Copy the frontend files from the host machine
+COPY ./frontend /VirusDecode/frontend
+
+# Install Node.js dependencies
+RUN npm install
+
+# Build the React frontend
+RUN npm run build
+
+# Expose the frontend port
+EXPOSE 3000
+
+# Serve the frontend
+CMD ["serve", "-s", "build"]
