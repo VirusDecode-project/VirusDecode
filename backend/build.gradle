@@ -40,3 +40,12 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+    archiveFileName = 'virusdecode.jar'
+	manifest {
+        attributes(
+            'Start-Class': 'VirusDecode.backend.BackendApplication'
+        )
+    }
+}

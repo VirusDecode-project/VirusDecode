@@ -259,7 +259,7 @@ class SequenceAnalysis:
         # Run LinearDesign
         # Execute the command and capture the result
         os.chdir(os.path.join(current_dir, "../../LinearDesign"))
-        command = f"echo {amino_acid_sequence} | ./lineardesign"
+        command = f"echo {amino_acid_sequence} | ./lineardesign --lambda 3"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
 

@@ -42,6 +42,12 @@ To set up the development environment for VirusDecode, follow these steps:
       cd ..
       ```
     - Note: The LinearDesign code is free for academic, non-profit, and research use. Redistribution of the code with or without modification is not permitted without explicit written permission from the lead corresponding author. If you intend to use this software for commercial purposes, please contact the lead corresponding author for licensing.
+    - Using LinearDesign with VirusDecode
+
+      In our project, we used LinearDesign with a specific option, --lambda 3, for optimal performance. The command we used is as follows:
+        ```bash
+        "./lineardesign --lambda 3"
+        ```
 
 
 
