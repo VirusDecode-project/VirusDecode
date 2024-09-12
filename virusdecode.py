@@ -40,6 +40,7 @@ def get_metadata(reference_id):
         return metadata
     except HTTPError as e:
         print(f"HTTPError: {e.code} - {e.reason}")
+        sys.exit(11)
 
 def check_pdb_file_exists(pdb_id):
     """
@@ -132,6 +133,7 @@ class SequenceAlignment:
 
         except HTTPError as e:
             print(f"HTTPError: {e.code} - {e.reason}")
+            sys.exit(11)
 
     def read_sequences(self):
         # Get reference protein sequence
@@ -254,7 +256,7 @@ class SequenceAnalysis:
         
         if(amino_acid_sequence == ""):
             print("Error: No sequence found")
-            sys.exit(1)
+            sys.exit(31)
 
         # Run LinearDesign
         # Execute the command and capture the result
@@ -284,7 +286,8 @@ class SequenceAnalysis:
 
         else:
             print("Error executing command")
-            print(stderr)
+            sys.exit(32)
+            
 
     def set_protParam(self):
         # Create a protein analysis object
@@ -411,6 +414,7 @@ if __name__ == "__main__":
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
         analysis.run()
 
+        print("test")
         # get linearDesign and protParam data
         linearDesign_dict = analysis.get_linearDesign()
         protParam_dict = analysis.get_protParam()
@@ -418,8 +422,8 @@ if __name__ == "__main__":
             "linearDesign": linearDesign_dict,
             "protParam": protParam_dict
         }
-
-        save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
+        print("test")
+        # save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
 
 
     elif option == 4:

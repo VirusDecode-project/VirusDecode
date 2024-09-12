@@ -72,6 +72,9 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
       setMRNAReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
+      window.alert(error.message);
+    } finally{
+      setIsLoading(false);
     }
 
     const requestData = {
