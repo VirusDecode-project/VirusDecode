@@ -1,10 +1,12 @@
 {
-    "6BLH": "RSV G central conserved region bound to Fab CB017.5",
-    "6BLI": "RSV G peptide bound to Fab CB002.5",
-    "6UVO": "Structure of antibody 3G12 bound to the central conserved domain of RSV G",
-    "7T8W": "Structure of antibody 3G12 bound to Respiratory Syncytial Virus G central conserved domain mutant S177Q",
-    "5WNA": "Structure of antibody 3D3 bound to the central conserved region of RSV G",
-    "5WN9": "Structure of antibody 2D10 bound to the central conserved region of RSV G",
-    "1KWD": "SOLUTION STRUCTURE OF THE CENTRAL CONSERVED REGION OF HUMAN RESPIRATORY SYNCYTIAL VIRUS ATTACHMENT GLYCOPROTEIN G 187",
-    "1KWE": "SOLUTION STRUCTURE OF THE CENTRAL CONSERVED REGION OF HUMAN RESPIRATORY SYNCYTIAL VIRUS ATTACHMENT GLYCOPROTEIN G"
+    "2WJ8": "Respiratory Syncitial Virus RiboNucleoProtein",
+    "4BKK": "The Respiratory Syncytial Virus nucleoprotein-RNA complex forms a left-handed helical nucleocapsid.",
+    "8OOU": "Double-ring nucleocapsid of the Respiratory Syncytial Virus",
+    "8OP1": "Subsection of a helical nucleocapsid of the Respiratory Syncytial Virus",
+    "2YHM": "Structure of respiratory syncytial virus nucleocapsid protein, P212121 crystal form",
+    "8OP2": "Stacks of nucleocapsid rings of the N1-370 mutant of the human Respiratory Syncytial Virus",
+    "8IUO": "respiratory syncytial virus nucleocapsid-like assembly",
+    "4UC6": "N-terminal globular domain of the RSV Nucleoprotein",
+    "4UC7": "N-terminal globular domain of the RSV Nucleoprotein",
+    "4UC9": "N-terminal globular domain of the RSV Nucleoprotein in complex with C- terminal dipeptide of the Phosphoprotein"
 }

@@ -27,26 +27,29 @@ public class InputSeqController {
     // /inputSeq/reference 엔드포인트에 대한 POST 요청 처리
     @PostMapping("/reference")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDTO request) {
-        String sequenceId = request.getSequenceId();  // 요청에서 시퀀스 ID 추출
-        return pythonScriptExecutor.executePythonScript( "metadata.json","1", sequenceId);
+        String sequenceId = request.getSequenceId();
+        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("1", sequenceId);
+
+        if (scriptResponse.getStatusCode().is2xxSuccessful()) {
+            return JsonFileService.readJsonFile("metadata.json");
+        } else {
+            return scriptResponse;
+        }
     }
 
     // /inputSeq/alignment 엔드포인트에 대한 POST 요청 처리
     @PostMapping("/alignment")
     public ResponseEntity<String> getAlignment(@RequestBody(required = false) VarientDTO request) {
         try {
-            // 서비스 호출을 통해 사용자 입력을 파일로 저장
             String savedFilePath = fastaFileService.saveFastaContent(request);
-
-            // 결과를 상태 코드 200 OK와 함께 반환
-            return pythonScriptExecutor.executePythonScript("alignment_data.json", "2");
+            ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2");
+            if (scriptResponse.getStatusCode().is2xxSuccessful()) {
+                return JsonFileService.readJsonFile("alignment_data.json");
+            } else {
+                return scriptResponse;
+            }
         } catch (IOException e) {
-            // 파일 저장 중 오류가 발생한 경우 상태 코드 500과 함께 오류 메시지 반환
-//            Map<String, Object> errorResponse = new HashMap<>();
-//            errorResponse.put("status", "error");
-//            errorResponse.put("message", "파일 저장 중 오류 발생: " + e.getMessage());
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 저장 중 오류 발생");
+            return ResponseEntity.status(500).body("Fasta 파일 저장에 문제 발생하였습니다.");
         }
     }
 }

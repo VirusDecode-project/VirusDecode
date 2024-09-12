@@ -5,6 +5,24 @@ import editIcon from '../assets/edit.png';
 import logo from '../assets/logo.png';
 
 const HeaderBar = ({ show, isHome, handleShow, handleEditClick, navigate }) => {
+  const handleRestart = async() => {
+    try {
+      const serverResponse = await fetch("http://localhost:8080/history/deleteData");
+
+      if (!serverResponse.ok) {
+        const errorMessage = await serverResponse.text();
+        throw new Error(errorMessage);
+      }
+
+      await serverResponse.text();
+    } catch (error) {
+      console.error("An error occurred while fetching history details: ", error.message);
+    }
+    navigate('/');
+};
+
+
+
   return (
     <div className="header-bar">
       <div className="header-left">
@@ -28,9 +46,7 @@ const HeaderBar = ({ show, isHome, handleShow, handleEditClick, navigate }) => {
         )}
         <span
           className="logo-text"
-          onClick={() => {
-            navigate('/');
-          }}
+          onClick={handleRestart}
           style={{ cursor: 'pointer' }}
         >
           {isHome && (

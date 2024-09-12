@@ -40,8 +40,9 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
     const selectedSeq = sequences.find(seq => seq.label === selectedGenome);
     return selectedSeq ? selectedSeq.sequence.length : 0;
   };
-
   const handleConvertButton = async () => {
+    setMRNAReceived(false);
+    setPDBReceived(false);
     const mRnaData = {
       region: selectedRegion,
       varientName: selectedGenome,
@@ -50,101 +51,88 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
     };
     onRegionUpdate(mRnaData.region);
     console.log("Data being sent to backend:", mRnaData);
-
+  
     try {
       setIsLoading(true);
-      const serverResponse = await fetch('http://localhost:8080/analysis/mrnadesign', {
+  
+      // 1. mRNA 디자인 POST 요청
+      const mRnaResponse = await fetch('http://localhost:8080/analysis/mrnadesign', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(mRnaData),
       });
-
-      if (!serverResponse.ok) {
-        const errorMessage = await serverResponse.text();
+  
+      if (!mRnaResponse.ok) {
+        const errorMessage = await mRnaResponse.text();
         throw new Error(errorMessage);
       }
-
-      await serverResponse.text();
-      setIsLoading(false);
-      setTab(1);
+  
+      await mRnaResponse.text();
       setMRNAReceived(true);
-    } catch (error) {
-      console.error("An error occurred during the request: ", error.message);
-    }
-
-    const requestData = {
-      historyName: workingHistory,
-    }
-    try {
-      const serverResponse = await fetch(
-        "http://localhost:8080/history/save",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        }
-      );
-
-      if (!serverResponse.ok) {
-        const errorMessage = await serverResponse.text();
-        throw new Error(errorMessage);
-      }
-
-      await serverResponse.text();
-    } catch (error) {
-      console.error("An error occurred during the request: ", error.message);
-    }
-
-
-    const pdbData = { gene: selectedRegion }
-    try {
-      const serverResponse = await fetch('http://localhost:8080/analysis/pdb', {
+      setTab(1);
+      setIsLoading(false);
+  
+      // 2. history 저장
+      await saveHistory();
+  
+      // 3. PDB 디자인 POST 요청
+      const pdbData = { gene: selectedRegion };
+      const pdbResponse = await fetch('http://localhost:8080/analysis/pdb', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(pdbData),
       });
-
-      if (!serverResponse.ok) {
-        const errorMessage = await serverResponse.text();
+  
+      if (!pdbResponse.ok) {
+        const errorMessage = await pdbResponse.text();
         throw new Error(errorMessage);
       }
+  
+      await pdbResponse.text();
 
-      await serverResponse.text();
+      // 4. history 저장
+      await saveHistory();
+      
       setPDBReceived(true);
+  
+  
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
+      window.alert(error.message);
+    } finally {
+      setIsLoading(false);
     }
-
-
+  };
+  
+  // history 저장을 위한 함수로 분리
+  const saveHistory = async () => {
+    const requestData = {
+      historyName: workingHistory,
+    };
     try {
-      const serverResponse = await fetch(
-        "http://localhost:8080/history/save",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        }
-      );
-
+      const serverResponse = await fetch("http://localhost:8080/history/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      });
+  
       if (!serverResponse.ok) {
         const errorMessage = await serverResponse.text();
         throw new Error(errorMessage);
       }
-
+  
       await serverResponse.text();
     } catch (error) {
-      console.error("An error occurred during the request: ", error.message);
+      console.error("An error occurred during history save request: ", error.message);
     }
-
   };
+  
 
   const handleNext = async () => {
     const start = parseInt(startIndex, 10);

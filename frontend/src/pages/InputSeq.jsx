@@ -34,22 +34,6 @@ function InputSeq({ setTab, setWorkingHistory, setMRNAReceived, setPDBReceived }
 useEffect(() => {
   setMRNAReceived(false);
   setPDBReceived(false);
-  const fetchHistoryDetails = async () => {
-    try {
-      const serverResponse = await fetch("http://localhost:8080/history/deleteData");
-
-      if (!serverResponse.ok) {
-        const errorMessage = await serverResponse.text();
-        throw new Error(errorMessage);
-      }
-
-      await serverResponse.text();
-    } catch (error) {
-      console.error("An error occurred while fetching history details: ", error.message);
-    }
-  };
-
-  fetchHistoryDetails();
 }, [navigate]);  // Include all dependencies
 
 
@@ -87,7 +71,7 @@ useEffect(() => {
       setResponseReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
-      setResponseMessage("An error occurred during the request: " + error.message);
+      setResponseMessage("Error: "+ error.message);
     }
   };
 
@@ -174,6 +158,7 @@ useEffect(() => {
       navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
+      window.alert(error.message);
     }
   };
   /* parkki */

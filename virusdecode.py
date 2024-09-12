@@ -39,7 +39,8 @@ def get_metadata(reference_id):
         }
         return metadata
     except HTTPError as e:
-        print(f"HTTPError: {e.code} - {e.reason}")
+        print("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.")
+        sys.exit(11)
 
 def check_pdb_file_exists(pdb_id):
     """
@@ -131,7 +132,8 @@ class SequenceAlignment:
             self.reference_id = self.reference_sequence.id
 
         except HTTPError as e:
-            print(f"HTTPError: {e.code} - {e.reason}")
+            print("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.")
+            sys.exit(11)
 
     def read_sequences(self):
         # Get reference protein sequence
@@ -165,7 +167,8 @@ class SequenceAlignment:
         if result.returncode == 0:
             self.aligned_memory_file = StringIO(result.stdout)  # 수정된 부분: 결과를 StringIO 객체에 저장하여 메모리 내에서 처리
         else:
-            sys.exit(1)
+            print(f"Error running MUSCLE: {result.stderr}")
+            sys.exit(21)
 
     def read_alignment(self):
         # Read alignment
@@ -253,8 +256,8 @@ class SequenceAnalysis:
         amino_acid_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end][start:end].replace("-", "")
         
         if(amino_acid_sequence == ""):
-            print("Error: No sequence found")
-            sys.exit(1)
+            print("Error: No amino acid sequence found")
+            sys.exit(31)
 
         # Run LinearDesign
         # Execute the command and capture the result
@@ -283,8 +286,9 @@ class SequenceAnalysis:
             self.amino_acid_sequence = amino_acid_sequence
 
         else:
-            print("Error executing command")
-            print(stderr)
+            print(f"Error running LinearDesign: {stderr.decode()}")
+            sys.exit(32)
+            
 
     def set_protParam(self):
         # Create a protein analysis object
@@ -418,7 +422,6 @@ if __name__ == "__main__":
             "linearDesign": linearDesign_dict,
             "protParam": protParam_dict
         }
-
         save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
 
 
