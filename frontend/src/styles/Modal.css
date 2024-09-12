@@ -172,11 +172,11 @@
 
 
 
-
-
 .help-modal {
   position: fixed;
   width: 600px;
+  max-width: 90%; /* 화면 크기에 따라 모달 너비 제한 */
+  max-height: 90%; /* 화면 크기에 따라 모달 높이 제한 */
   padding: 20px;
   border-radius: 8px;
   border: 2px solid #d6d6d6;
@@ -188,6 +188,7 @@
   transform: translate(-50%, -50%);
   font-family: Arial, sans-serif;
   text-align: left;
+  overflow: auto; /* 모달이 화면을 넘으면 스크롤 생김 */
 }
 
 .help-modal .helpTitle {
@@ -231,8 +232,19 @@
   margin-left: 15px;
   border-radius: 8px;
   border: 2px solid #d6d6d6;
-
 }
+
+/* 작은 화면 대응 */
+@media (max-width: 768px) {
+  .help-modal {
+    width: 100%;
+    height: auto;
+    top: 10%;
+    left: 5%;
+    transform: none;
+  }
+}
+
 
 .close-button {
   position: absolute;
