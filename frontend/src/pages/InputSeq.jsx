@@ -71,7 +71,7 @@ useEffect(() => {
       setResponseReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
-      setResponseMessage("An error occurred during the request: " + error.message);
+      setResponseMessage("Error: "+ error.message);
     }
   };
 
@@ -158,6 +158,7 @@ useEffect(() => {
       navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
+      window.alert(error.message);
     }
   };
   /* parkki */

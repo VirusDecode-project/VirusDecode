@@ -64,15 +64,13 @@ public class PythonScriptExecutor {
             // 파이썬 오류 코드 처리
             if (exitCode != 0) {
                 logger.error("Python script 종료 코드: {}", exitCode);
-                if(exitCode == 11){
-                    return ResponseEntity.status(500).body("유효한 nucleotide id를 입력하세요.");
-                }if(exitCode == 31){
-                    return ResponseEntity.status(500).body("선택된 구간에 유효한 서열이 없습니다.");
-                }else if(exitCode == 32){
-                    return ResponseEntity.status(500).body("LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다.");
-                }else{
-                    return ResponseEntity.status(500).body("Error executing Python script: " + errorOutput);
-                }
+                return switch (exitCode) {
+                    case 11 -> ResponseEntity.status(500).body("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.");
+                    case 21 -> ResponseEntity.status(500).body("MUSCLE 다중 서열 정리에 문제가 발생하였습니다.");
+                    case 31 -> ResponseEntity.status(500).body("선택된 구간에 유효한 서열이 없습니다.");
+                    case 32 -> ResponseEntity.status(500).body("LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다.\n");
+                    default -> ResponseEntity.status(500).body("Error executing Python script: " + errorOutput);
+                };
             }
 
             return ResponseEntity.ok(output.toString());
