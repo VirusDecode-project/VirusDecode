@@ -25,7 +25,19 @@ const CreateModal = ({ show, onClose }) => {
     onClose();
   }
 
-  const handleStartNew = () => {
+  const handleStartNew = async() => {
+      try {
+        const serverResponse = await fetch("http://localhost:8080/history/deleteData");
+  
+        if (!serverResponse.ok) {
+          const errorMessage = await serverResponse.text();
+          throw new Error(errorMessage);
+        }
+  
+        await serverResponse.text();
+      } catch (error) {
+        console.error("An error occurred while fetching history details: ", error.message);
+      }
     navigate('/InputSeq'); // Navigate to the InputSeq page
     onClose(); // Close the modal after navigation
   };
