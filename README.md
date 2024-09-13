@@ -128,7 +128,7 @@ Follow these steps to get started with Docker for VirusDecode:
     ```bash
     git clone https://github.com/VirusDecode-project/VirusDecode.git
     cd VirusDecode
-    docker compose create
+    docker compose build
     ```
 ## 2. Running the Application
   1. **Run only the Backend on port 8080**
