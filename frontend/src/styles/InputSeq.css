@@ -255,6 +255,15 @@ body {
   margin-top: 45px;
   margin-left: 20px;
 }
+.done-button:disabled {
+  background-color: #d3d3d3;
+  color: #353535;
+}
+
+.done-button:active {
+  background-color: #0c9e94 !important;
+}
+
 
 .input-field {
   height: 38px;
@@ -430,4 +439,7 @@ svg {
 .next-button:disabled {
   background-color: #d3d3d3;
   color: #353535;
+}
+.next-button:active {
+  background-color: #0c9e94 !important;
 }
