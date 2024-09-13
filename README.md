@@ -131,18 +131,19 @@ Follow these steps to get started with Docker for VirusDecode:
     docker compose build
     ```
 ## 2. Running the Application
-  1. **Run only the Backend on port 8080**
-      ```bash
-      docker compose up backend
-      ```
-  2. **Run only the Frontend on port 3000**
-      ```bash
-      docker compose up frontend
-      ```
-  3. **Run both Backend and Frontend simultaneously**
+  1. **Run both Backend and Frontend simultaneously**
       ```bash
       docker compose up
       ```
-  Note: Access the Application
-      Backend will be accessible at: http://localhost:8080
-      Frontend will be accessible at: http://localhost:3000
+      - Open your web browser and navigate to http://localhost:3000 to access the frontend.
+  2. **Run only the Backend on port 8080**
+      ```bash
+      docker compose up backend
+      ```
+  3. **Run only the Frontend on port 3000**
+      ```bash
+      docker compose up frontend
+      ```
+  - Note: Access the Application
+    - Backend will be accessible at: http://localhost:8080
+    - Frontend will be accessible at: http://localhost:3000
