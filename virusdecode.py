@@ -42,19 +42,6 @@ def get_metadata(reference_id):
         print("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.")
         sys.exit(11)
 
-def check_pdb_file_exists(pdb_id):
-    """
-    Check if the PDB file exists for the given pdb_id.
-    """
-    pdb_url = f"https://files.rcsb.org/download/{pdb_id}.pdb"
-    
-    try:
-        response = requests.head(pdb_url)  # Use HEAD request to check if file exists
-        return response.status_code == 200
-    except requests.RequestException as e:
-        print(f"An error occurred while checking PDB file existence: {e}")
-        return False
-
 def get_pdb_ids_by_sequence(sequence):
     """
     Retrieve a list of PDB IDs that match the given sequence.
@@ -81,16 +68,19 @@ def get_pdb_ids_by_sequence(sequence):
     }
 
     try:
-        response = requests.post(get_id_url, json=query)
+        response = requests.post(get_id_url, json=query, timeout=10)
         if response.status_code == 200:
             results = response.json()
             return [entry['identifier'] for entry in results.get('result_set', [])]
         else:
             print(f"Error fetching PDB IDs: {response.status_code}")
-            return []
+            sys.exit(41)
+    except requests.Timeout:
+        print(f"Request timed out while fetching PDB IDs.")
+        sys.exit(42)
     except requests.RequestException as e:
         print(f"An error occurred while fetching PDB IDs: {e}")
-        return []
+        sys.exit(41)
 
 def get_pdb_info(pdb_id):
     """
@@ -99,13 +89,16 @@ def get_pdb_info(pdb_id):
     get_info_url = f"https://data.rcsb.org/rest/v1/core/entry/{pdb_id}"
     
     try:
-        response = requests.get(get_info_url)
+        response = requests.get(get_info_url, timeout=10)
         if response.status_code == 200:
             result = response.json()
             return result.get('struct', {}).get('title', 'No title available')
         else:
             print(f"Error fetching PDB info for {pdb_id}: {response.status_code}")
             return None
+    except requests.Timeout:
+        print(f"Request timed out while fetching PDB info.")
+        return None
     except requests.RequestException as e:
         print(f"An error occurred while fetching PDB info for {pdb_id}: {e}")
         return None
@@ -441,18 +434,15 @@ if __name__ == "__main__":
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
 
-        pdb_dict = {}
         pdb_ids = get_pdb_ids_by_sequence(sequence)
-        pdb_count = 0
+        pdb_ids=pdb_ids[:10]
+        pdb_dict = {pdb_id: "" for pdb_id in pdb_ids}
 
         for pdb_id in pdb_ids:
-            if check_pdb_file_exists(pdb_id):
-                title = get_pdb_info(pdb_id)
-                if title:
-                    pdb_dict[pdb_id] = title
-                pdb_count += 1
-            
-            if pdb_count == 10:
+            title = get_pdb_info(pdb_id)
+            if title:
+                pdb_dict[pdb_id] = title
+            else:
                 break
 
         save_json(pdb_dict, "pdb_data.json")
