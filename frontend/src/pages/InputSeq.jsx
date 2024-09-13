@@ -21,13 +21,11 @@ function InputSeq({ setTab, setWorkingHistory, setMRNAReceived, setPDBReceived }
   ]);
   const [editingId, setEditingId] = useState(null);
   const [nextId, setNextId] = useState(2);
-
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   let [isLoading, setIsLoading] = useState(false);
-
-  // next 비활성화
   const [responseReceived, setResponseReceived] = useState(false);
+  const [doneReceived, setDoneReceived] = useState(true);
 
 
 // Add useEffect to fetch history details on component mount
@@ -37,12 +35,15 @@ useEffect(() => {
 }, [navigate]);  // Include all dependencies
 
 
-  /*parkki */
   const handleDoneSubmit = async (e) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
+    if (!referenceSequenceId.trim()) {  // 입력이 없거나 빈 문자열인 경우
+      setResponseMessage("Please enter a valid sequence ID.");
+      return; // 값이 없으므로 요청을 보내지 않음
+  }
     const requestData = { sequenceId: referenceSequenceId };
-
     try {
+      setDoneReceived(false);
       const serverResponse = await fetch("http://localhost:8080/inputSeq/reference", {
         method: "POST",
         headers: {
@@ -67,11 +68,12 @@ useEffect(() => {
 
       // 서버 응답 메시지 설정
       setResponseMessage(formattedMessage);
-
       setResponseReceived(true);
     } catch (error) {
       console.error("An error occurred during the request: ", error.message);
-      setResponseMessage("Error: "+ error.message);
+      setResponseMessage(error.message);
+    }finally{
+      setDoneReceived(true);
     }
   };
 
@@ -109,7 +111,6 @@ useEffect(() => {
     };
 
     try {
-      // GK - Loading 위치 이동
       setIsLoading(true);
       const serverResponse = await fetch("http://localhost:8080/inputSeq/alignment", {
         method: "POST",
@@ -125,13 +126,9 @@ useEffect(() => {
       }
 
       const responseData = await serverResponse.json();
-      
-      
       setTab(0);
 
-
       try {
-        // GK - Loading 위치 이동
         const historyName = referenceSequenceId;
         const requestData = { historyName: historyName };
         setIsLoading(true);
@@ -149,7 +146,6 @@ useEffect(() => {
         }
         const createdHistoryName = await serverResponse.text();
         setWorkingHistory(createdHistoryName);
-        // await serverResponse.text();
 
       } catch (error) {
         console.error("An error occurred during the request: ", error.message);
@@ -161,7 +157,6 @@ useEffect(() => {
       window.alert(error.message);
     }
   };
-  /* parkki */
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -215,12 +210,7 @@ useEffect(() => {
   return (
     <div>
       {isLoading ? (
-        // GK - Loading 컴포넌트로 변경
         <Loading text="Analyzing" />
-        // <div className="loading-container">
-        //   <img src={loadingImage} alt="Loading..." className="loading-image" />
-        //   <div className="loading-text">{loadingText}</div>
-        // </div>
       ) : (
         <div>
           <div className="container mt-4" style={{ marginLeft: "75px" }}>
@@ -229,7 +219,6 @@ useEffect(() => {
                 <Col md={6}>
                   <p className="RS-id">Reference Sequence ID</p>
                   <Form.Group controlId="referenceSequenceId">
-                    {/*parkki */}
                     <Form.Control
                       type="text"
                       placeholder="Enter sequence ID"
@@ -237,28 +226,24 @@ useEffect(() => {
                       value={referenceSequenceId}
                       onChange={(e) => setReferenceSequenceId(e.target.value)}
                     />
-                    {/*parkki */}
                   </Form.Group>
                 </Col>
                 <Col
                   md={1}
                   className="d-flex justify-content-end align-items-center"
                 >
-                  {/* <Button variant="primary" className="done-button">DONE</Button> */}
-                  {/*parkki */}
                   <Button
                     type="submit"
                     variant="primary"
                     onClick={handleDoneSubmit}
                     className="done-button"
+                    disabled={!doneReceived}
                   >
                     DONE
                   </Button>
-                  {/*parkki */}
                 </Col>
               </Row>
             </Form>
-            {/*parkki */}
             {responseMessage && (
               <div className="response-message">
                 <p className="metadata">Metadata</p>
@@ -268,7 +253,6 @@ useEffect(() => {
                 />
               </div>
             )}
-            {/*parkki */}
 
             <Form>
               <div className="mb-5"></div>
@@ -277,7 +261,6 @@ useEffect(() => {
 
               <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Upload File</Form.Label>
-                {/* ------------다솔님 업로드 박스--------시작------- */}
                 <Row className="align-items-center">
                   <Col md={6}>
                     <div className="upload-box">
@@ -325,9 +308,7 @@ useEffect(() => {
                   </Col>
                 </Row>
               </Form.Group>
-              {/* ------------다솔님 업로드 박스--------끝------- */}
 
-              {/* -----------------다솔님 Paste Sequence ------------시작---- */}
               <Form.Group>
                 <Form.Label>Paste Sequence</Form.Label>
                 <Row>
@@ -383,7 +364,6 @@ useEffect(() => {
               <button onClick={addSequence} className="add-sequence-button">
                 + Add Sequence
               </button>
-              {/* -----------------다솔님 Paste Sequence ------------끝---- */}
             </Form>
           </div>
 
@@ -394,16 +374,6 @@ useEffect(() => {
           >
             Next ➔
           </Button>
-
-          {/* Backend 없이 실행할 때 바로위 코드 주석 처리, 해당 주석 제거 후 실행하시면 됩니당, 지우지 말아주세요
-          <Button
-            className="next-button"
-            onClick={() => {
-              navigate("/analysis");
-            }}
-          >
-            Next ➔
-          </Button> */}
 
         </div>
       )}
