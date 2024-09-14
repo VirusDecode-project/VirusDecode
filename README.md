@@ -15,7 +15,7 @@ To set up the development environment for VirusDecode, follow these steps:
       sudo apt install python2
       sudo apt install python3.11
       pip install biopython==1.83
-      pip install requests
+      pip install requests==2.32.3
       ```
     - For using LinearDesign, ensure Python 2.7 is correctly configured.
 

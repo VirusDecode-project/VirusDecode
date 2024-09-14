@@ -30,7 +30,7 @@ ENV LANG=ko_KR.UTF-8 \
     LC_ALL=ko_KR.UTF-8
 
 # Install Python packages for bioinformatics (if needed by the backend)
-RUN pip3 install biopython==1.83 requests
+RUN pip3 install biopython==1.83 requests==2.32.3
 
 # Install MUSCLE tool
 RUN mkdir /muscle && cd /muscle && \
