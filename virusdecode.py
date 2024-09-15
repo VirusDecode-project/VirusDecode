@@ -254,7 +254,11 @@ class SequenceAnalysis:
 
         # Run LinearDesign
         # Execute the command and capture the result
-        os.chdir(os.path.join(current_dir, "../../LinearDesign"))
+        try:
+            os.chdir(os.path.join(current_dir, "../../LinearDesign"))
+        except FileNotFoundError as e:
+            print("Error: No LinearDesign directory")
+            sys.exit(33)
         command = f"echo {amino_acid_sequence} | ./lineardesign --lambda 3"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
@@ -366,7 +370,9 @@ if __name__ == "__main__":
     elif option == 2:
         variant_sequences = {}
         # read fasta file
-        for record in SeqIO.parse(current_dir+"/data/combined.fasta", "fasta"):
+        fasta_content = sys.argv[3]
+        fasta_io = StringIO(fasta_content)
+        for record in SeqIO.parse(fasta_io, "fasta"):
             variant_sequences[record.id] = record.seq
 
         # get metadata
@@ -385,7 +391,7 @@ if __name__ == "__main__":
             "aligned_sequences": aligned_sequences_dict,
         }
 
-        save_json(alignment_data, "alignment_data.json")  # JSON 파일로 저장
+        save_json(alignment_data, "alignment.json")  # JSON 파일로 저장
 
     # linearDesign, protparam data
     elif option == 3:
@@ -394,7 +400,7 @@ if __name__ == "__main__":
         reference_id = metadata.get("Sequence ID", None)
         
         # get alignment data
-        alignment_data = get_json("alignment_data.json")
+        alignment_data = get_json("alignment.json")
         alignment_index = alignment_data.get("alignment_index", None)
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
@@ -415,7 +421,7 @@ if __name__ == "__main__":
             "linearDesign": linearDesign_dict,
             "protParam": protParam_dict
         }
-        save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
+        save_json(linearDesign_data, "linearDesign.json")  # JSON 파일로 저장
 
 
     elif option == 4:
@@ -424,7 +430,7 @@ if __name__ == "__main__":
         reference_id = metadata.get("Sequence ID", None)
         
         # get alignment data
-        alignment_data = get_json("alignment_data.json")
+        alignment_data = get_json("alignment.json")
         alignment_index = alignment_data.get("alignment_index", None)
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
@@ -445,4 +451,4 @@ if __name__ == "__main__":
             else:
                 break
 
-        save_json(pdb_dict, "pdb_data.json")
+        save_json(pdb_dict, "pdb.json")

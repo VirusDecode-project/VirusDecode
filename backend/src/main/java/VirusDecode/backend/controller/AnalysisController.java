@@ -44,18 +44,18 @@ public class AnalysisController {
     // /analysis/re-alignment 엔드포인트에 대한 POST 요청 처리
     @GetMapping("/re-alignment")
     public ResponseEntity<String> sendJsonFile() {
-        return jsonFileService.readJsonFile("alignment_data.json");
+        return jsonFileService.readJsonFile("alignment.json");
     }
 
     // /analysis/re-mrnadesign 엔드포인트에 대한 POST 요청 처리
     @GetMapping("/re-mrnadesign")
     public ResponseEntity<String> re_mrna_design_json() {
-        return jsonFileService.readJsonFile("linearDesign_data.json");
+        return jsonFileService.readJsonFile("linearDesign.json");
     }
 
     // /analysis/render3d 엔드포인트에 대한 GET 요청 처리
     @GetMapping("/re-render3d")
     public ResponseEntity<String> return_pdb_list() {
-        return jsonFileService.readJsonFile("pdb_data.json");
+        return jsonFileService.readJsonFile("pdb.json");
     }
 }

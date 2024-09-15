@@ -86,7 +86,7 @@ public class HistoryController {
                 return ResponseEntity.status(404).body("History not found: " + historyName);
             }
             performGetHistory(sourceDir);
-            return jsonFileService.readJsonFile("alignment_data.json");
+            return jsonFileService.readJsonFile("alignment.json");
         } catch (NoSuchFileException e) {
             return ResponseEntity.status(404).body("History file not found: " + historyName);
         } catch (IOException e) {
@@ -140,12 +140,12 @@ public class HistoryController {
         Map<String, Boolean> fileStatus = new HashMap<>();
 
         // File paths
-        Path pdbFilePath = DATA_DIR.resolve("pdb_data.json");
-        Path linearDesignFilePath = DATA_DIR.resolve("linearDesign_data.json");
+        Path pdbFilePath = DATA_DIR.resolve("pdb.json");
+        Path linearDesignFilePath = DATA_DIR.resolve("linearDesign.json");
 
         // Check if files exist
-        fileStatus.put("pdb_data.json", Files.exists(pdbFilePath));
-        fileStatus.put("linearDesign_data.json", Files.exists(linearDesignFilePath));
+        fileStatus.put("pdb.json", Files.exists(pdbFilePath));
+        fileStatus.put("linearDesign.json", Files.exists(linearDesignFilePath));
 
         return ResponseEntity.ok(fileStatus);
     }
