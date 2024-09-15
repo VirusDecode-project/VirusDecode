@@ -44,7 +44,7 @@ public class InputSeqController {
             String fastaContent = fastaFileService.saveFastaContent(request);
             ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2", fastaContent);
             if (scriptResponse.getStatusCode().is2xxSuccessful()) {
-                return JsonFileService.readJsonFile("alignment_data.json");
+                return JsonFileService.readJsonFile("alignment.json");
             } else {
                 return scriptResponse;
             }
