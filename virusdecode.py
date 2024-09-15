@@ -370,7 +370,9 @@ if __name__ == "__main__":
     elif option == 2:
         variant_sequences = {}
         # read fasta file
-        for record in SeqIO.parse(current_dir+"/data/combined.fasta", "fasta"):
+        fasta_content = sys.argv[3]
+        fasta_io = StringIO(fasta_content)
+        for record in SeqIO.parse(fasta_io, "fasta"):
             variant_sequences[record.id] = record.seq
 
         # get metadata

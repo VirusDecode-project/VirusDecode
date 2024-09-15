@@ -41,8 +41,8 @@ public class InputSeqController {
     @PostMapping("/alignment")
     public ResponseEntity<String> getAlignment(@RequestBody(required = false) VarientDTO request) {
         try {
-            String savedFilePath = fastaFileService.saveFastaContent(request);
-            ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2");
+            String fastaContent = fastaFileService.saveFastaContent(request);
+            ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2", fastaContent);
             if (scriptResponse.getStatusCode().is2xxSuccessful()) {
                 return JsonFileService.readJsonFile("alignment_data.json");
             } else {

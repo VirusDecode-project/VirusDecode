@@ -38,15 +38,6 @@ public class FastaFileService {
             }
         }
 
-        // 파일 저장 경로 설정
-//        String currentDir = System.getProperty("user.dir");  // 현재 작업 디렉토리 경로
-//        String varient_fasta_Path = Paths.get(currentDir, "build/resources/main/bioinformatics/data/combined.fasta").toString();
-        String varient_fasta_Path = currentDir.resolve("data/combined.fasta").toString();
-        // FASTA 콘텐츠를 파일로 저장
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(varient_fasta_Path))) {
-            writer.write(fastaContent.toString());  // 파일에 콘텐츠 쓰기
-        }
-
-        return varient_fasta_Path; // 저장된 파일 경로를 반환
+        return fastaContent.toString();
     }
 }
