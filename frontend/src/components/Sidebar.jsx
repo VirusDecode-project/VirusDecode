@@ -80,8 +80,8 @@ const Sidebar = ({
       console.log("File Status:", fileStatus);
   
       // Set the state based on file existence
-      setMRNAReceived(fileStatus["linearDesign_data.json"] || false);
-      setPDBReceived(fileStatus["pdb_data.json"] || false);
+      setMRNAReceived(fileStatus["linearDesign.json"] || false);
+      setPDBReceived(fileStatus["pdb.json"] || false);
   
       // Navigate to the analysis page with response data
       setTab(0);

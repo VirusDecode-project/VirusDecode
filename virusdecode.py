@@ -391,7 +391,7 @@ if __name__ == "__main__":
             "aligned_sequences": aligned_sequences_dict,
         }
 
-        save_json(alignment_data, "alignment_data.json")  # JSON 파일로 저장
+        save_json(alignment_data, "alignment.json")  # JSON 파일로 저장
 
     # linearDesign, protparam data
     elif option == 3:
@@ -400,7 +400,7 @@ if __name__ == "__main__":
         reference_id = metadata.get("Sequence ID", None)
         
         # get alignment data
-        alignment_data = get_json("alignment_data.json")
+        alignment_data = get_json("alignment.json")
         alignment_index = alignment_data.get("alignment_index", None)
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
@@ -421,7 +421,7 @@ if __name__ == "__main__":
             "linearDesign": linearDesign_dict,
             "protParam": protParam_dict
         }
-        save_json(linearDesign_data, "linearDesign_data.json")  # JSON 파일로 저장
+        save_json(linearDesign_data, "linearDesign.json")  # JSON 파일로 저장
 
 
     elif option == 4:
@@ -430,7 +430,7 @@ if __name__ == "__main__":
         reference_id = metadata.get("Sequence ID", None)
         
         # get alignment data
-        alignment_data = get_json("alignment_data.json")
+        alignment_data = get_json("alignment.json")
         alignment_index = alignment_data.get("alignment_index", None)
         alignment_dict = alignment_data.get("aligned_sequences", None)
 
@@ -451,4 +451,4 @@ if __name__ == "__main__":
             else:
                 break
 
-        save_json(pdb_dict, "pdb_data.json")
+        save_json(pdb_dict, "pdb.json")
