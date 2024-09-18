@@ -93,7 +93,7 @@ To run the VirusDecode application:
 3. **Start the Frontend Development Server**
 
     - Build the Frontend
-      - Install [Node.js and npm](https://nodejs.org/).
+      - Install [Node.js and npm](https://nodejs.org/) (nodejs: v18.20.4, npm: v10.7.0)
       - `serve` Pre-install the package globally (run once):
         ```bash
         sudo npm install -g serve
