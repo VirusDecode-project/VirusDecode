@@ -9,7 +9,7 @@ interface ConvertModalProps {
   sequences: Sequence[];
   alignmentIndex: AlignmentIndex;
   modalData: ModalData;
-  setTab: Dispatch<SetStateAction<number>>
+  setTab: Dispatch<SetStateAction<number>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
