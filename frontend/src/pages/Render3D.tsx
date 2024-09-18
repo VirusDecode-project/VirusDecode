@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useState } from 'react';
 import Viztein from 'viztein';
 import "../styles/Render3D.css";
 
-const Render3D = ({ region }) => {
-  const [PDBids, setPDBids] = useState([]);
+interface Render3DProps {
+  region: string;
+}
+interface PDBResponse {
+  [key: string]: string;
+}
+
+const Render3D: React.FC<Render3DProps> = ({ region }) => {
+  const [PDBids, setPDBids] = useState<string[]>([]);
   const [selectedPDBid, setSelectedPDBid] = useState("");
-  const [PDBInfo, setPDBInfo] = useState([]);
+  const [PDBInfo, setPDBInfo] = useState<string[]>([]);
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
@@ -22,7 +29,7 @@ const Render3D = ({ region }) => {
           const errorMessage = await serverResponse.text();
           throw new Error(errorMessage);
         }
-        const responseData = await serverResponse.json();
+        const responseData: PDBResponse = await serverResponse.json();
 
         const keys = Object.keys(responseData);
         setPDBids(keys);
@@ -33,7 +40,9 @@ const Render3D = ({ region }) => {
           setSelectedPDBid(keys[0]);
         }
       } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
+        if (error instanceof Error){
+          console.error("An error occurred during the request: ", error.message);
+        }
       }
     };
     fetchPDBids();
@@ -57,7 +66,7 @@ const Render3D = ({ region }) => {
     })
   };
 
-  const checkPDBFileExists = async (url) => {
+  const checkPDBFileExists = async (url: string) => {
     try {
       const response = await fetch(url, { method: 'HEAD' });
       return response.ok;
@@ -67,7 +76,7 @@ const Render3D = ({ region }) => {
     }
   };
 
-  const handlePDBSelection = async (id) => {
+  const handlePDBSelection = async (id: string) => {
     const pdbUrl = `https://files.rcsb.org/download/${id}.pdb`;
     const exists = await checkPDBFileExists(pdbUrl);
     if (exists) {
@@ -78,7 +87,7 @@ const Render3D = ({ region }) => {
     }
   };
 
-  const handleMouseOver = (e, info) => {
+  const handleMouseOver = (e: MouseEvent<HTMLDivElement>, info: string) => {
     setTooltip({
       visible: true,
       text: `${info}`,

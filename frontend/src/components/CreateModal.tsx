@@ -1,13 +1,19 @@
+// CreateModal.tsx
 import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 
-const CreateModal = ({ show, onClose }) => {
-  const modalRef = useRef(null);
+interface CreateModalProps{
+  show: boolean;
+  onClose: () => void;
+}
+
+const CreateModal: React.FC<CreateModalProps> = ({ show, onClose }) => {
+  const modalRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate(); // Initialize the navigate function
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
@@ -36,7 +42,9 @@ const CreateModal = ({ show, onClose }) => {
   
         await serverResponse.text();
       } catch (error) {
-        console.error("An error occurred while fetching history details: ", error.message);
+        if (error instanceof Error){
+          console.error("An error occurred while fetching history details: ", error.message);
+        }
       }
     navigate('/InputSeq'); // Navigate to the InputSeq page
     onClose(); // Close the modal after navigation

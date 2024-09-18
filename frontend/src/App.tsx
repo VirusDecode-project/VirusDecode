@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect} from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./styles/App.css";
@@ -14,7 +13,7 @@ function App() {
   let location = useLocation();
   const [show, setShow] = useState(false);
   const [isHome, setIsHome] = useState(true);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<string[]>([]);
   const [mRNAReceived, setMRNAReceived] = useState(false);
   const [PDBReceived, setPDBReceived] = useState(false);
   const [tab, setTab] = useState(0);
@@ -49,7 +48,7 @@ function App() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const handleEditClick = () => {return;};
   return (
     <div className="App">
       <Sidebar
@@ -70,6 +69,7 @@ function App() {
           show={show}
           isHome={isHome}
           handleShow={handleShow}
+          handleEditClick={handleEditClick}
           navigate={navigate}
         />
         <Routes>

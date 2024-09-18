@@ -1,5 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import '../styles/Modal.css';
+
+interface ConvertModalProps {
+  onRegionUpdate:
+  isOpen: boolean;
+  onClose: () => void;
+  sequences:
+  alignmentIndex:
+  modalData:
+  setTab: Dispatch<SetStateAction<number>>
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setMRNAReceived: Dispatch<SetStateAction<boolean>>;
+  setPDBReceived: Dispatch<SetStateAction<boolean>>;
+  workingHistory:
+}
 
 const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
   const [startIndex, setStartIndex] = useState('');
@@ -101,8 +115,10 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
   
   
     } catch (error) {
-      console.error("An error occurred during the request: ", error.message);
-      window.alert(error.message);
+      if (error instanceof Error){
+        console.error("An error occurred during the request: ", error.message);
+        window.alert(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +145,9 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
   
       await serverResponse.text();
     } catch (error) {
-      console.error("An error occurred during history save request: ", error.message);
+      if (error instanceof Error){
+        console.error("An error occurred during history save request: ", error.message);
+      }
     }
   };
   

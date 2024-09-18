@@ -1,9 +1,12 @@
-// Loading.js
 import React, { useState, useEffect } from 'react';
 import loadingImage from '../assets/loading.png'; // Adjust the path as necessary
 import '../styles/Loading.css'; // Optional: You can add styles for the loading component
 
-const Loading = ({text}) => {
+interface LoadingProps {
+  text: string;
+}
+
+const Loading: React.FC<LoadingProps> = ({text}) => {
   const [loadingText, setLoadingText] = useState(text);
 
   useEffect(() => {

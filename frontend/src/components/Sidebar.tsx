@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
-
+import React, { Dispatch, useState, useRef, useEffect, SetStateAction, MouseEvent } from "react";
 import historyIcon from "../assets/history.png";
 import editIcon from "../assets/edit.png";
 import renameIcon from "../assets/rename.png";
@@ -8,8 +7,22 @@ import HistoryList from "./HistoryList";
 import CreateModal from "./CreateModal";
 import RenameModal from "./RenameModal";
 import DeleteModal from "./DeleteModal";
+import { NavigateFunction } from 'react-router-dom';
 
-const Sidebar = ({
+interface SidebarProps {
+  show: boolean;
+  handleClose: () => void;
+  history: string[],
+  setHistory: Dispatch<SetStateAction<string[]>>,
+  navigate: NavigateFunction;
+  setMRNAReceived: Dispatch<SetStateAction<boolean>>;
+  setPDBReceived: Dispatch<SetStateAction<boolean>>;
+  setTab: Dispatch<SetStateAction<number>>;
+  workingHistory: string;
+  setWorkingHistory: Dispatch<SetStateAction<string>>;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({
   show,
   handleClose,
   history,
@@ -24,16 +37,16 @@ const Sidebar = ({
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [activeHistoryItem, setActiveHistoryItem] = useState(null);
+  const [activeHistoryItem, setActiveHistoryItem] = useState<number | null>(null); // type 확인 필요
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [showOptionsModal, setShowOptionsModal] = useState(false);
-  const optionsMenuRef = useRef(null); // 옵션 메뉴를 감지할 참조 생성
+  const optionsMenuRef = useRef<HTMLDivElement>(null); // 옵션 메뉴를 감지할 참조 생성
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
+    const handleClickOutside: EventListener = (event) => {
       if (
         optionsMenuRef.current &&
-        !optionsMenuRef.current.contains(event.target)
+        !optionsMenuRef.current.contains(event.target as Node)
       ) {
         setShowOptionsModal(false);
       }
@@ -48,7 +61,7 @@ const Sidebar = ({
     setShowEditModal(true); // 편집 모달 열기
   };
 
-  const handleHistoryClick = async (index) => {
+  const handleHistoryClick = async (index: number) => {
     const historyName = history[index];
     const requestData = { historyName: historyName };
   
@@ -89,12 +102,14 @@ const Sidebar = ({
       navigate("/analysis", { state: { responseData } });
   
     } catch (error) {
-      console.error("An error occurred: ", error.message);
+      if (error instanceof Error){
+        console.error("An error occurred: ", error.message);
+      }
     }
   };
   
 
-  const handleEllipsisClick = (e, index) => {
+  const handleEllipsisClick = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     e.stopPropagation(); // Prevents handleHistoryClick from being triggered
     const { top, left } = e.currentTarget.getBoundingClientRect(); // Get the position of the clicked button
     setMenuPosition({
@@ -105,7 +120,7 @@ const Sidebar = ({
     setShowOptionsModal(true);
   };
 
-  const handleRename = async (newName) => {
+  const handleRename = async (newName: string) => {
     if (newName && activeHistoryItem !== null) {
       const historyName = history[activeHistoryItem];
       const requestData = {
@@ -142,7 +157,9 @@ const Sidebar = ({
         }
         setShowRenameModal(false); // 이름 변경 모달 닫기
       } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
+        if (error instanceof Error){
+          console.error("An error occurred during the request: ", error.message);
+        }
       }
     } else {
       console.log("No name provided or no active item selected.");
@@ -176,7 +193,9 @@ const Sidebar = ({
           prevHistory.filter((_, i) => i !== activeHistoryItem)
         );
       } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
+        if (error instanceof Error){
+          console.error("An error occurred during the request: ", error.message);
+        }
       }
     }
     setShowDeleteModal(false); // 삭제 확인 모달 닫기

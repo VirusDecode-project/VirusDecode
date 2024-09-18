@@ -1,10 +1,18 @@
-// HeaderBar.jsx
 import React from 'react';
 import historyIcon from '../assets/history.png';
 import editIcon from '../assets/edit.png';
 import logo from '../assets/logo.png';
+import { NavigateFunction } from 'react-router-dom';
 
-const HeaderBar = ({ show, isHome, handleShow, handleEditClick, navigate }) => {
+interface HeaderBarProps {
+  show: boolean;
+  isHome: boolean;
+  handleShow: () => void;
+  handleEditClick: () => void;
+  navigate: NavigateFunction;
+}
+
+const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate })=> {
   const handleRestart = async() => {
     try {
       const serverResponse = await fetch("http://localhost:8080/history/deleteData");
@@ -16,7 +24,11 @@ const HeaderBar = ({ show, isHome, handleShow, handleEditClick, navigate }) => {
 
       await serverResponse.text();
     } catch (error) {
-      console.error("An error occurred while fetching history details: ", error.message);
+      if (error instanceof Error) {
+        console.error(`An error occurred while fetching history details: ${error.message}`);
+      } else {
+        console.error("An unknown error occurred");
+      }
     }
     navigate('/');
 };

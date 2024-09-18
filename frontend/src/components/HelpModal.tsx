@@ -3,18 +3,23 @@ import helpImg1 from '../assets/helpImg1.png';
 import helpImg2 from '../assets/helpImg2.png';
 import helpImg3 from '../assets/helpImg3.png';
 
-function HelpModal({ isOpen, onClose }) {
-    const modalRef = useRef(null); // 모달을 참조하기 위한 useRef
+interface HelpModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+}
+
+const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
+    const modalRef = useRef<HTMLDivElement>(null); // 모달을 참조하기 위한 useRef
 
     useEffect(() => {
-        const handleEsc = (event) => {
+        const handleEsc = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 onClose();
             }
         };
 
-        const handleClickOutside = (event) => {
-            if (modalRef.current && !modalRef.current.contains(event.target)) {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
                 onClose();
             }
         };
