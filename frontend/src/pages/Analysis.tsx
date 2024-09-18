@@ -2,9 +2,9 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import '../styles/Analysis.css';
-import Alignment from '../components/tabs/Alignment';
-import MRNAdesign from '../components/tabs/MRNAdesign';
-import Render3D from '../components/tabs/Render3D';
+import Alignment from '../components/tabs/AlignmentTab';
+import MRNAdesign from '../components/tabs/MRNAdesignTab';
+import Render3D from '../components/tabs/Render3DTab';
 
 interface AnalysisProps {
   tab : number;
