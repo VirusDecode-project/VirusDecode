@@ -5,6 +5,7 @@ import "../styles/Render3D.css";
 interface Render3DProps {
   region: string;
 }
+
 interface PDBResponse {
   [key: string]: string;
 }

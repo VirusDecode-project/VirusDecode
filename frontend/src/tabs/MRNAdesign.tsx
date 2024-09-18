@@ -2,8 +2,32 @@ import React, { useEffect, useState } from "react";
 import "../styles/MRNAdesign.css";
 import RNAVisualizer from '../components/MRNAVisualizer';
 
-function MRNAdesign() {
-  const [data, setData] = useState(null);
+interface LinearDesign {
+  mRNA_sequence: string;
+  mRNA_structure: string;
+  amino_acid_sequence: string;
+  free_energy: number;
+  cai: number;
+}
+
+interface ProtParam {
+  molecular_weight: number;
+  isoelectric_point: number;
+  instability_index: number;
+  secondary_structure_fraction: [number, number, number];
+  gravy: number;
+  aromaticity: number;
+  amino_acid_count: Record<string, number>; 
+  amino_acid_percent: Record<string, number>;
+}
+
+interface Data {
+  linearDesign: LinearDesign;
+  protParam: ProtParam;
+}
+
+const MRNAdesign: React.FC = () => {
+  const [data, setData] = useState<Data | null>(null);
   const [showFullAminoAcidSequence, setShowFullAminoAcidSequence] = useState(false);
   const [showFullSequence, setShowFullSequence] = useState(false);
   const [showFullStructure, setShowFullStructure] = useState(false);
@@ -23,7 +47,9 @@ function MRNAdesign() {
         const responseData = await serverResponse.json();
         setData(responseData); // JSON 데이터를 상태로 설정
       } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
+        if (error instanceof Error){
+          console.error("An error occurred during the request: ", error.message);
+        }
       }
     };
     fetchJsonData();
@@ -33,7 +59,7 @@ function MRNAdesign() {
   if (!data) {
     return <div>Loading...</div>;
   }
-  const formatSequence = (sequence) => {
+  const formatSequence = (sequence: string) => {
     const formatted = [];
     for (let i = 0; i < sequence.length; i += 50) {
       const line = sequence.slice(i, i + 50).match(/.{1,10}/g) || [];
@@ -54,7 +80,7 @@ function MRNAdesign() {
     return formatted;
   };
 
-  const formatStructure = (structure) => {
+  const formatStructure = (structure: string) => {
     const formatted = [];
     for (let i = 0; i < structure.length; i += 60) {
       const line = structure.slice(i, i + 60).match(/.{1,10}/g) || [];
@@ -229,7 +255,7 @@ function MRNAdesign() {
                 )
               ) : (
                 <tr>
-                  <td colSpan="2">Loading...</td>
+                  <td colSpan={2}>Loading...</td>
                 </tr>
               )}
 
