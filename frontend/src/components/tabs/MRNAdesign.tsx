@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "../styles/MRNAdesign.css";
-import RNAVisualizer from '../components/MRNAVisualizer';
+import "../../styles/MRNAdesign.css";
+import RNAVisualizer from '../MRNAVisualizer';
 
 interface LinearDesign {
   mRNA_sequence: string;

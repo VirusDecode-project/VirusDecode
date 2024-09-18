@@ -1,6 +1,6 @@
 import React, { MouseEvent, useEffect, useState } from 'react';
 import Viztein from 'viztein';
-import "../styles/Render3D.css";
+import "../../styles/Render3D.css";
 
 interface Render3DProps {
   region: string;

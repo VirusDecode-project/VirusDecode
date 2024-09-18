@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
-import '../styles/Alignment.css';
-import Loading from '../components/Loading';
-import StackedBar from '../components/StackedBar';
-import ProteinSeq from '../components/ProteinSeq';
-import {ResponseData} from '../components/types';
+import '../../styles/Alignment.css';
+import Loading from '../Loading';
+import StackedBar from '../StackedBar';
+import ProteinSeq from '../ProteinSeq';
+import {ResponseData} from '../types';
 
 interface ChartDataItem {
   label: string;
