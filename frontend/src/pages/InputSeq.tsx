@@ -1,5 +1,4 @@
-// InputSeq.tsx
-import React, { Dispatch, SetStateAction, useState ,useEffect} from "react";
+import React, { Dispatch, SetStateAction, MouseEvent, useState ,useEffect} from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "../styles/InputSeq.css";
@@ -14,7 +13,7 @@ import Loading from '../components/Loading';
 
 interface InputSeqProps {
   setTab: Dispatch<SetStateAction<number>>;
-  setWorkingHistory: Dispatch<SetStateAction<any | null>>;
+  setWorkingHistory: Dispatch<SetStateAction<string>>;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
 }
@@ -27,12 +26,12 @@ interface UploadedFile {
 const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, setMRNAReceived, setPDBReceived }) => {
   let navigate = useNavigate();
 
-  const [editingFileIndex, setEditingFileIndex] = useState(null);
+  const [editingFileIndex, setEditingFileIndex] = useState<number | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [sequences, setSequences] = useState([
     { id: 1, name: "Sequence1", value: "", visible: true },
   ]);
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [nextId, setNextId] = useState(2);
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
@@ -48,7 +47,7 @@ useEffect(() => {
 }, [navigate]);  // Include all dependencies
 
 
-  const handleDoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleDoneSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
     if (!referenceSequenceId.trim()) {  // 입력이 없거나 빈 문자열인 경우
       setResponseMessage("Please enter a valid sequence ID.");
@@ -93,7 +92,7 @@ useEffect(() => {
   };
 
   // next button 클릭시 서버로 (Sequence ID, file, sequence)전송
-  const handleFileUploadToServer = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFileUploadToServer = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
 
     // sequences를 Map 형태로 변환
@@ -163,7 +162,9 @@ useEffect(() => {
         setWorkingHistory(createdHistoryName);
 
       } catch (error) {
-        console.error("An error occurred during the request: ", error.message);
+        if (error instanceof Error){
+          console.error("An error occurred during the request: ", error.message);
+        }
       }
       setIsLoading(false);
       navigate("/analysis", { state: { responseData: responseData } });
@@ -182,16 +183,16 @@ useEffect(() => {
     setEditingFileIndex(null);
   };
 
-  const handleFileNameChange = (index, name) => {
+  const handleFileNameChange = (index: number, name: string) => {
     const updatedFiles = [...uploadedFiles];
     updatedFiles[index] = { ...updatedFiles[index], name };
     setUploadedFiles(updatedFiles);
   };
 
-  const deleteUploadedFile = (index) => {
+  const deleteUploadedFile = (index: number) => {
     setUploadedFiles(uploadedFiles.filter((_, i) => i !== index));
   };
-  const toggleVisibility = (id) => {
+  const toggleVisibility = (id: number) => {
     setSequences(
       sequences.map((seq) =>
         seq.id === id ? { ...seq, visible: !seq.visible } : seq
@@ -199,22 +200,22 @@ useEffect(() => {
     );
   };
 
-  const handleNameChange = (id, name) => {
+  const handleNameChange = (id: number, name: string) => {
     setSequences(
       sequences.map((seq) => (seq.id === id ? { ...seq, name } : seq))
     );
   };
 
-  const deleteSequence = (id) => {
+  const deleteSequence = (id: number) => {
     setSequences(sequences.filter((seq) => seq.id !== id));
   };
 
-  const handleSequenceChange = (id, value) => {
+  const handleSequenceChange = (id: number, value: string) => {
     setSequences(
       sequences.map((seq) => (seq.id === id ? { ...seq, value } : seq))
     );
   };
-  const addSequence = (event) => {
+  const addSequence = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setSequences([
       ...sequences,

@@ -1,4 +1,3 @@
-// DeleteModal.tsx
 import React, { useRef, useEffect } from 'react';
 
 interface DeleteModalProps {

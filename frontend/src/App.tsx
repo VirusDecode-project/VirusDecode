@@ -17,7 +17,7 @@ function App() {
   const [mRNAReceived, setMRNAReceived] = useState(false);
   const [PDBReceived, setPDBReceived] = useState(false);
   const [tab, setTab] = useState(0);
-  const [workingHistory, setWorkingHistory] = useState(null);
+  const [workingHistory, setWorkingHistory] = useState("");
 
   useEffect(() => {
     if (location.pathname === "/") {

@@ -1,4 +1,3 @@
-// CreateModal.tsx
 import React, { useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
 

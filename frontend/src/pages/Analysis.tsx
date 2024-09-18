@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Nav } from 'react-bootstrap';
 import '../styles/Analysis.css';
-import Alignment from './Alignment';
-import MRNAdesign from './MRNAdesign';
-import Render3D from './Render3D';
+import Alignment from '../tabs/Alignment';
+import MRNAdesign from '../tabs/MRNAdesign';
+import Render3D from '../tabs/Render3D';
 
-function Analysis({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory }) {
+interface AnalysisProps {
+  tab : number;
+  setTab: Dispatch<SetStateAction<number>>;
+  mRNAReceived: boolean;
+  setMRNAReceived: Dispatch<SetStateAction<boolean>>;
+  PDBReceived: boolean;
+  setPDBReceived: Dispatch<SetStateAction<boolean>>;
+  workingHistory: string;
+}
+
+const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory }) => {
   const location = useLocation();
   const responseData = location.state?.responseData || null;
   const [modalRegion, setModalRegion] = useState('');
-  const handleModalRegion = (region) => {
+  const handleModalRegion = (region: string) => {
       setModalRegion(region);
   };
 

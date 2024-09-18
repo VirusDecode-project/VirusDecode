@@ -1,21 +1,22 @@
-import React, { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from 'react';
 import '../styles/Modal.css';
+import {Sequence, AlignmentIndex, ModalData} from './types';
 
 interface ConvertModalProps {
-  onRegionUpdate:
+  onRegionUpdate: (region: string) => void;
   isOpen: boolean;
   onClose: () => void;
-  sequences:
-  alignmentIndex:
-  modalData:
+  sequences: Sequence[];
+  alignmentIndex: AlignmentIndex;
+  modalData: ModalData;
   setTab: Dispatch<SetStateAction<number>>
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
-  workingHistory:
+  workingHistory: string;
 }
 
-const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
+const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -31,19 +32,19 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
 
   if (!isOpen) return null;
 
-  const handleGenomeChange = (e) => {
+  const handleGenomeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedGenome(e.target.value);
   };
 
-  const handleRegionChange = (e) => {
+  const handleRegionChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegion(e.target.value);
   };
 
-  const handleStartIndexChange = (e) => {
+  const handleStartIndexChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStartIndex(e.target.value);
   };
 
-  const handleEndIndexChange = (e) => {
+  const handleEndIndexChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEndIndex(e.target.value);
   };
 
