@@ -6,17 +6,17 @@ export interface CharObj {
 export interface Sequence {
   label: string;
   sequence: string;
-  lines?: CharObj[][];
-}
-
-export interface ResponseData {
-  aligned_sequences: Record<string, string>; // { label: sequence }
-  alignment_index: Record<string, [number, number]>; // { region: [start, end] }
+  lines?: CharObj[][] | null;
 }
 
 export interface Chunk {
   label: string;
   lines: CharObj[][];
+}
+
+export interface ResponseData {
+  aligned_sequences: Record<string, string>; // { label: sequence }
+  alignment_index: Record<string, [number, number]>; // { region: [start, end] }
 }
 
 export interface AlignmentIndex {

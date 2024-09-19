@@ -24,7 +24,7 @@ const SequenceDisplay: React.FC<SequenceDisplayProps> = ({ sequences, referenceS
             <div
               key={index}
               className={`sequence ${selectedSequence && seq.label === selectedSequence.label ? 'selected' : ''}`}
-              onClick={() => onSequenceClick(seq)}
+              onClick={() => onSequenceClick(seq as Sequence)}
               style={index === 0 ? { borderBottom: '2px solid #aaaaaa', paddingBottom: '6px', marginBottom: '6px' } : {}}
             >
               <div
@@ -66,13 +66,13 @@ const SequenceDisplay: React.FC<SequenceDisplayProps> = ({ sequences, referenceS
   );
 };
 
-const splitSequences = (sequences: Sequence[], referenceSequence: string, regionIndices: [number, number]): Chunk[] => {
+const splitSequences = (sequences: Sequence[], referenceSequence: string, regionIndices: [number, number]): Chunk[][] => {
   const chunkSize = 50;
-  const result: Chunk[] = [];
+  const result: Chunk[][] = [];
   const numChunks = Math.ceil((regionIndices[1] - regionIndices[0]) / chunkSize);
 
   for (let chunkIndex = 0; chunkIndex < numChunks; chunkIndex++) {
-    const chunk: Chunk = sequences.map((seq) => ({
+    const chunk: Chunk[] = sequences.map((seq) => ({
       label: seq.label,
       lines: [seq.sequence
           .slice(regionIndices[0] + chunkIndex * chunkSize, regionIndices[0] + (chunkIndex + 1) * chunkSize)
