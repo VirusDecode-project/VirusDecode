@@ -1,9 +1,15 @@
-// Home.jsx
-import React from 'react';
+import React, {Dispatch, SetStateAction} from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
 
-const Home = ({ setHistory, setShow, setMRNAReceived, setPDBReceived }) => {
+interface HomeProps {
+  setHistory: Dispatch<SetStateAction<string[]>>;
+  setShow: Dispatch<SetStateAction<boolean>>;
+  setMRNAReceived:Dispatch<SetStateAction<boolean>>;
+  setPDBReceived: Dispatch<SetStateAction<boolean>>;
+} 
+
+const Home: React.FC<HomeProps> = ({ setHistory, setShow, setMRNAReceived, setPDBReceived }) => {
   let navigate = useNavigate();
 
   return (

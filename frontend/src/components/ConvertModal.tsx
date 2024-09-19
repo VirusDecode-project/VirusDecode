@@ -1,7 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from 'react';
 import '../styles/Modal.css';
+import {Sequence, AlignmentIndex, ModalData} from './types';
 
-const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
+interface ConvertModalProps {
+  onRegionUpdate: (region: string) => void;
+  isOpen: boolean;
+  onClose: () => void;
+  sequences: Sequence[];
+  alignmentIndex: AlignmentIndex;
+  modalData: ModalData;
+  setTab: Dispatch<SetStateAction<number>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
+  setMRNAReceived: Dispatch<SetStateAction<boolean>>;
+  setPDBReceived: Dispatch<SetStateAction<boolean>>;
+  workingHistory: string;
+}
+
+const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -17,19 +32,19 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
 
   if (!isOpen) return null;
 
-  const handleGenomeChange = (e) => {
+  const handleGenomeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedGenome(e.target.value);
   };
 
-  const handleRegionChange = (e) => {
+  const handleRegionChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegion(e.target.value);
   };
 
-  const handleStartIndexChange = (e) => {
+  const handleStartIndexChange = (e: ChangeEvent<HTMLInputElement>) => {
     setStartIndex(e.target.value);
   };
 
-  const handleEndIndexChange = (e) => {
+  const handleEndIndexChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEndIndex(e.target.value);
   };
 
@@ -101,8 +116,10 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
   
   
     } catch (error) {
-      console.error("An error occurred during the request: ", error.message);
-      window.alert(error.message);
+      if (error instanceof Error){
+        console.error("An error occurred during the request: ", error.message);
+        window.alert(error.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -129,7 +146,9 @@ const ConvertModal = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentInd
   
       await serverResponse.text();
     } catch (error) {
-      console.error("An error occurred during history save request: ", error.message);
+      if (error instanceof Error){
+        console.error("An error occurred during history save request: ", error.message);
+      }
     }
   };
   

@@ -1,12 +1,17 @@
-// DeleteModal.jsx
 import React, { useRef, useEffect } from 'react';
 
-const DeleteModal = ({ show, onClose, onDelete }) => {
-  const modalRef = useRef(null); // 모달 컨텐츠를 참조할 ref
+interface DeleteModalProps {
+  show: boolean;
+  onClose: () => void;
+  onDelete: () => void;
+}
+
+const DeleteModal: React.FC<DeleteModalProps> = ({ show, onClose, onDelete }) => {
+  const modalRef = useRef<HTMLDivElement>(null); // 모달 컨텐츠를 참조할 ref
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose(); // 모달 외부를 클릭했을 때 모달 닫기
       }
     };

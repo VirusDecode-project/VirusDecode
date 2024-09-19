@@ -1,8 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const RenameModal = ({ show, onClose, onRename }) => {
+interface RenameModalProps {
+  show: boolean;
+  onClose: () => void;
+  onRename: (newName: string) => void;
+}
+
+const RenameModal: React.FC<RenameModalProps> = ({ show, onClose, onRename }) => {
   const [newName, setNewName] = useState('');
-  const modalRef = useRef(null); // 모달 컨텐츠를 참조할 ref
+  const modalRef = useRef<HTMLDivElement>(null); // 모달 컨텐츠를 참조할 ref
 
   const handleRename = () => {
     if (newName.trim()) {  // 이름이 비어 있지 않은 경우에만 실행
@@ -15,8 +21,8 @@ const RenameModal = ({ show, onClose, onRename }) => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (modalRef.current && !modalRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
         onClose(); // 모달 외부를 클릭했을 때 모달 닫기
         setNewName('');
       }

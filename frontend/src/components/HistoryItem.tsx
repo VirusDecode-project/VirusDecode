@@ -1,7 +1,13 @@
-// HistoryItem.jsx
-import React from 'react';
+import React, {MouseEvent} from 'react';
 
-const HistoryItem = ({ item, index, handleHistoryClick, handleEllipsisClick }) => {
+interface HistoryItemProps{
+  item: string;
+  index: number;
+  handleHistoryClick: (index: number) => void;
+  handleEllipsisClick: (e: MouseEvent<HTMLButtonElement>, index: number) => void;
+}
+
+const HistoryItem: React.FC<HistoryItemProps> = ({ item, index, handleHistoryClick, handleEllipsisClick }) => {
   return (
     <div
       className="history-item"
