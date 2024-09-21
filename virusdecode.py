@@ -361,6 +361,8 @@ if __name__ == "__main__":
 
     # metadata
     if option == 1:
+        if len(sys.argv) < 4:
+            sys.exit(2)
         reference_id = sys.argv[3]
         os.makedirs(current_dir+"/data", exist_ok=True)
         metadata = get_metadata(reference_id)
@@ -368,6 +370,8 @@ if __name__ == "__main__":
 
     # alignment
     elif option == 2:
+        if len(sys.argv) < 4:
+            sys.exit(2)
         variant_sequences = {}
         # read fasta file
         fasta_content = sys.argv[3]
@@ -395,6 +399,8 @@ if __name__ == "__main__":
 
     # linearDesign, protparam data
     elif option == 3:
+        if len(sys.argv) < 7:
+            sys.exit(2)
         # get metadata
         metadata = get_json("metadata.json")
         reference_id = metadata.get("Sequence ID", None)
@@ -425,6 +431,8 @@ if __name__ == "__main__":
 
 
     elif option == 4:
+        if len(sys.argv) < 4:
+            sys.exit(2)
         # get metadata
         metadata = get_json("metadata.json")
         reference_id = metadata.get("Sequence ID", None)
