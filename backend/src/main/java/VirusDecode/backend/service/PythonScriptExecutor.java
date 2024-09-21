@@ -71,10 +71,12 @@ public class PythonScriptExecutor {
                     logger.error("Python script error output: \n{}", errorOutput);
                 }
                 return switch (exitCode) {
+                    case 1 -> ResponseEntity.status(500).body("필요한 파이썬 환경이 제대로 설치되지 않았습니다.\nVirusDecode Github를 참고하세요.");
+                    case 2 -> ResponseEntity.status(500).body("전달된 인자가 부족합니다.");
                     case 11 -> ResponseEntity.status(500).body("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.");
                     case 21 -> ResponseEntity.status(500).body("MUSCLE 다중 서열 정리에 문제가 발생하였습니다.");
                     case 31 -> ResponseEntity.status(500).body("선택된 구간에 유효한 서열이 없습니다.");
-                    case 32 -> ResponseEntity.status(500).body("LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다. Linux 또는 Max 사용자가 맞으신가요?");
+                    case 32 -> ResponseEntity.status(500).body("LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다.\nLinux 또는 Max 사용자가 맞으신가요?");
                     case 33 -> ResponseEntity.status(500).body("LinearDesign 디렉토리가 원하는 위치가 존재하지 않습니다.");
                     case 41 -> ResponseEntity.status(500).body("RCSB PDB 서버로부터 PDB ID 검색에 실패하였습니다.");
                     case 42 -> ResponseEntity.status(500).body("RCSB PDB 서버의 문제로 3D viewer 데이터 로드에 실패하였습니다.");
