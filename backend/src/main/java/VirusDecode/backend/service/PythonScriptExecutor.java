@@ -23,7 +23,14 @@ public class PythonScriptExecutor {
     public static ResponseEntity<String> executePythonScript(String... args) {
         try {
             List<String> command = new ArrayList<>();
-            command.add("python3");
+            // 운영 체제에 따라 python3 또는 python 사용
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                command.add("python");  // Windows에서는 python 사용
+            } else {
+                command.add("python3"); // Linux, MacOS에서는 python3 사용
+            }
+//            command.add("python3");
             command.add(pythonScriptPath.toString());
             command.add(currentDir.toString());
 
