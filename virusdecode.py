@@ -39,7 +39,7 @@ def get_metadata(reference_id):
         }
         return metadata
     except HTTPError as e:
-        print("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.")
+        print("There was an error fetching the reference sequence from NCBI.")
         sys.exit(11)
 
 def get_pdb_ids_by_sequence(sequence):
@@ -125,7 +125,7 @@ class SequenceAlignment:
             self.reference_id = self.reference_sequence.id
 
         except HTTPError as e:
-            print("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.")
+            print("There was an error fetching the reference sequence from NCBI.")
             sys.exit(11)
 
     def read_sequences(self):
@@ -283,7 +283,7 @@ class SequenceAnalysis:
             self.amino_acid_sequence = amino_acid_sequence
 
         else:
-            print(f"Error running LinearDesign: {stderr.decode()}")
+            print("Error running LinearDesign")
             sys.exit(32)
             
 
@@ -361,6 +361,8 @@ if __name__ == "__main__":
 
     # metadata
     if option == 1:
+        if len(sys.argv) < 4:
+            sys.exit(2)
         reference_id = sys.argv[3]
         os.makedirs(current_dir+"/data", exist_ok=True)
         metadata = get_metadata(reference_id)
@@ -368,6 +370,8 @@ if __name__ == "__main__":
 
     # alignment
     elif option == 2:
+        if len(sys.argv) < 4:
+            sys.exit(2)
         variant_sequences = {}
         # read fasta file
         fasta_content = sys.argv[3]
@@ -395,6 +399,8 @@ if __name__ == "__main__":
 
     # linearDesign, protparam data
     elif option == 3:
+        if len(sys.argv) < 7:
+            sys.exit(2)
         # get metadata
         metadata = get_json("metadata.json")
         reference_id = metadata.get("Sequence ID", None)
@@ -425,6 +431,8 @@ if __name__ == "__main__":
 
 
     elif option == 4:
+        if len(sys.argv) < 4:
+            sys.exit(2)
         # get metadata
         metadata = get_json("metadata.json")
         reference_id = metadata.get("Sequence ID", None)

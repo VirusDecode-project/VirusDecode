@@ -145,7 +145,6 @@ useEffect(() => {
       try {
         const historyName = referenceSequenceId;
         const requestData = { historyName: historyName };
-        setIsLoading(true);
         const serverResponse = await fetch("http://localhost:8080/history/create", {
           method: "POST",
           headers: {
@@ -166,13 +165,14 @@ useEffect(() => {
           console.error("An error occurred during the request: ", error.message);
         }
       }
-      setIsLoading(false);
       navigate("/analysis", { state: { responseData: responseData } });
     } catch (error) {
       if (error instanceof Error){
         console.error("An error occurred during the request: ", error.message);
         window.alert(error.message);
       }
+    }finally{
+      setIsLoading(false);
     }
   };
 
