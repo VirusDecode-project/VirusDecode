@@ -17,11 +17,17 @@ const Render3D: React.FC<Render3DProps> = ({ region }) => {
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
-  /*
-  const [scrollIndex, setScrollIndex] = useState(0);
-  const itemsToShow = 3;
-  const listRef = useRef(null);
-*/
+
+  const checkPDBFileExists = async (url: string) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Error checking PDB file existence:', error);
+      return false;
+    }
+  };
+
   useEffect(() => {
     const fetchPDBids = async () => {
       try {
@@ -37,8 +43,14 @@ const Render3D: React.FC<Render3DProps> = ({ region }) => {
         const values = Object.values(responseData);
         setPDBInfo(values);
 
-        if (keys.length > 0) {
-          setSelectedPDBid(keys[0]);
+         if (keys.length > 0) {
+          for (let i = 0; i < keys.length; i++){
+            const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
+            if (exist) {
+              setSelectedPDBid(keys[i]);
+              break;
+            }
+          }
         }
       } catch (error) {
         if (error instanceof Error){
@@ -67,15 +79,6 @@ const Render3D: React.FC<Render3DProps> = ({ region }) => {
     })
   };
 
-  const checkPDBFileExists = async (url: string) => {
-    try {
-      const response = await fetch(url, { method: 'HEAD' });
-      return response.ok;
-    } catch (error) {
-      console.error('Error checking PDB file existence:', error);
-      return false;
-    }
-  };
 
   const handlePDBSelection = async (id: string) => {
     const pdbUrl = `https://files.rcsb.org/download/${id}.pdb`;
@@ -100,17 +103,8 @@ const Render3D: React.FC<Render3DProps> = ({ region }) => {
   const handleMouseOut = () => {
     setTooltip({ visible: false, text: '', x: 0, y: 0 });
   };
-  /*
-    const handleArrowClick = (direction) => {
-      if (direction === 'left' && scrollIndex > 0) {
-        setScrollIndex(scrollIndex - 1);
-      } else if (direction === 'right' && scrollIndex < PDBids.length - itemsToShow) {
-        setScrollIndex(scrollIndex + 1);
-      }
-    };
-  */
+
   const vizteinKey = `${selectedPDBid}-${representation}`;
-  //const transformValue = -(scrollIndex * 150);
 
   return (
     <div className='reference3D'>
