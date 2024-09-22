@@ -56,7 +56,7 @@ useEffect(() => {
     const requestData = { sequenceId: referenceSequenceId };
     try {
       setDoneReceived(false);
-      const serverResponse = await fetch("http://localhost:8080/inputSeq/reference", {
+      const serverResponse = await fetch("http://localhost:8080/inputSeq/metadata", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

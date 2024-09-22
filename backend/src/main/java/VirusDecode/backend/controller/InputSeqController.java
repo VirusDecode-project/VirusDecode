@@ -19,7 +19,6 @@ public class InputSeqController {
     private final PythonScriptExecutor pythonScriptExecutor;
     private FastaFileService fastaFileService;  // Fasta 파일 처리를 위한 서비스 주입
     private JsonDataService jsonDataService;
-    private static final Logger logger = LoggerFactory.getLogger(PythonScriptExecutor.class);
 
     @Autowired
     public InputSeqController(PythonScriptExecutor pythonScriptExecutor, FastaFileService fastaFileService, JsonDataService jsonDataService) {
@@ -29,14 +28,13 @@ public class InputSeqController {
     }
 
     // /inputSeq/reference 엔드포인트에 대한 POST 요청 처리
-    @PostMapping("/reference")
+    @PostMapping("/metadata")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDTO request) {
         String sequenceId = request.getSequenceId();
         ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("1", sequenceId);
 
         // Memory Repository
         if (scriptResponse.getStatusCode().is2xxSuccessful()) {
-            // Store the JSON response using the service (which will either use memory or DB)
             jsonDataService.saveJsonData("metadata", scriptResponse.getBody());
         }
         return scriptResponse;
@@ -48,14 +46,7 @@ public class InputSeqController {
     public ResponseEntity<String> getAlignment(@RequestBody(required = false) VarientDTO request) {
         try {
             String fastaContent = fastaFileService.saveFastaContent(request);
-
-            // 저장된 metadata에서 reference id 가져오기
-            String metadataJson = jsonDataService.getJsonData("metadata");
-            if (metadataJson == null) {
-                return ResponseEntity.status(404).body("Metadata not found");
-            }
-
-                String referenceId = jsonDataService.parseSequenceIdFromMetadata(metadataJson);
+            String referenceId = jsonDataService.parseSequenceIdFromMetadata(jsonDataService.getJsonData("metadata"));
 
             ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2", referenceId, fastaContent);
 
