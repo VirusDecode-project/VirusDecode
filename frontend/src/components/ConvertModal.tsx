@@ -71,7 +71,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setIsLoading(true);
   
       // 1. mRNA 디자인 POST 요청
-      const mRnaResponse = await fetch('http://localhost:8080/analysis/mrnadesign', {
+      const mRnaResponse = await fetch('http://localhost:8080/analysis/linearDesign', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

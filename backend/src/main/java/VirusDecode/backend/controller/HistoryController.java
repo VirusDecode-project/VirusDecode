@@ -1,7 +1,8 @@
 package VirusDecode.backend.controller;
 
 import VirusDecode.backend.dto.HistoryDTO;
-import VirusDecode.backend.service.JsonFileService;
+import VirusDecode.backend.entity.JsonDataEntity;
+import VirusDecode.backend.service.JsonDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +18,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/history")
 public class HistoryController {
-    private final JsonFileService jsonFileService;
-
+    private final JsonDataService jsonDataService;
     @Autowired
-    public HistoryController(JsonFileService jsonFileService) {
-        this.jsonFileService = jsonFileService;
+    public HistoryController(JsonDataService jsonDataService) {
+        this.jsonDataService = jsonDataService;
     }
 
     private static final Path currentDir = Paths.get("").toAbsolutePath();
     private static final Path HISTORY_DIR = currentDir.resolve("history");
-    private static final Path DATA_DIR = currentDir.resolve("data");
 
     @PostMapping("/create")
     public ResponseEntity<String> createHistory(@RequestBody HistoryDTO request) {
@@ -82,11 +81,10 @@ public class HistoryController {
         try {
             Path sourceDir = HISTORY_DIR.resolve(historyName);
             if (Files.notExists(sourceDir)) {
-                // 404 Not Found 반환
                 return ResponseEntity.status(404).body("History not found: " + historyName);
             }
             performGetHistory(sourceDir);
-            return jsonFileService.readJsonFile("alignment.json");
+            return ResponseEntity.ok(jsonDataService.getJsonData("alignment"));
         } catch (NoSuchFileException e) {
             return ResponseEntity.status(404).body("History file not found: " + historyName);
         } catch (IOException e) {
@@ -139,13 +137,13 @@ public class HistoryController {
     public ResponseEntity<Map<String, Boolean>> checkFiles() {
         Map<String, Boolean> fileStatus = new HashMap<>();
 
-        // File paths
-        Path pdbFilePath = DATA_DIR.resolve("pdb.json");
-        Path linearDesignFilePath = DATA_DIR.resolve("linearDesign.json");
+        // Repository에서 JSON 데이터 확인
+        boolean pdbExists = jsonDataService.findById("pdb").isPresent();
+        boolean linearDesignExists = jsonDataService.findById("linearDesign").isPresent();
 
-        // Check if files exist
-        fileStatus.put("pdb.json", Files.exists(pdbFilePath));
-        fileStatus.put("linearDesign.json", Files.exists(linearDesignFilePath));
+        // 상태를 Map에 저장
+        fileStatus.put("pdb.json", pdbExists);
+        fileStatus.put("linearDesign.json", linearDesignExists);
 
         return ResponseEntity.ok(fileStatus);
     }
@@ -163,15 +161,16 @@ public class HistoryController {
 
         Files.createDirectories(newDir);
 
-        if (Files.exists(DATA_DIR)) {
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(DATA_DIR)) {
-                for (Path filePath : stream) {
-                    if (Files.isRegularFile(filePath)) {
-                        Files.copy(filePath, newDir.resolve(filePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-                    }
-                }
-            }
+        // repository에서 JSON 데이터를 가져와 newDir에 파일로 저장
+        Iterable<JsonDataEntity> jsonDataEntities = jsonDataService.getAllJsonData();  // 모든 JSON 데이터 가져오기
+        for (JsonDataEntity jsonDataEntity : jsonDataEntities) {
+            // 각 JSON 데이터를 파일로 저장
+            Path jsonFilePath = newDir.resolve(jsonDataEntity.getId() + ".json");  // ID를 파일명으로 사용
+            Files.write(jsonFilePath, jsonDataEntity.getJsonData().getBytes());  // JSON 데이터를 파일로 저장
         }
+
+
+
 
         return newDir.getFileName().toString();  // Return the directory name
     }
@@ -201,27 +200,30 @@ public class HistoryController {
     }
 
     private void performGetHistory(Path sourceDir) throws IOException {
+        // sourceDir이 존재하는지 확인
         if (Files.exists(sourceDir)) {
-            if (Files.exists(DATA_DIR)) {
-                try (DirectoryStream<Path> stream = Files.newDirectoryStream(DATA_DIR)) {
-                    for (Path filePath : stream) {
-                        if (Files.isRegularFile(filePath)) {
-                            Files.delete(filePath);
-                        }
-                    }
-                }
-            }
-            Files.createDirectories(DATA_DIR);
 
+            // 먼저 repository의 기존 데이터를 삭제
+            jsonDataService.deleteAllJsonData();  // 기존 데이터 모두 삭제
+
+            // sourceDir에서 JSON 파일들을 읽어와 repository에 저장
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(sourceDir)) {
                 for (Path filePath : stream) {
-                    if (Files.isRegularFile(filePath)) {
-                        Files.copy(filePath, DATA_DIR.resolve(filePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
+                    if (Files.isRegularFile(filePath) && filePath.toString().endsWith(".json")) {  // JSON 파일만 처리
+                        // 파일 내용을 읽기
+                        String jsonContent = new String(Files.readAllBytes(filePath));
+
+                        // 파일 이름을 ID로 사용 (예: fileName.json -> fileName)
+                        String fileName = filePath.getFileName().toString();
+                        String id = fileName.substring(0, fileName.lastIndexOf('.'));
+
+                        // repository에 저장
+                        jsonDataService.saveJsonData(id, jsonContent);
                     }
                 }
             }
-        }else {
-            throw new NoSuchFileException("History directory not found: " + sourceDir.getFileName().toString());
+        } else {
+            throw new NoSuchFileException("Source directory not found: " + sourceDir.getFileName().toString());
         }
     }
 
@@ -241,26 +243,24 @@ public class HistoryController {
     }
 
     private void performDeleteData() throws IOException {
-        if (Files.exists(DATA_DIR)) {
-            Files.walk(DATA_DIR)
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        }
-
+        jsonDataService.deleteAllJsonData();
     }
 
     private void performSaveHistory(String historyName) throws IOException {
+        // 새로운 history 디렉토리 경로 설정
         Path newDir = HISTORY_DIR.resolve(historyName);
 
-        if (Files.exists(DATA_DIR)) {
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(DATA_DIR)) {
-                for (Path filePath : stream) {
-                    if (Files.isRegularFile(filePath)) {
-                        Files.copy(filePath, newDir.resolve(filePath.getFileName()), StandardCopyOption.REPLACE_EXISTING);
-                    }
-                }
-            }
+        // newDir 디렉토리가 없으면 생성
+        if (!Files.exists(newDir)) {
+            Files.createDirectories(newDir);
+        }
+
+        // repository에서 JSON 데이터를 가져와 newDir에 파일로 저장
+        Iterable<JsonDataEntity> jsonDataEntities = jsonDataService.getAllJsonData();  // 모든 JSON 데이터 가져오기
+        for (JsonDataEntity jsonDataEntity : jsonDataEntities) {
+            // 각 JSON 데이터를 파일로 저장
+            Path jsonFilePath = newDir.resolve(jsonDataEntity.getId() + ".json");  // ID를 파일명으로 사용
+            Files.write(jsonFilePath, jsonDataEntity.getJsonData().getBytes());  // JSON 데이터를 파일로 저장
         }
     }
 }

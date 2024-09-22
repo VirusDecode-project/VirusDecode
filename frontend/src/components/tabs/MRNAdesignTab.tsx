@@ -37,7 +37,7 @@ const MRNAdesign: React.FC = () => {
   useEffect(() => {
     const fetchJsonData = async () => {
       try {
-        const serverResponse = await fetch('http://localhost:8080/analysis/re-mrnadesign');
+        const serverResponse = await fetch('http://localhost:8080/analysis/re-linearDesign');
 
         if (!serverResponse.ok) {
           const errorMessage = await serverResponse.text();

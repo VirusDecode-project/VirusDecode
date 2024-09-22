@@ -31,7 +31,7 @@ const Render3D: React.FC<Render3DProps> = ({ region }) => {
   useEffect(() => {
     const fetchPDBids = async () => {
       try {
-        const serverResponse = await fetch('http://localhost:8080/analysis/re-render3d');
+        const serverResponse = await fetch('http://localhost:8080/analysis/re-pdb');
         if (!serverResponse.ok) {
           const errorMessage = await serverResponse.text();
           throw new Error(errorMessage);
