@@ -12,20 +12,6 @@ import requests
 Entrez.email = "your_email@example.com"
 
 
-# JSON 데이터를 파일로 저장하는 함수
-def save_json(data, file_path):
-    file_path = current_dir +"/data/"+ file_path
-    print(json.dumps(data, indent=4))
-    # with open(file_path, 'w') as json_file:
-    #     json.dump(data, json_file, indent=4)
-
-# JSON 파일로부터 특정 값을 가져오는 함수
-def get_json(file_path):
-    file_path = current_dir +"/data/"+  file_path
-    with open(file_path, 'r') as json_file:
-        data = json.load(json_file)
-        return data
-
 def get_metadata(reference_id):
     # Get reference sequence
     try:
@@ -356,6 +342,9 @@ class SequenceAnalysis:
 
 
 if __name__ == "__main__":
+    # check if the required arguments are provided
+    if len(sys.argv) < 3:
+        sys.exit(2)
     current_dir=sys.argv[1]
     option = int(sys.argv[2])
 
@@ -363,10 +352,10 @@ if __name__ == "__main__":
     if option == 1:
         if len(sys.argv) < 4:
             sys.exit(2)
+
         reference_id = sys.argv[3]
-        os.makedirs(current_dir+"/data", exist_ok=True)
         metadata = get_metadata(reference_id)
-        save_json(metadata, "metadata.json")  # JSON 파일로 저장
+        print(json.dumps(metadata, indent=4))
 
     # alignment
     elif option == 2:
@@ -374,17 +363,14 @@ if __name__ == "__main__":
             sys.exit(2)
 
         # get metadata
-        # metadata = get_json("metadata.json")
-        # reference_id = metadata.get("Sequence ID", None)
         reference_id = sys.argv[3]
 
-        variant_sequences = {}
         # read fasta file
+        variant_sequences = {}
         fasta_content = sys.argv[4]
         fasta_io = StringIO(fasta_content)
         for record in SeqIO.parse(fasta_io, "fasta"):
             variant_sequences[record.id] = record.seq
-
 
         # run alignment
         alignment = SequenceAlignment(variant_sequences, reference_id)
@@ -398,30 +384,25 @@ if __name__ == "__main__":
             "aligned_sequences": aligned_sequences_dict,
         }
 
-        save_json(alignment_data, "alignment.json")  # JSON 파일로 저장
+        print(json.dumps(alignment_data, indent=4))
 
     # linearDesign, protparam data
     elif option == 3:
-        if len(sys.argv) < 7+3:
+        if len(sys.argv) < 10:
             sys.exit(2)
+            
         # get metadata
-        # metadata = get_json("metadata.json")
-        # reference_id = metadata.get("Sequence ID", None)
         reference_id = sys.argv[3]
 
         # get alignment data
-        # alignment_data = get_json("alignment.json")
-        # alignment_index = alignment_data.get("alignment_index", None)
-        # alignment_dict = alignment_data.get("aligned_sequences", None)
         alignment_index = json.loads(sys.argv[4])
         alignment_dict = json.loads(sys.argv[5])
 
-
         # set gene, variant_id, start, end
-        gene=sys.argv[3+3]
-        variant_id=sys.argv[4+3]
-        start = int(sys.argv[5+3])
-        end = int(sys.argv[6+3])
+        gene=sys.argv[6]
+        variant_id=sys.argv[7]
+        start = int(sys.argv[8])
+        end = int(sys.argv[9])
 
         # run sequence analysis
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
@@ -434,26 +415,23 @@ if __name__ == "__main__":
             "linearDesign": linearDesign_dict,
             "protParam": protParam_dict
         }
-        save_json(linearDesign_data, "linearDesign.json")  # JSON 파일로 저장
+
+        print(json.dumps(linearDesign_data, indent=4))
 
 
     elif option == 4:
-        if len(sys.argv) < 4+3:
+        if len(sys.argv) < 7:
             sys.exit(2)
+
         # get metadata
-        # metadata = get_json("metadata.json")
-        # reference_id = metadata.get("Sequence ID", None)
         reference_id = sys.argv[3]
 
         # get alignment data
-        # alignment_data = get_json("alignment.json")
-        # alignment_index = alignment_data.get("alignment_index", None)
-        # alignment_dict = alignment_data.get("aligned_sequences", None)
         alignment_index = json.loads(sys.argv[4])
         alignment_dict = json.loads(sys.argv[5])
 
         # set gene, variant_id, start, end
-        gene=sys.argv[3+3]
+        gene=sys.argv[6]
         
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
@@ -469,4 +447,4 @@ if __name__ == "__main__":
             else:
                 break
 
-        save_json(pdb_dict, "pdb.json")
+        print(json.dumps(pdb_dict, indent=4))
