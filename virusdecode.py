@@ -363,7 +363,8 @@ if __name__ == "__main__":
             sys.exit(2)
 
         # get metadata
-        reference_id = sys.argv[3]
+        metadata = json.loads(sys.argv[3])
+        reference_id = metadata.get("Sequence ID", None)
 
         # read fasta file
         variant_sequences = {}
@@ -388,21 +389,23 @@ if __name__ == "__main__":
 
     # linearDesign, protparam data
     elif option == 3:
-        if len(sys.argv) < 10:
+        if len(sys.argv) < 9:
             sys.exit(2)
             
         # get metadata
-        reference_id = sys.argv[3]
+        metadata = json.loads(sys.argv[3])
+        reference_id = metadata.get("Sequence ID", None)
 
         # get alignment data
-        alignment_index = json.loads(sys.argv[4])
-        alignment_dict = json.loads(sys.argv[5])
+        alignment_data = json.loads(sys.argv[4])
+        alignment_index = alignment_data.get("alignment_index", None)
+        alignment_dict = alignment_data.get("aligned_sequences", None)
 
         # set gene, variant_id, start, end
-        gene=sys.argv[6]
-        variant_id=sys.argv[7]
-        start = int(sys.argv[8])
-        end = int(sys.argv[9])
+        gene=sys.argv[5]
+        variant_id=sys.argv[6]
+        start = int(sys.argv[7])
+        end = int(sys.argv[8])
 
         # run sequence analysis
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
@@ -420,18 +423,20 @@ if __name__ == "__main__":
 
 
     elif option == 4:
-        if len(sys.argv) < 7:
+        if len(sys.argv) < 6:
             sys.exit(2)
 
         # get metadata
-        reference_id = sys.argv[3]
+        metadata = json.loads(sys.argv[3])
+        reference_id = metadata.get("Sequence ID", None)
 
         # get alignment data
-        alignment_index = json.loads(sys.argv[4])
-        alignment_dict = json.loads(sys.argv[5])
+        alignment_data = json.loads(sys.argv[4])
+        alignment_index = alignment_data.get("alignment_index", None)
+        alignment_dict = alignment_data.get("aligned_sequences", None)
 
         # set gene, variant_id, start, end
-        gene=sys.argv[6]
+        gene=sys.argv[5]
         
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
