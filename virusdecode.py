@@ -15,8 +15,9 @@ Entrez.email = "your_email@example.com"
 # JSON 데이터를 파일로 저장하는 함수
 def save_json(data, file_path):
     file_path = current_dir +"/data/"+ file_path
-    with open(file_path, 'w') as json_file:
-        json.dump(data, json_file, indent=4)
+    print(json.dumps(data, indent=4))
+    # with open(file_path, 'w') as json_file:
+    #     json.dump(data, json_file, indent=4)
 
 # JSON 파일로부터 특정 값을 가져오는 함수
 def get_json(file_path):
@@ -39,7 +40,7 @@ def get_metadata(reference_id):
         }
         return metadata
     except HTTPError as e:
-        print("There was an error fetching the reference sequence from NCBI.")
+        #print("There was an error fetching the reference sequence from NCBI.")
         sys.exit(11)
 
 def get_pdb_ids_by_sequence(sequence):
@@ -73,13 +74,13 @@ def get_pdb_ids_by_sequence(sequence):
             results = response.json()
             return [entry['identifier'] for entry in results.get('result_set', [])]
         else:
-            print(f"Error fetching PDB IDs: {response.status_code}")
+            #print(f"Error fetching PDB IDs: {response.status_code}")
             sys.exit(41)
     except requests.Timeout:
-        print(f"Request timed out while fetching PDB IDs.")
+        #print(f"Request timed out while fetching PDB IDs.")
         sys.exit(42)
     except requests.RequestException as e:
-        print(f"An error occurred while fetching PDB IDs: {e}")
+        #print(f"An error occurred while fetching PDB IDs: {e}")
         sys.exit(41)
 
 def get_pdb_info(pdb_id):
@@ -94,13 +95,13 @@ def get_pdb_info(pdb_id):
             result = response.json()
             return result.get('struct', {}).get('title', 'No title available')
         else:
-            print(f"Error fetching PDB info for {pdb_id}: {response.status_code}")
+            #print(f"Error fetching PDB info for {pdb_id}: {response.status_code}")
             return None
     except requests.Timeout:
-        print(f"Request timed out while fetching PDB info.")
+        #print(f"Request timed out while fetching PDB info.")
         return None
     except requests.RequestException as e:
-        print(f"An error occurred while fetching PDB info for {pdb_id}: {e}")
+        #print(f"An error occurred while fetching PDB info for {pdb_id}: {e}")
         return None
 
 
@@ -125,7 +126,7 @@ class SequenceAlignment:
             self.reference_id = self.reference_sequence.id
 
         except HTTPError as e:
-            print("There was an error fetching the reference sequence from NCBI.")
+            #print("There was an error fetching the reference sequence from NCBI.")
             sys.exit(11)
 
     def read_sequences(self):
@@ -160,7 +161,7 @@ class SequenceAlignment:
         if result.returncode == 0:
             self.aligned_memory_file = StringIO(result.stdout)  # 수정된 부분: 결과를 StringIO 객체에 저장하여 메모리 내에서 처리
         else:
-            print(f"Error running MUSCLE: {result.stderr}")
+            #print(f"Error running MUSCLE: {result.stderr}")
             sys.exit(21)
 
     def read_alignment(self):
@@ -223,7 +224,6 @@ class SequenceAnalysis:
         (idx_start,idx_end) = self.alignment_index[self.gene]
         input_sequence = self.alignment_dict[self.reference_id][idx_start:idx_end]
 
-        # print(input_sequence)
         while True:
             initial_gap_count = input_sequence[:start].count("-")
             gap_count = input_sequence[:start + initial_gap_count].count("-")
@@ -249,7 +249,7 @@ class SequenceAnalysis:
         amino_acid_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end][start:end].replace("-", "")
         
         if(amino_acid_sequence == ""):
-            print("Error: No amino acid sequence found")
+            #print("Error: No amino acid sequence found")
             sys.exit(31)
 
         # Run LinearDesign
@@ -257,7 +257,7 @@ class SequenceAnalysis:
         try:
             os.chdir(os.path.join(current_dir, "../../LinearDesign"))
         except FileNotFoundError as e:
-            print("Error: No LinearDesign directory")
+            #print("Error: No LinearDesign directory")
             sys.exit(33)
         command = f"echo {amino_acid_sequence} | ./lineardesign --lambda 3"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -283,7 +283,7 @@ class SequenceAnalysis:
             self.amino_acid_sequence = amino_acid_sequence
 
         else:
-            print("Error running LinearDesign")
+            #print("Error running LinearDesign")
             sys.exit(32)
             
 
@@ -370,18 +370,21 @@ if __name__ == "__main__":
 
     # alignment
     elif option == 2:
-        if len(sys.argv) < 4:
+        if len(sys.argv) < 5:
             sys.exit(2)
+
+        # get metadata
+        # metadata = get_json("metadata.json")
+        # reference_id = metadata.get("Sequence ID", None)
+        reference_id = sys.argv[3]
+
         variant_sequences = {}
         # read fasta file
-        fasta_content = sys.argv[3]
+        fasta_content = sys.argv[4]
         fasta_io = StringIO(fasta_content)
         for record in SeqIO.parse(fasta_io, "fasta"):
             variant_sequences[record.id] = record.seq
 
-        # get metadata
-        metadata = get_json("metadata.json")
-        reference_id = metadata.get("Sequence ID", None)
 
         # run alignment
         alignment = SequenceAlignment(variant_sequences, reference_id)
@@ -399,22 +402,26 @@ if __name__ == "__main__":
 
     # linearDesign, protparam data
     elif option == 3:
-        if len(sys.argv) < 7:
+        if len(sys.argv) < 7+3:
             sys.exit(2)
         # get metadata
-        metadata = get_json("metadata.json")
-        reference_id = metadata.get("Sequence ID", None)
-        
+        # metadata = get_json("metadata.json")
+        # reference_id = metadata.get("Sequence ID", None)
+        reference_id = sys.argv[3]
+
         # get alignment data
-        alignment_data = get_json("alignment.json")
-        alignment_index = alignment_data.get("alignment_index", None)
-        alignment_dict = alignment_data.get("aligned_sequences", None)
+        # alignment_data = get_json("alignment.json")
+        # alignment_index = alignment_data.get("alignment_index", None)
+        # alignment_dict = alignment_data.get("aligned_sequences", None)
+        alignment_index = json.loads(sys.argv[4])
+        alignment_dict = json.loads(sys.argv[5])
+
 
         # set gene, variant_id, start, end
-        gene=sys.argv[3]
-        variant_id=sys.argv[4]
-        start = int(sys.argv[5])
-        end = int(sys.argv[6])
+        gene=sys.argv[3+3]
+        variant_id=sys.argv[4+3]
+        start = int(sys.argv[5+3])
+        end = int(sys.argv[6+3])
 
         # run sequence analysis
         analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
@@ -431,19 +438,22 @@ if __name__ == "__main__":
 
 
     elif option == 4:
-        if len(sys.argv) < 4:
+        if len(sys.argv) < 4+3:
             sys.exit(2)
         # get metadata
-        metadata = get_json("metadata.json")
-        reference_id = metadata.get("Sequence ID", None)
-        
+        # metadata = get_json("metadata.json")
+        # reference_id = metadata.get("Sequence ID", None)
+        reference_id = sys.argv[3]
+
         # get alignment data
-        alignment_data = get_json("alignment.json")
-        alignment_index = alignment_data.get("alignment_index", None)
-        alignment_dict = alignment_data.get("aligned_sequences", None)
+        # alignment_data = get_json("alignment.json")
+        # alignment_index = alignment_data.get("alignment_index", None)
+        # alignment_dict = alignment_data.get("aligned_sequences", None)
+        alignment_index = json.loads(sys.argv[4])
+        alignment_dict = json.loads(sys.argv[5])
 
         # set gene, variant_id, start, end
-        gene=sys.argv[3]
+        gene=sys.argv[3+3]
         
         # PDB search
         sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
