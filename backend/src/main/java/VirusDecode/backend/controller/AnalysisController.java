@@ -30,11 +30,10 @@ public class AnalysisController {
         String start = String.valueOf(request.getStart());
         String end = String.valueOf(request.getEnd());
 
-        String referenceId = jsonDataService.parseSequenceIdFromMetadata(jsonDataService.getJsonData("metadata"));
-        String alignmentIndex = jsonDataService.jsonParser(jsonDataService.getJsonData("alignment"), "alignment_index");
-        String alignedSequences = jsonDataService.jsonParser(jsonDataService.getJsonData("alignment"), "aligned_sequences");
+        String metadataJson = jsonDataService.getJsonData("metadata");
+        String alignmentJson = jsonDataService.getJsonData("alignment");
 
-        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("3", referenceId, alignmentIndex, alignedSequences, region, varientName, start, end);
+        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("3", metadataJson, alignmentJson, region, varientName, start, end);
         if (scriptResponse.getStatusCode().is2xxSuccessful()) {
             jsonDataService.saveJsonData("linearDesign", scriptResponse.getBody());
         }
@@ -45,11 +44,12 @@ public class AnalysisController {
     @PostMapping("/pdb")
     public ResponseEntity<String> getPdb(@RequestBody PdbDTO request) {
         String gene = request.getGene();
-        String referenceId = jsonDataService.parseSequenceIdFromMetadata(jsonDataService.getJsonData("metadata"));
-        String alignmentIndex = jsonDataService.jsonParser(jsonDataService.getJsonData("alignment"), "alignment_index");
-        String alignedSequences = jsonDataService.jsonParser(jsonDataService.getJsonData("alignment"), "aligned_sequences");
+        String metadataJson = jsonDataService.getJsonData("metadata");
+        String alignmentJson = jsonDataService.getJsonData("alignment");
+//        String alignmentIndex = jsonDataService.jsonParser(jsonDataService.getJsonData("alignment"), "alignment_index");
+//        String alignedSequences = jsonDataService.jsonParser(jsonDataService.getJsonData("alignment"), "aligned_sequences");
 
-        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("4", referenceId, alignmentIndex, alignedSequences, gene);
+        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("4", metadataJson, alignmentJson, gene);
         if (scriptResponse.getStatusCode().is2xxSuccessful()) {
             jsonDataService.saveJsonData("pdb", scriptResponse.getBody());
         }

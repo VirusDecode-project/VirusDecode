@@ -48,27 +48,4 @@ public class JsonDataService {
     public Optional<JsonDataEntity> findById(String id) {
         return jsonDataRepository.findById(id);
     }
-
-    // metadata JSON에서 Sequence ID를 추출하는 간단한 메서드
-    public String parseSequenceIdFromMetadata(String jsonString) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(jsonString);
-            return jsonNode.get("Sequence ID").asText();  // Sequence ID 값 추출
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse Sequence ID from metadata", e);
-        }
-    }
-
-    // metadata JSON에서 Sequence ID를 추출하는 간단한 메서드
-    public String jsonParser(String jsonString, String jsonKey) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(jsonString);
-            JsonNode jsonNode = rootNode.get(jsonKey);
-            return jsonNode.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse json data", e);
-        }
-    }
 }

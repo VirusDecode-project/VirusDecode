@@ -46,9 +46,9 @@ public class InputSeqController {
     public ResponseEntity<String> getAlignment(@RequestBody(required = false) VarientDTO request) {
         try {
             String fastaContent = fastaFileService.saveFastaContent(request);
-            String referenceId = jsonDataService.parseSequenceIdFromMetadata(jsonDataService.getJsonData("metadata"));
+            String metadataJson = jsonDataService.getJsonData("metadata");
 
-            ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2", referenceId, fastaContent);
+            ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2", metadataJson, fastaContent);
 
             // Memory Repository
             if (scriptResponse.getStatusCode().is2xxSuccessful()) {

@@ -85,14 +85,12 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       }
   
       await mRnaResponse.text();
+
       setMRNAReceived(true);
       setTab(1);
       setIsLoading(false);
   
-      // 2. history 저장
-      await saveHistory();
-  
-      // 3. PDB 디자인 POST 요청
+      // 2. PDB 디자인 POST 요청
       const pdbData = { gene: selectedRegion };
       const pdbResponse = await fetch('http://localhost:8080/analysis/pdb', {
         method: 'POST',
@@ -109,11 +107,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
   
       await pdbResponse.text();
 
-      // 4. history 저장
-      await saveHistory();
-      
       setPDBReceived(true);
-  
+      setIsLoading(false);
+      
+      // 3. history 저장
+      await saveHistory();
   
     } catch (error) {
       if (error instanceof Error){
