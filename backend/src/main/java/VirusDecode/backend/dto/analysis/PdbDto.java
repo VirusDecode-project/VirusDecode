@@ -1,11 +1,11 @@
-package VirusDecode.backend.dto;
+package VirusDecode.backend.dto.analysis;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class PdbDTO {
+public class PdbDto {
     private String gene;
     private String historyName;
 }

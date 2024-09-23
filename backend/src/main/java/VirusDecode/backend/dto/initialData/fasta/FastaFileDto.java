@@ -1,11 +1,11 @@
-package VirusDecode.backend.dto;
+package VirusDecode.backend.dto.initialData.fasta;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class FastaFileDTO {
+public class FastaFileDto {
     private String name;
     private String content;
 }

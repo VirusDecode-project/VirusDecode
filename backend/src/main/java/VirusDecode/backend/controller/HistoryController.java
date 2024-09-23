@@ -1,6 +1,6 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.HistoryDTO;
+import VirusDecode.backend.dto.HistoryDto;
 import VirusDecode.backend.entity.JsonDataEntity;
 import VirusDecode.backend.service.JsonDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class HistoryController {
     private static final Path HISTORY_DIR = currentDir.resolve("history");
 
     @PostMapping("/create")
-    public ResponseEntity<String> createHistory(@RequestBody HistoryDTO request) {
+    public ResponseEntity<String> createHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
         try {
             String createdHistoryName = performCreateHistory(historyName);
@@ -43,7 +43,7 @@ public class HistoryController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteHistory(@RequestBody HistoryDTO request) {
+    public ResponseEntity<String> deleteHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
         try {
             performDeleteHistory(historyName);
@@ -58,7 +58,7 @@ public class HistoryController {
     }
 
     @PutMapping("/rename")
-    public ResponseEntity<String> renameHistory(@RequestBody HistoryDTO request) {
+    public ResponseEntity<String> renameHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
         String newName = request.getNewName();
         try {
@@ -76,7 +76,7 @@ public class HistoryController {
     }
 
     @PostMapping("/get")
-    public ResponseEntity<String> getHistory(@RequestBody HistoryDTO request) {
+    public ResponseEntity<String> getHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
         try {
             Path sourceDir = HISTORY_DIR.resolve(historyName);
@@ -119,7 +119,7 @@ public class HistoryController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<String> saveHistory(@RequestBody HistoryDTO request) {
+    public ResponseEntity<String> saveHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
         try {
             performSaveHistory(historyName);

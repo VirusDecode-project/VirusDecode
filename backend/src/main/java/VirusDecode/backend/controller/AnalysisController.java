@@ -1,7 +1,7 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.LinearDesignDTO;
-import VirusDecode.backend.dto.PdbDTO;
+import VirusDecode.backend.dto.analysis.LinearDesignDto;
+import VirusDecode.backend.dto.analysis.PdbDto;
 import VirusDecode.backend.entity.JsonDataEntity;
 import VirusDecode.backend.service.JsonDataService;
 import VirusDecode.backend.service.PythonScriptService;
@@ -31,7 +31,7 @@ public class AnalysisController {
 
     // /analysis/mrnadesign 엔드포인트에 대한 POST 요청 처리
     @PostMapping("/linearDesign")
-    public ResponseEntity<String> getLinearDesign(@RequestBody LinearDesignDTO request) {
+    public ResponseEntity<String> getLinearDesign(@RequestBody LinearDesignDto request) {
         // mRNA 디자인 요청에서 필요한 데이터를 추출
         String region = request.getRegion();
         String varientName = request.getVarientName();
@@ -56,7 +56,7 @@ public class AnalysisController {
 
     // /analysis/pdb 엔드포인트에 대한 POST 요청 처리
     @PostMapping("/pdb")
-    public ResponseEntity<String> getPdb(@RequestBody PdbDTO request) {
+    public ResponseEntity<String> getPdb(@RequestBody PdbDto request) {
         String gene = request.getGene();
         String historyName = request.getHistoryName();
         String metadataJson = jsonDataService.getJsonData("metadata");
