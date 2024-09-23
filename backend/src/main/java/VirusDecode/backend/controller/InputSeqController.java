@@ -4,9 +4,7 @@ import VirusDecode.backend.dto.ReferenceDTO;
 import VirusDecode.backend.dto.VarientDTO;
 import VirusDecode.backend.service.FastaFileService;
 import VirusDecode.backend.service.JsonDataService;
-import VirusDecode.backend.service.PythonScriptExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import VirusDecode.backend.service.PythonScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,13 +14,13 @@ import java.io.*;
 @RequestMapping("/inputSeq")
 public class InputSeqController {
 
-    private final PythonScriptExecutor pythonScriptExecutor;
+    private final PythonScriptService pythonScriptService;
     private final FastaFileService fastaFileService;  // Fasta 파일 처리를 위한 서비스 주입
     private final JsonDataService jsonDataService;
 
     @Autowired
-    public InputSeqController(PythonScriptExecutor pythonScriptExecutor, FastaFileService fastaFileService, JsonDataService jsonDataService) {
-        this.pythonScriptExecutor = pythonScriptExecutor;
+    public InputSeqController(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService) {
+        this.pythonScriptService = pythonScriptService;
         this.fastaFileService = fastaFileService;
         this.jsonDataService = jsonDataService;
     }
@@ -31,7 +29,7 @@ public class InputSeqController {
     @PostMapping("/metadata")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDTO request) {
         String sequenceId = request.getSequenceId();
-        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("1", sequenceId);
+        ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("1", sequenceId);
 
         // Memory Repository
         if (scriptResponse.getStatusCode().is2xxSuccessful()) {
@@ -48,7 +46,7 @@ public class InputSeqController {
             String fastaContent = fastaFileService.saveFastaContent(request);
             String metadataJson = jsonDataService.getJsonData("metadata");
 
-            ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("2", metadataJson, fastaContent);
+            ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("2", metadataJson, fastaContent);
 
             // Memory Repository
             if (scriptResponse.getStatusCode().is2xxSuccessful()) {
