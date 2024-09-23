@@ -138,8 +138,8 @@ public class HistoryController {
         Map<String, Boolean> fileStatus = new HashMap<>();
 
         // Repository에서 JSON 데이터 확인
-        boolean pdbExists = jsonDataService.findById("pdb").isPresent();
-        boolean linearDesignExists = jsonDataService.findById("linearDesign").isPresent();
+        boolean pdbExists = jsonDataService.findByName("pdb").isPresent();
+        boolean linearDesignExists = jsonDataService.findByName("linearDesign").isPresent();
 
         // 상태를 Map에 저장
         fileStatus.put("pdb.json", pdbExists);
@@ -165,7 +165,7 @@ public class HistoryController {
         Iterable<JsonDataEntity> jsonDataEntities = jsonDataService.getAllJsonData();  // 모든 JSON 데이터 가져오기
         for (JsonDataEntity jsonDataEntity : jsonDataEntities) {
             // 각 JSON 데이터를 파일로 저장
-            Path jsonFilePath = newDir.resolve(jsonDataEntity.getId() + ".json");  // ID를 파일명으로 사용
+            Path jsonFilePath = newDir.resolve(jsonDataEntity.getName() + ".json");  // ID를 파일명으로 사용
             Files.write(jsonFilePath, jsonDataEntity.getJsonData().getBytes());  // JSON 데이터를 파일로 저장
         }
 
@@ -215,10 +215,10 @@ public class HistoryController {
 
                         // 파일 이름을 ID로 사용 (예: fileName.json -> fileName)
                         String fileName = filePath.getFileName().toString();
-                        String id = fileName.substring(0, fileName.lastIndexOf('.'));
+                        String name = fileName.substring(0, fileName.lastIndexOf('.'));
 
                         // repository에 저장
-                        jsonDataService.saveJsonData(id, jsonContent);
+                        jsonDataService.saveJsonData(name, jsonContent);
                     }
                 }
             }
@@ -259,7 +259,7 @@ public class HistoryController {
         Iterable<JsonDataEntity> jsonDataEntities = jsonDataService.getAllJsonData();  // 모든 JSON 데이터 가져오기
         for (JsonDataEntity jsonDataEntity : jsonDataEntities) {
             // 각 JSON 데이터를 파일로 저장
-            Path jsonFilePath = newDir.resolve(jsonDataEntity.getId() + ".json");  // ID를 파일명으로 사용
+            Path jsonFilePath = newDir.resolve(jsonDataEntity.getName() + ".json");  // ID를 파일명으로 사용
             Files.write(jsonFilePath, jsonDataEntity.getJsonData().getBytes());  // JSON 데이터를 파일로 저장
         }
     }
