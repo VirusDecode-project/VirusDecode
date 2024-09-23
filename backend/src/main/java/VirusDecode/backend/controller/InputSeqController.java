@@ -17,8 +17,8 @@ import java.io.*;
 public class InputSeqController {
 
     private final PythonScriptExecutor pythonScriptExecutor;
-    private FastaFileService fastaFileService;  // Fasta 파일 처리를 위한 서비스 주입
-    private JsonDataService jsonDataService;
+    private final FastaFileService fastaFileService;  // Fasta 파일 처리를 위한 서비스 주입
+    private final JsonDataService jsonDataService;
 
     @Autowired
     public InputSeqController(PythonScriptExecutor pythonScriptExecutor, FastaFileService fastaFileService, JsonDataService jsonDataService) {

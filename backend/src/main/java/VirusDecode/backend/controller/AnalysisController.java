@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/analysis")
 public class AnalysisController {
     private final PythonScriptExecutor pythonScriptExecutor;
-    private JsonDataService jsonDataService;
+    private final JsonDataService jsonDataService;
 
     @Autowired
     public AnalysisController(PythonScriptExecutor pythonScriptExecutor, JsonDataService jsonDataService) {
