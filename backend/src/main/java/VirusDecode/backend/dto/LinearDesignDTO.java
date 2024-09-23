@@ -10,6 +10,7 @@ public class LinearDesignDTO {
     private String varientName;
     private int start;
     private int end;
+    private String historyName;
 }
 
 

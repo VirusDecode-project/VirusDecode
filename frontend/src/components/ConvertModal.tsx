@@ -63,6 +63,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       varientName: selectedGenome,
       start: parseInt(startIndex, 10),
       end: parseInt(endIndex, 10),
+      historyName: workingHistory,
     };
     onRegionUpdate(mRnaData.region);
     console.log("Data being sent to backend:", mRnaData);
@@ -91,7 +92,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setIsLoading(false);
   
       // 2. PDB 디자인 POST 요청
-      const pdbData = { gene: selectedRegion };
+      const pdbData = { gene: selectedRegion, historyName: workingHistory};
       const pdbResponse = await fetch('http://localhost:8080/analysis/pdb', {
         method: 'POST',
         headers: {
@@ -109,9 +110,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
 
       setPDBReceived(true);
       setIsLoading(false);
-      
-      // 3. history 저장
-      await saveHistory();
+
   
     } catch (error) {
       if (error instanceof Error){
@@ -123,32 +122,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
     }
   };
   
-  // history 저장을 위한 함수로 분리
-  const saveHistory = async () => {
-    const requestData = {
-      historyName: workingHistory,
-    };
-    try {
-      const serverResponse = await fetch("http://localhost:8080/history/save", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-  
-      if (!serverResponse.ok) {
-        const errorMessage = await serverResponse.text();
-        throw new Error(errorMessage);
-      }
-  
-      await serverResponse.text();
-    } catch (error) {
-      if (error instanceof Error){
-        console.error("An error occurred during history save request: ", error.message);
-      }
-    }
-  };
+
   
 
   const handleNext = async () => {
