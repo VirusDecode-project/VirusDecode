@@ -20,7 +20,12 @@ public class PythonScriptExecutor {
     private static final Path pythonScriptPath = currentDir.resolve("../virusdecode.py").normalize();
     private static final Logger logger = LoggerFactory.getLogger(PythonScriptExecutor.class);
 
-    public static ResponseEntity<String> executePythonScript(String... args) {
+    // ProcessBuilder를 생성하는 메서드를 따로 분리하여 테스트에서 모의 가능하도록 설계
+    protected ProcessBuilder createProcessBuilder(List<String> command) {
+        return new ProcessBuilder(command);
+    }
+
+    public ResponseEntity<String> executePythonScript(String... args) {
         try {
             List<String> command = new ArrayList<>();
             // 운영 체제에 따라 python3 또는 python 사용
@@ -40,7 +45,7 @@ public class PythonScriptExecutor {
                 }
             }
 
-            ProcessBuilder pb = new ProcessBuilder(command);
+            ProcessBuilder pb = createProcessBuilder(command);
             Process process = pb.start();
 
             StringBuilder output = new StringBuilder();
