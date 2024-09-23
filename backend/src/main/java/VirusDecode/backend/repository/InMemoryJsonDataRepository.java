@@ -14,13 +14,18 @@ public class InMemoryJsonDataRepository implements JsonDataRepository {
 
     @Override
     public JsonDataEntity save(JsonDataEntity jsonDataEntity) {
-        jsonDataStore.put(jsonDataEntity.getId(), jsonDataEntity);
+        jsonDataStore.put(jsonDataEntity.getName(), jsonDataEntity);
         return jsonDataEntity;
     }
 
+//    @Override
+//    public Optional<JsonDataEntity> findById(Long id) {
+//        return Optional.ofNullable(jsonDataStore.get(id));
+//    }
+
     @Override
-    public Optional<JsonDataEntity> findById(String id) {
-        return Optional.ofNullable(jsonDataStore.get(id));
+    public Optional<JsonDataEntity> findByName(String name) {
+        return Optional.ofNullable(jsonDataStore.get(name));
     }
 
     @Override
@@ -28,9 +33,13 @@ public class InMemoryJsonDataRepository implements JsonDataRepository {
         return jsonDataStore.values();
     }
 
+//    @Override
+//    public void deleteById(String id) {
+//        jsonDataStore.remove(id);
+//    }
     @Override
-    public void deleteById(String id) {
-        jsonDataStore.remove(id);
+    public void deleteByName(String name) {
+        jsonDataStore.remove(name);
     }
 
     // deleteAll() 메서드 구현

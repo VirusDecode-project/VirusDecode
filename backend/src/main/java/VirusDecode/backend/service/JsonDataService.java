@@ -20,14 +20,16 @@ public class JsonDataService {
     }
 
     // Store JSON data
-    public void saveJsonData(String key, String jsonData) {
-        JsonDataEntity jsonDataEntity = new JsonDataEntity(key, jsonData);
+    public void saveJsonData(String name, String jsonData) {
+        JsonDataEntity jsonDataEntity = new JsonDataEntity();
+        jsonDataEntity.setName(name);
+        jsonDataEntity.setJsonData(jsonData);
         jsonDataRepository.save(jsonDataEntity);
     }
 
     // Retrieve JSON data
-    public String getJsonData(String key) {
-        Optional<JsonDataEntity> jsonDataEntity = jsonDataRepository.findById(key);
+    public String getJsonData(String name) {
+        Optional<JsonDataEntity> jsonDataEntity = jsonDataRepository.findByName(name);
         return jsonDataEntity.map(JsonDataEntity::getJsonData).orElse(null);
     }
 
@@ -41,11 +43,11 @@ public class JsonDataService {
     }
 
     // Delete JSON data by key
-    public void deleteJsonData(String key) {
-        jsonDataRepository.deleteById(key);
+    public void deleteJsonData(String name) {
+        jsonDataRepository.deleteByName(name);
     }
 
-    public Optional<JsonDataEntity> findById(String id) {
-        return jsonDataRepository.findById(id);
+    public Optional<JsonDataEntity> findByName(String name) {
+        return jsonDataRepository.findByName(name);
     }
 }

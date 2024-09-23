@@ -20,7 +20,12 @@ public class PythonScriptExecutor {
     private static final Path pythonScriptPath = currentDir.resolve("../virusdecode.py").normalize();
     private static final Logger logger = LoggerFactory.getLogger(PythonScriptExecutor.class);
 
-    public static ResponseEntity<String> executePythonScript(String... args) {
+    // ProcessBuilder를 생성하는 메서드를 따로 분리하여 테스트에서 모의 가능하도록 설계
+    protected ProcessBuilder createProcessBuilder(List<String> command) {
+        return new ProcessBuilder(command);
+    }
+
+    public ResponseEntity<String> executePythonScript(String... args) {
         try {
             List<String> command = new ArrayList<>();
             // 운영 체제에 따라 python3 또는 python 사용
@@ -40,7 +45,7 @@ public class PythonScriptExecutor {
                 }
             }
 
-            ProcessBuilder pb = new ProcessBuilder(command);
+            ProcessBuilder pb = createProcessBuilder(command);
             Process process = pb.start();
 
             StringBuilder output = new StringBuilder();
@@ -60,13 +65,9 @@ public class PythonScriptExecutor {
             }
 
             int exitCode = process.waitFor();
-
             // 파이썬 오류 코드 처리
             if (exitCode != 0) {
                 logger.error("Python script 종료 코드: {}", exitCode);
-                if (!output.isEmpty()) {
-                    logger.info("Python script output: \n{}", output);
-                }
                 if (!errorOutput.isEmpty()) {
                     logger.error("Python script error output: \n{}", errorOutput);
                 }
@@ -83,21 +84,13 @@ public class PythonScriptExecutor {
                     default -> ResponseEntity.status(500).body("Error executing Python script: " + errorOutput);
                 };
             }
-//            test
             if (!output.isEmpty()) {
                 logger.info("Python script output: \n{}", output);
             }
             return ResponseEntity.ok(output.toString());
-        } catch (IOException e) {
-            logger.error("IO 오류가 발생했습니다: {}", e.getMessage());
-            return ResponseEntity.status(500).body("Error executing Python script");
-        } catch (InterruptedException e) {
-            logger.error("프로세스가 중단되었습니다: {}", e.getMessage());
-            Thread.currentThread().interrupt();
-            return ResponseEntity.status(500).body("Process was interrupted");
         } catch (Exception e) {
-            logger.error("알 수 없는 오류가 발생했습니다: {}", e.getMessage());
-            return ResponseEntity.status(500).body("An unknown error occurred");
+            logger.error("Python Script 실행 과정에서 알 수 없는 오류가 발생했습니다: {}", e.getMessage());
+            return ResponseEntity.status(500).body("An unknown error occurred during Python Script execution.");
         }
     }
 }

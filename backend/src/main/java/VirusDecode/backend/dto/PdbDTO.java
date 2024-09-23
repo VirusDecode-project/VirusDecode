@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class PdbDTO {
     private String gene;
-
+    private String historyName;
 }
