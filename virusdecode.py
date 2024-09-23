@@ -26,7 +26,7 @@ def get_metadata(reference_id):
         }
         return metadata
     except HTTPError as e:
-        #print("There was an error fetching the reference sequence from NCBI.")
+        sys.stderr.write(f"There was an error fetching the reference sequence from NCBI.\n{str(e)}")
         sys.exit(11)
 
 def get_pdb_ids_by_sequence(sequence):
@@ -60,13 +60,13 @@ def get_pdb_ids_by_sequence(sequence):
             results = response.json()
             return [entry['identifier'] for entry in results.get('result_set', [])]
         else:
-            #print(f"Error fetching PDB IDs: {response.status_code}")
+            sys.stderr.write(f"Error fetching PDB IDs: {response.status_code}\n")
             sys.exit(41)
     except requests.Timeout:
-        #print(f"Request timed out while fetching PDB IDs.")
+        sys.stderr.write("Request timed out while fetching PDB IDs.\n")
         sys.exit(42)
     except requests.RequestException as e:
-        #print(f"An error occurred while fetching PDB IDs: {e}")
+        sys.stderr.write(f"An error occurred while fetching PDB IDs: {str(e)}\n")
         sys.exit(41)
 
 def get_pdb_info(pdb_id):
@@ -81,13 +81,10 @@ def get_pdb_info(pdb_id):
             result = response.json()
             return result.get('struct', {}).get('title', 'No title available')
         else:
-            #print(f"Error fetching PDB info for {pdb_id}: {response.status_code}")
             return None
     except requests.Timeout:
-        #print(f"Request timed out while fetching PDB info.")
         return None
     except requests.RequestException as e:
-        #print(f"An error occurred while fetching PDB info for {pdb_id}: {e}")
         return None
 
 
@@ -112,7 +109,7 @@ class SequenceAlignment:
             self.reference_id = self.reference_sequence.id
 
         except HTTPError as e:
-            #print("There was an error fetching the reference sequence from NCBI.")
+            sys.stderr.write(f"There was an error fetching the reference sequence from NCBI.\n{str(e)}")
             sys.exit(11)
 
     def read_sequences(self):
@@ -147,7 +144,7 @@ class SequenceAlignment:
         if result.returncode == 0:
             self.aligned_memory_file = StringIO(result.stdout)  # 수정된 부분: 결과를 StringIO 객체에 저장하여 메모리 내에서 처리
         else:
-            #print(f"Error running MUSCLE: {result.stderr}")
+            sys.stderr.write("Error running MUSCLE")
             sys.exit(21)
 
     def read_alignment(self):
@@ -235,7 +232,7 @@ class SequenceAnalysis:
         amino_acid_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end][start:end].replace("-", "")
         
         if(amino_acid_sequence == ""):
-            #print("Error: No amino acid sequence found")
+            sys.stderr.write("Error: No amino acid sequence found")
             sys.exit(31)
 
         # Run LinearDesign
@@ -243,7 +240,7 @@ class SequenceAnalysis:
         try:
             os.chdir(os.path.join(current_dir, "../../LinearDesign"))
         except FileNotFoundError as e:
-            #print("Error: No LinearDesign directory")
+            sys.stderr.write(f"Not exist LinearDesign directory.\n{str(e)}")
             sys.exit(33)
         command = f"echo {amino_acid_sequence} | ./lineardesign --lambda 3"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -269,7 +266,7 @@ class SequenceAnalysis:
             self.amino_acid_sequence = amino_acid_sequence
 
         else:
-            #print("Error running LinearDesign")
+            sys.stderr.write("Error while running LinearDesign")
             sys.exit(32)
             
 
