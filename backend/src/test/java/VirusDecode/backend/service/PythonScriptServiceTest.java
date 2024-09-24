@@ -9,19 +9,19 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-class PythonScriptExecutorTest {
+class PythonScriptServiceTest {
     private ProcessBuilder processBuilderMock;
     private Process processMock;
-    private PythonScriptExecutor pythonScriptExecutor;
+    private PythonScriptService pythonScriptService;
     private InputStream inputStreamMock;
     private InputStream errorStreamMock;
-    private PythonScriptExecutor pythonScriptExecutorMock;
+    private PythonScriptService pythonScriptServiceMock;
     @BeforeEach
     void setUp() {
         processBuilderMock = mock(ProcessBuilder.class);
         processMock = mock(Process.class);
-        pythonScriptExecutor = new PythonScriptExecutor();
-        pythonScriptExecutorMock = Mockito.spy(new PythonScriptExecutor());
+        pythonScriptService = new PythonScriptService();
+        pythonScriptServiceMock = Mockito.spy(new PythonScriptService());
         inputStreamMock = new ByteArrayInputStream("".getBytes());
         errorStreamMock = new ByteArrayInputStream("".getBytes());
     }
@@ -29,7 +29,7 @@ class PythonScriptExecutorTest {
     @Test
     void testExecutePythonScriptSuccess() throws Exception {
         // Act
-        ResponseEntity<String> response = pythonScriptExecutor.executePythonScript("1", "NC_045512");
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("1", "NC_045512");
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
@@ -46,7 +46,7 @@ class PythonScriptExecutorTest {
                 "}";
 
         // Act
-        ResponseEntity<String> response = pythonScriptExecutor.executePythonScript("2", metadataJson, fastaContent);
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("2", metadataJson, fastaContent);
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
@@ -55,7 +55,7 @@ class PythonScriptExecutorTest {
     @Test
     void testNotAvailableNucleotide() throws Exception {
         // Act
-        ResponseEntity<String> response = pythonScriptExecutor.executePythonScript("1", "noExist");
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("1", "noExist");
 
         // Assert: Verify the error message for exit code 1
         assertEquals(500, response.getStatusCodeValue());
@@ -66,7 +66,7 @@ class PythonScriptExecutorTest {
     @Test
     void testEmptyArgument() throws Exception {
         // Act
-        ResponseEntity<String> response = pythonScriptExecutor.executePythonScript();
+        ResponseEntity<String> response = pythonScriptService.executePythonScript();
 
         // Assert: Verify the error message for exit code 11
         assertEquals(500, response.getStatusCodeValue());
@@ -85,7 +85,7 @@ class PythonScriptExecutorTest {
         String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
 
         // Act
-        ResponseEntity<String> response = pythonScriptExecutor.executePythonScript("3", metadataJson, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", metadataJson, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
 
         // Assert: Verify the error message for exit code 11
         assertEquals(500, response.getStatusCodeValue());
@@ -95,14 +95,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCode1() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(1);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -111,14 +111,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCode21() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(21);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -127,14 +127,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCode32() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(32);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -143,14 +143,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCode33() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(33);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -159,14 +159,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCode41() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(41);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -175,14 +175,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCode42() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(42);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -191,14 +191,14 @@ class PythonScriptExecutorTest {
     @Test
     void testExitCodeDefault() throws Exception {
         // Mock 설정
-        doReturn(processBuilderMock).when(pythonScriptExecutorMock).createProcessBuilder(anyList());
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
         when(processBuilderMock.start()).thenReturn(processMock);
         when(processMock.getInputStream()).thenReturn(inputStreamMock);
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(5);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptExecutorMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());

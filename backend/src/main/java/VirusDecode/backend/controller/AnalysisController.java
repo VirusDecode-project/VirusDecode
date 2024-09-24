@@ -4,13 +4,12 @@ import VirusDecode.backend.dto.LinearDesignDTO;
 import VirusDecode.backend.dto.PdbDTO;
 import VirusDecode.backend.entity.JsonDataEntity;
 import VirusDecode.backend.service.JsonDataService;
-import VirusDecode.backend.service.PythonScriptExecutor;
+import VirusDecode.backend.service.PythonScriptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,14 +17,14 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/analysis")
 public class AnalysisController {
-    private final PythonScriptExecutor pythonScriptExecutor;
+    private final PythonScriptService pythonScriptService;
     private final JsonDataService jsonDataService;
     private static final Path currentDir = Paths.get("").toAbsolutePath();
     private static final Path HISTORY_DIR = currentDir.resolve("history");
 
     @Autowired
-    public AnalysisController(PythonScriptExecutor pythonScriptExecutor, JsonDataService jsonDataService) {
-        this.pythonScriptExecutor = pythonScriptExecutor;
+    public AnalysisController(PythonScriptService pythonScriptService, JsonDataService jsonDataService) {
+        this.pythonScriptService = pythonScriptService;
         this.jsonDataService = jsonDataService;
     }
 
@@ -43,7 +42,7 @@ public class AnalysisController {
         String metadataJson = jsonDataService.getJsonData("metadata");
         String alignmentJson = jsonDataService.getJsonData("alignment");
 
-        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("3", metadataJson, alignmentJson, region, varientName, start, end);
+        ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("3", metadataJson, alignmentJson, region, varientName, start, end);
         if (scriptResponse.getStatusCode().is2xxSuccessful()) {
             jsonDataService.saveJsonData("linearDesign", scriptResponse.getBody());
             try {
@@ -63,7 +62,7 @@ public class AnalysisController {
         String metadataJson = jsonDataService.getJsonData("metadata");
         String alignmentJson = jsonDataService.getJsonData("alignment");
 
-        ResponseEntity<String> scriptResponse = pythonScriptExecutor.executePythonScript("4", metadataJson, alignmentJson, gene);
+        ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("4", metadataJson, alignmentJson, gene);
         if (scriptResponse.getStatusCode().is2xxSuccessful()) {
             jsonDataService.saveJsonData("pdb", scriptResponse.getBody());
             try {

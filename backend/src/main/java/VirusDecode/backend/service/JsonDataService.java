@@ -4,6 +4,7 @@ import VirusDecode.backend.entity.JsonDataEntity;
 import VirusDecode.backend.repository.JsonDataRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class JsonDataService {
     }
 
     // Store JSON data
+    @Transactional
     public void saveJsonData(String name, String jsonData) {
         JsonDataEntity jsonDataEntity = new JsonDataEntity();
         jsonDataEntity.setName(name);
@@ -38,11 +40,13 @@ public class JsonDataService {
         return jsonDataRepository.findAll();
     }
 
+    @Transactional
     public void deleteAllJsonData() {
         jsonDataRepository.deleteAll();  // 기존 데이터 삭제
     }
 
     // Delete JSON data by key
+    @Transactional
     public void deleteJsonData(String name) {
         jsonDataRepository.deleteByName(name);
     }
