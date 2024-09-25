@@ -1,62 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "../../styles/MRNAdesign.css";
 import RNAVisualizer from '../MRNAVisualizer';
+import { MRNAData } from '../types';
 
-interface LinearDesign {
-  mRNA_sequence: string;
-  mRNA_structure: string;
-  amino_acid_sequence: string;
-  free_energy: number;
-  cai: number;
+interface MRNAdesignProps {
+  workingHistory: string;
+  linearDesignData: MRNAData | null;
 }
 
-interface ProtParam {
-  molecular_weight: number;
-  isoelectric_point: number;
-  instability_index: number;
-  secondary_structure_fraction: [number, number, number];
-  gravy: number;
-  aromaticity: number;
-  amino_acid_count: Record<string, number>; 
-  amino_acid_percent: Record<string, number>;
-}
-
-interface Data {
-  linearDesign: LinearDesign;
-  protParam: ProtParam;
-}
-
-const MRNAdesign: React.FC = () => {
-  const [data, setData] = useState<Data | null>(null);
+const MRNAdesign: React.FC<MRNAdesignProps> = ({workingHistory, linearDesignData}) => {
+  // const [linearDesignData, setLinearDesignData] = useState<Data | null>(null);
   const [showFullAminoAcidSequence, setShowFullAminoAcidSequence] = useState(false);
   const [showFullSequence, setShowFullSequence] = useState(false);
   const [showFullStructure, setShowFullStructure] = useState(false);
   const zeroWidthSpace = "\u200B";
 
-  /* backend 수정 코드 시작 */
-  useEffect(() => {
-    const fetchJsonData = async () => {
-      try {
-        const serverResponse = await fetch('http://localhost:8080/analysis/re-linearDesign');
-
-        if (!serverResponse.ok) {
-          const errorMessage = await serverResponse.text();
-          throw new Error(errorMessage);
-        }
-
-        const responseData = await serverResponse.json();
-        setData(responseData); // JSON 데이터를 상태로 설정
-      } catch (error) {
-        if (error instanceof Error){
-          console.error("An error occurred during the request: ", error.message);
-        }
-      }
-    };
-    fetchJsonData();
-  }, []);
-
-
-  if (!data) {
+  if (!linearDesignData) {
     return <div>Loading...</div>;
   }
   const formatSequence = (sequence: string) => {
@@ -109,8 +68,8 @@ const MRNAdesign: React.FC = () => {
           <h2 className="mrna-title">mRNA Parameters</h2>
           <h3 className="mrna-subtitle">mRNA Visualization</h3>
           <RNAVisualizer
-            sequence={data.linearDesign.mRNA_sequence}
-            structure={data.linearDesign.mRNA_structure}
+            sequence={linearDesignData.linearDesign.mRNA_sequence}
+            structure={linearDesignData.linearDesign.mRNA_structure}
           />
           {/*visualization 끝*/}
 
@@ -120,10 +79,10 @@ const MRNAdesign: React.FC = () => {
           <h3 className="mrna-subtitle-margintop">Amino Acid Sequence</h3>
           <div className="mrna-sequence">
             {showFullAminoAcidSequence
-              ? formatSequence(data.linearDesign.amino_acid_sequence).map(
+              ? formatSequence(linearDesignData.linearDesign.amino_acid_sequence).map(
                 (seq, index) => <div key={index}>{seq}</div>
               )
-              : `${data.linearDesign.amino_acid_sequence.substring(0, 50)} ...`}
+              : `${linearDesignData.linearDesign.amino_acid_sequence.substring(0, 50)} ...`}
             {!showFullAminoAcidSequence && (
               <span
                 className="show-toggle"
@@ -145,10 +104,10 @@ const MRNAdesign: React.FC = () => {
 
           <div className="mrna-sequence">
             {showFullSequence
-              ? formatSequence(data.linearDesign.mRNA_sequence).map(
+              ? formatSequence(linearDesignData.linearDesign.mRNA_sequence).map(
                 (seq, index) => <div key={index}>{seq}</div>
               )
-              : `${data.linearDesign.mRNA_sequence.substring(0, 50)} ...`}
+              : `${linearDesignData.linearDesign.mRNA_sequence.substring(0, 50)} ...`}
             {!showFullSequence && (
               <span
                 className="show-toggle"
@@ -170,10 +129,10 @@ const MRNAdesign: React.FC = () => {
 
           <p className="mrna-structure">
             {showFullStructure
-              ? formatStructure(data.linearDesign.mRNA_structure).map(
+              ? formatStructure(linearDesignData.linearDesign.mRNA_structure).map(
                 (seq, index) => <div key={index}>{seq}</div>
               )
-              : `${data.linearDesign.mRNA_structure.substring(0, 50)} `}
+              : `${linearDesignData.linearDesign.mRNA_structure.substring(0, 50)} `}
             {!showFullStructure && (
               <span
                 className="show-toggle"
@@ -193,10 +152,10 @@ const MRNAdesign: React.FC = () => {
           </p>
 
           <h3 className="mrna-subtitle">mRNA folding free energy</h3>
-          <p className="mrna-value">{data.linearDesign.free_energy} </p>
+          <p className="mrna-value">{linearDesignData.linearDesign.free_energy} </p>
 
           <h3 className="mrna-subtitle">mRNA CAI</h3>
-          <p className="mrna-value">{data.linearDesign.cai}</p>
+          <p className="mrna-value">{linearDesignData.linearDesign.cai}</p>
 
 
         </div>
@@ -206,28 +165,28 @@ const MRNAdesign: React.FC = () => {
           <h2 className="mrna-title">Protein Parameters</h2>
 
           <h3 className="mrna-subtitle">Molecular Weight</h3>
-          <p className="mrna-value">{data.protParam.molecular_weight} Da</p>
+          <p className="mrna-value">{linearDesignData.protParam.molecular_weight} Da</p>
 
           <h3 className="mrna-subtitle">Isoelectric Point(Pl)</h3>
-          <p className="mrna-value">{data.protParam.isoelectric_point}</p>
+          <p className="mrna-value">{linearDesignData.protParam.isoelectric_point}</p>
 
           <h3 className="mrna-subtitle">Instability Index</h3>
-          <p className="mrna-value">{data.protParam.instability_index}</p>
+          <p className="mrna-value">{linearDesignData.protParam.instability_index}</p>
 
           <h3 className="mrna-subtitle">
             Secondary Structure Fraction (Helix, Turn, Sheet)
           </h3>
           <p className="mrna-value">
-            ({data.protParam.secondary_structure_fraction[0]},{" "}
-            {data.protParam.secondary_structure_fraction[1]},{" "}
-            {data.protParam.secondary_structure_fraction[2]})
+            ({linearDesignData.protParam.secondary_structure_fraction[0]},{" "}
+            {linearDesignData.protParam.secondary_structure_fraction[1]},{" "}
+            {linearDesignData.protParam.secondary_structure_fraction[2]})
           </p>
 
           <h3 className="mrna-subtitle">Gravy</h3>
-          <p className="mrna-value">{data.protParam.gravy}</p>
+          <p className="mrna-value">{linearDesignData.protParam.gravy}</p>
 
           <h3 className="mrna-subtitle">Aromaticity</h3>
-          <p className="mrna-value">{data.protParam.aromaticity} %</p>
+          <p className="mrna-value">{linearDesignData.protParam.aromaticity} %</p>
         </div>
         <div className="mrna-column">
           <table className="amino-acid-table">
@@ -239,15 +198,15 @@ const MRNAdesign: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {data && data.protParam.amino_acid_count ? (
-                Object.keys(data.protParam.amino_acid_count).map(
+              {linearDesignData && linearDesignData.protParam.amino_acid_count ? (
+                Object.keys(linearDesignData.protParam.amino_acid_count).map(
                   (amino, index) => (
                     <tr key={index}>
                       <td>{amino}</td>
-                      <td>{data.protParam.amino_acid_count[amino]}</td>
+                      <td>{linearDesignData.protParam.amino_acid_count[amino]}</td>
                       <td>
                         {(
-                          data.protParam.amino_acid_percent[amino] * 100
+                          linearDesignData.protParam.amino_acid_percent[amino] * 100
                         ).toFixed(2)}
                       </td>
                     </tr>

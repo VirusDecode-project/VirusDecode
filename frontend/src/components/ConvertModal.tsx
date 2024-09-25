@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from 'react';
 import '../styles/Modal.css';
-import {Sequence, AlignmentIndex, ModalData} from './types';
+import {Sequence, AlignmentIndex, ModalData, MRNAData, PDBResponse} from './types';
 
 interface ConvertModalProps {
   onRegionUpdate: (region: string) => void;
@@ -14,9 +14,15 @@ interface ConvertModalProps {
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   workingHistory: string;
+  setLinearDesignData:Dispatch<SetStateAction<MRNAData | null>>;
+  setPDBids: Dispatch<SetStateAction<string[]>>;
+  setPDBInfo: Dispatch<SetStateAction<string[]>>;
+  setSelectedPDBid: Dispatch<SetStateAction<string>>;
 }
 
-const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory }) => {
+
+
+const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -55,6 +61,16 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
     const selectedSeq = sequences.find(seq => seq.label === selectedGenome);
     return selectedSeq ? selectedSeq.sequence.length : 0;
   };
+
+  const checkPDBFileExists = async (url: string) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Error checking PDB file existence:', error);
+      return false;
+    }
+  };
   const handleConvertButton = async () => {
     setMRNAReceived(false);
     setPDBReceived(false);
@@ -74,6 +90,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       // 1. mRNA 디자인 POST 요청
       const mRnaResponse = await fetch('http://localhost:8080/analysis/linearDesign', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -85,16 +102,18 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
         throw new Error(errorMessage);
       }
   
-      await mRnaResponse.text();
+      const linearDesignResponse = await mRnaResponse.json();
 
       setMRNAReceived(true);
       setTab(1);
       setIsLoading(false);
+      setLinearDesignData(linearDesignResponse);
   
       // 2. PDB 디자인 POST 요청
       const pdbData = { gene: selectedRegion, historyName: workingHistory};
       const pdbResponse = await fetch('http://localhost:8080/analysis/pdb', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -106,11 +125,25 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
         throw new Error(errorMessage);
       }
   
-      await pdbResponse.text();
+      const responseData: PDBResponse = await pdbResponse.json();
+
+        const keys = Object.keys(responseData);
+        setPDBids(keys);
+        const values = Object.values(responseData);
+        setPDBInfo(values);
+
+         if (keys.length > 0) {
+          for (let i = 0; i < keys.length; i++){
+            const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
+            if (exist) {
+              setSelectedPDBid(keys[i]);
+              break;
+            }
+          }
+        }
 
       setPDBReceived(true);
       setIsLoading(false);
-
   
     } catch (error) {
       if (error instanceof Error){

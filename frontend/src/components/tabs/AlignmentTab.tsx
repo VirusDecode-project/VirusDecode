@@ -3,7 +3,8 @@ import '../../styles/Alignment.css';
 import Loading from '../Loading';
 import StackedBar from '../StackedBar';
 import ProteinSeq from '../ProteinSeq';
-import {ResponseData} from '../types';
+import {AlignmentData} from '../types';
+import {MRNAData} from '../types';
 
 interface ChartDataItem {
   label: string;
@@ -14,14 +15,17 @@ interface ChartDataItem {
 }
 
 interface AlignmentProps {
-  responseData: ResponseData;
+  alignmentData: AlignmentData;
   setTab: Dispatch<SetStateAction<number>>;
   onRegionUpdate: (region: string) => void;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   workingHistory: string;
+  setLinearDesignData:Dispatch<SetStateAction<MRNAData | null>>;
+  setPDBids: Dispatch<SetStateAction<string[]>>;
+  setPDBInfo: Dispatch<SetStateAction<string[]>>;
+  setSelectedPDBid: Dispatch<SetStateAction<string>>;
 }
-
 
 let lastHue = 0;
 
@@ -38,17 +42,17 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-const Alignment: React.FC<AlignmentProps> = ({ responseData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory }) => {
+const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
+  
   useEffect(() => {
-    if (responseData) {
-      const firstRegion = Object.keys(responseData.alignment_index)[0];
+    if (alignmentData) {
+      const firstRegion = Object.keys(alignmentData.alignment_index).length > 0 ? Object.keys(alignmentData.alignment_index)[0] : '';
       setSelectedRegion(firstRegion);
       try {
-        const data = Object.entries(responseData.alignment_index).map(([label, [start, end]]) => {
+        const data = Object.entries(alignmentData.alignment_index).map(([label, [start, end]]) => {
           const value = end - start;
           return {
             label,
@@ -63,11 +67,15 @@ const Alignment: React.FC<AlignmentProps> = ({ responseData, setTab, onRegionUpd
         console.error('Error processing response data:', error);
       }
     }
-  }, [responseData]);
+  }, [alignmentData]);
 
-  if(chartData.length === 0) {
+
+  
+
+  if (!alignmentData || !alignmentData.alignment_index) {
     return <div>Loading...</div>;
   }
+  
 
   return (
     <div>
@@ -78,17 +86,21 @@ const Alignment: React.FC<AlignmentProps> = ({ responseData, setTab, onRegionUpd
           <div className="stacked-bar-chart">
             <StackedBar data={chartData} onBarClick={setSelectedRegion} />
           </div>
-          {responseData && (
+          {alignmentData && (
             <ProteinSeq
               selectedRegion={selectedRegion}
               setSelectedRegion={setSelectedRegion}
-              responseData={responseData}
+              alignmentData={alignmentData}
               setTab={setTab}
               setIsLoading={setIsLoading}
               onRegionUpdate={onRegionUpdate}
               setMRNAReceived={setMRNAReceived}
               setPDBReceived={setPDBReceived}
               workingHistory={workingHistory}
+              setLinearDesignData={setLinearDesignData}
+              setPDBids={setPDBids}
+              setPDBInfo={setPDBInfo}
+              setSelectedPDBid={setSelectedPDBid}
             />
           )}
         </div>

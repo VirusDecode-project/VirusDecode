@@ -13,23 +13,7 @@ interface HeaderBarProps {
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate })=> {
-  const handleRestart = async() => {
-    try {
-      const serverResponse = await fetch("http://localhost:8080/history/deleteData");
-
-      if (!serverResponse.ok) {
-        const errorMessage = await serverResponse.text();
-        throw new Error(errorMessage);
-      }
-
-      await serverResponse.text();
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error(`An error occurred while fetching history details: ${error.message}`);
-      } else {
-        console.error("An unknown error occurred");
-      }
-    }
+  const handleRestart = () => {
     navigate('/');
 };
 
