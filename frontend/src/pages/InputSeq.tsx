@@ -10,12 +10,17 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import uploadIcon from "../assets/upload_icon.png";
 import Loading from '../components/Loading';
+import { AlignmentData } from '../components/types';
+import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 
 interface InputSeqProps {
   setTab: Dispatch<SetStateAction<number>>;
   setWorkingHistory: Dispatch<SetStateAction<string>>;
+  workingHistory: string;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
+  setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
+  setHistory: Dispatch<SetStateAction<string[]>>;
 }
 
 interface UploadedFile {
@@ -23,8 +28,27 @@ interface UploadedFile {
   file: File;
 }
 
-const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, setMRNAReceived, setPDBReceived }) => {
+const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory}) => {
   let navigate = useNavigate();
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const serverResponse = await fetch("http://localhost:8080/history/list", {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!serverResponse.ok) {
+          throw new Error("Failed to fetch history list");
+        }
+        const responseData = await serverResponse.json();
+        setHistory(responseData);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      }
+    };
+
+    fetchHistory();
+  });
 
   const [editingFileIndex, setEditingFileIndex] = useState<number | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -35,17 +59,10 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, setMRNAR
   const [nextId, setNextId] = useState(2);
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
+  const [metadata, setMetadata] = useState("");
   let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
   const [doneReceived, setDoneReceived] = useState(true);
-
-
-// Add useEffect to fetch history details on component mount
-useEffect(() => {
-  setMRNAReceived(false);
-  setPDBReceived(false);
-}, [navigate]);  // Include all dependencies
-
 
   const handleDoneSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
@@ -58,6 +75,7 @@ useEffect(() => {
       setDoneReceived(false);
       const serverResponse = await fetch("http://localhost:8080/inputSeq/metadata", {
         method: "POST",
+        credentials: 'include',  // 세션 쿠키 포함
         headers: {
           "Content-Type": "application/json",
         },
@@ -72,7 +90,7 @@ useEffect(() => {
 
       // 서버에서 받은 응답을 텍스트로 처리한 후 JSON으로 파싱
       const responseData = await serverResponse.json();
-
+      setMetadata(responseData);
       let formattedMessage = "";
       for (const [key, value] of Object.entries(responseData)) {
         formattedMessage += `<span class="key">${key}:</span> <span class="value">${value}</span><br />`;
@@ -88,6 +106,7 @@ useEffect(() => {
       }
     }finally{
       setDoneReceived(true);
+      setWorkingHistory(referenceSequenceId);
     }
   };
 
@@ -122,12 +141,15 @@ useEffect(() => {
       referenceSequenceId: referenceSequenceId || null,
       sequences: hasSequences ? Object.fromEntries(sequencesMap) : {}, // 비어 있을 경우 빈 객체
       files: hasFiles ? filesContent : [], // 비어 있을 경우 빈 배열
+      historyName: workingHistory,
+      referenceId: JSON.parse(JSON.stringify(metadata))['Sequence ID'],
     };
 
     try {
       setIsLoading(true);
       const serverResponse = await fetch("http://localhost:8080/inputSeq/alignment", {
         method: "POST",
+        credentials: 'include',  // 세션 쿠키 포함
         headers: {
           "Content-Type": "application/json",
         },
@@ -138,43 +160,23 @@ useEffect(() => {
         const errorMessage = await serverResponse.text();
         throw new Error(errorMessage);
       }
-
       const responseData = await serverResponse.json();
+      setAlignmentData(JSON.parse(responseData["alignment"]));
+      const createdHistoryName = responseData["historyName"];
+      setWorkingHistory(createdHistoryName);
       setTab(0);
-
-      try {
-        const historyName = referenceSequenceId;
-        const requestData = { historyName: historyName };
-        const serverResponse = await fetch("http://localhost:8080/history/create", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(requestData),
-        });
-  
-        if (!serverResponse.ok) {
-          const errorMessage = await serverResponse.text();
-          throw new Error(errorMessage);
-        }
-        const createdHistoryName = await serverResponse.text();
-        setWorkingHistory(createdHistoryName);
-
-      } catch (error) {
-        if (error instanceof Error){
-          console.error("An error occurred during the request: ", error.message);
-        }
-      }
-      navigate("/analysis", { state: { responseData: responseData } });
+      navigate("/analysis");
     } catch (error) {
       if (error instanceof Error){
         console.error("An error occurred during the request: ", error.message);
         window.alert(error.message);
       }
-    }finally{
+    }
+    finally{
       setIsLoading(false);
     }
   };
+
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);

@@ -1,19 +1,18 @@
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, { MouseEvent, useEffect, useState, Dispatch, SetStateAction } from 'react';
 import Viztein from 'viztein';
 import "../../styles/Render3D.css";
 
 interface Render3DProps {
   region: string;
+  PDBids: string[];
+  PDBInfo: string[];
+  selectedPDBid: string;
+  setSelectedPDBid: Dispatch<SetStateAction<string>>;
 }
 
-interface PDBResponse {
-  [key: string]: string;
-}
 
-const Render3D: React.FC<Render3DProps> = ({ region }) => {
-  const [PDBids, setPDBids] = useState<string[]>([]);
-  const [selectedPDBid, setSelectedPDBid] = useState("");
-  const [PDBInfo, setPDBInfo] = useState<string[]>([]);
+
+const Render3D: React.FC<Render3DProps> = ({ region, PDBids ,PDBInfo, selectedPDBid, setSelectedPDBid }) => {
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
@@ -27,39 +26,6 @@ const Render3D: React.FC<Render3DProps> = ({ region }) => {
       return false;
     }
   };
-
-  useEffect(() => {
-    const fetchPDBids = async () => {
-      try {
-        const serverResponse = await fetch('http://localhost:8080/analysis/re-pdb');
-        if (!serverResponse.ok) {
-          const errorMessage = await serverResponse.text();
-          throw new Error(errorMessage);
-        }
-        const responseData: PDBResponse = await serverResponse.json();
-
-        const keys = Object.keys(responseData);
-        setPDBids(keys);
-        const values = Object.values(responseData);
-        setPDBInfo(values);
-
-         if (keys.length > 0) {
-          for (let i = 0; i < keys.length; i++){
-            const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
-            if (exist) {
-              setSelectedPDBid(keys[i]);
-              break;
-            }
-          }
-        }
-      } catch (error) {
-        if (error instanceof Error){
-          console.error("An error occurred during the request: ", error.message);
-        }
-      }
-    };
-    fetchPDBids();
-  }, []);
 
   if (PDBids.length === 0) {
     return <div>Loading...</div>;

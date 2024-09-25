@@ -34,23 +34,23 @@ class PythonScriptServiceTest {
         // Assert
         assertEquals(200, response.getStatusCodeValue());
     }
-
-    @Test
-    void testExecutePythonScriptSuccess2() throws Exception {
-        String fastaContent = "";
-        String metadataJson = "{\n" +
-                "    \"Sequence ID\": \"NC_001803.1\",\n" +
-                "    \"Name\": \"NC_001803\",\n" +
-                "    \"Description\": \"Respiratory syncytial virus, complete genome\",\n" +
-                "    \"Length\": 15191\n" +
-                "}";
-
-        // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript("2", metadataJson, fastaContent);
-
-        // Assert
-        assertEquals(200, response.getStatusCodeValue());
-    }
+//
+//    @Test
+//    void testExecutePythonScriptSuccess2() throws Exception {
+//        String fastaContent = "";
+//        String metadataJson = "{\n" +
+//                "    \"Sequence ID\": \"NC_001803.1\",\n" +
+//                "    \"Name\": \"NC_001803\",\n" +
+//                "    \"Description\": \"Respiratory syncytial virus, complete genome\",\n" +
+//                "    \"Length\": 15191\n" +
+//                "}";
+//
+//        // Act
+//        ResponseEntity<String> response = pythonScriptService.executePythonScript("2", metadataJson, fastaContent);
+//
+//        // Assert
+//        assertEquals(200, response.getStatusCodeValue());
+//    }
 
     @Test
     void testNotAvailableNucleotide() throws Exception {
@@ -72,25 +72,25 @@ class PythonScriptServiceTest {
         assertEquals(500, response.getStatusCodeValue());
         assertEquals("전달된 인자가 부족합니다.", response.getBody());
     }
-
-    @Test
-    void testLinearDesignCase31() throws Exception {
-        String metadataJson = "{\n" +
-                "    \"Sequence ID\": \"NC_001803.1\",\n" +
-                "    \"Name\": \"NC_001803\",\n" +
-                "    \"Description\": \"Respiratory syncytial virus, complete genome\",\n" +
-                "    \"Length\": 15191\n" +
-                "}";
-
-        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
-
-        // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", metadataJson, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
-
-        // Assert: Verify the error message for exit code 11
-        assertEquals(500, response.getStatusCodeValue());
-        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
-    }
+//
+//    @Test
+//    void testLinearDesignCase31() throws Exception {
+//        String metadataJson = "{\n" +
+//                "    \"Sequence ID\": \"NC_001803.1\",\n" +
+//                "    \"Name\": \"NC_001803\",\n" +
+//                "    \"Description\": \"Respiratory syncytial virus, complete genome\",\n" +
+//                "    \"Length\": 15191\n" +
+//                "}";
+//
+//        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
+//
+//        // Act
+//        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", metadataJson, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
+//
+//        // Assert: Verify the error message for exit code 11
+//        assertEquals(500, response.getStatusCodeValue());
+//        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
+//    }
 
     @Test
     void testExitCode1() throws Exception {

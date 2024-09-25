@@ -1,4 +1,4 @@
-package VirusDecode.backend.dto;
+package VirusDecode.backend.dto.initialData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,6 +6,6 @@ import lombok.Setter;
 // Request Body를 받을 DTO 클래스 정의
 @Getter
 @Setter
-public class ReferenceDTO {
+public class ReferenceDto {
     private String sequenceId;
 }

@@ -8,6 +8,7 @@ import CreateModal from "./CreateModal";
 import RenameModal from "./RenameModal";
 import DeleteModal from "./DeleteModal";
 import { NavigateFunction } from 'react-router-dom';
+import { MRNAData, AlignmentData, PDBResponse } from '../components/types';
 
 interface SidebarProps {
   show: boolean;
@@ -20,6 +21,11 @@ interface SidebarProps {
   setTab: Dispatch<SetStateAction<number>>;
   workingHistory: string;
   setWorkingHistory: Dispatch<SetStateAction<string>>;
+  setLinearDesignData: Dispatch<SetStateAction<MRNAData | null>>;
+  setPDBids: Dispatch<SetStateAction<string[]>>;
+  setPDBInfo: Dispatch<SetStateAction<string[]>>;
+  setSelectedPDBid: Dispatch<SetStateAction<string>>;
+  setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -33,6 +39,11 @@ const Sidebar: React.FC<SidebarProps> = ({
   setTab,
   workingHistory,
   setWorkingHistory,
+  setLinearDesignData,
+  setPDBids,
+  setPDBInfo,
+  setSelectedPDBid,
+  setAlignmentData,
 }) => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
@@ -60,54 +71,81 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleEditClick = () => {
     setShowEditModal(true); // 편집 모달 열기
   };
+  const checkPDBFileExists = async (url: string) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Error checking PDB file existence:', error);
+      return false;
+    }
+  };
 
   const handleHistoryClick = async (index: number) => {
     const historyName = history[index];
     const requestData = { historyName: historyName };
-  
+
     try {
       // Fetch history details
       const serverResponse = await fetch("http://localhost:8080/history/get", {
         method: "POST",
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestData),
       });
-  
+
       if (!serverResponse.ok) {
         const errorMessage = await serverResponse.text();
         throw new Error(errorMessage);
       }
-  
+
       const responseData = await serverResponse.json();
       console.log("History details fetched successfully: ", responseData);
-  
-      // Check for file existence
-      const fileStatusResponse = await fetch("http://localhost:8080/history/checkFiles");
-      if (!fileStatusResponse.ok) {
-        throw new Error("Failed to check files");
+
+      if (responseData.alignment) {
+        const alignmentJson = JSON.parse(responseData.alignment);
+        setAlignmentData(alignmentJson);
+      } else {
+        console.warn('Alignment data is null or undefined');
       }
-  
-      const fileStatus = await fileStatusResponse.json();
-      console.log("File Status:", fileStatus);
-  
-      // Set the state based on file existence
-      setMRNAReceived(fileStatus["linearDesign.json"] || false);
-      setPDBReceived(fileStatus["pdb.json"] || false);
-  
-      // Navigate to the analysis page with response data
-      setTab(0);
-      setWorkingHistory(historyName);
-      navigate("/analysis", { state: { responseData } });
-  
+
+      if (responseData.linearDesign) {
+        const linearDesignJson = JSON.parse(responseData.linearDesign);
+        setLinearDesignData(linearDesignJson);
+        setMRNAReceived(true);
+      } else {
+        setMRNAReceived(false);
+      }
+
+      if (responseData.pdb) {
+        const pdbJson: PDBResponse = JSON.parse(responseData.pdb);
+        const keys = Object.keys(pdbJson);
+        setPDBids(keys);
+        const values = Object.values(pdbJson);
+        setPDBInfo(values);
+        if (keys.length > 0) {
+          for (let i = 0; i < keys.length; i++) {
+            const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
+            if (exist) {
+              setSelectedPDBid(keys[i]);
+              break;
+            }
+          }
+        }
+        setPDBReceived(true);
+      } else {
+        setPDBReceived(false);
+      }
+      setTab(0)
+      navigate('/analysis');
     } catch (error) {
-      if (error instanceof Error){
+      if (error instanceof Error) {
         console.error("An error occurred: ", error.message);
       }
     }
   };
-  
 
   const handleEllipsisClick = (e: MouseEvent<HTMLButtonElement>, index: number) => {
     e.stopPropagation(); // Prevents handleHistoryClick from being triggered
@@ -133,6 +171,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           "http://localhost:8080/history/rename",
           {
             method: "PUT",
+            credentials: 'include',
             headers: {
               "Content-Type": "application/json",
             },
@@ -152,12 +191,12 @@ const Sidebar: React.FC<SidebarProps> = ({
           )
         );
 
-        if(historyName === workingHistory) {
+        if (historyName === workingHistory) {
           setWorkingHistory(newName);
         }
         setShowRenameModal(false); // 이름 변경 모달 닫기
       } catch (error) {
-        if (error instanceof Error){
+        if (error instanceof Error) {
           console.error("An error occurred during the request: ", error.message);
         }
       }
@@ -176,6 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           "http://localhost:8080/history/delete",
           {
             method: "DELETE",
+            credentials: 'include',
             headers: {
               "Content-Type": "application/json",
             },
@@ -193,7 +233,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           prevHistory.filter((_, i) => i !== activeHistoryItem)
         );
       } catch (error) {
-        if (error instanceof Error){
+        if (error instanceof Error) {
           console.error("An error occurred during the request: ", error.message);
         }
       }

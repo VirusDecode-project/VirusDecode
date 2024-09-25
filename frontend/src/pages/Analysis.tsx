@@ -1,28 +1,58 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, Dispatch, SetStateAction, useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import '../styles/Analysis.css';
 import Alignment from '../components/tabs/AlignmentTab';
 import MRNAdesign from '../components/tabs/MRNAdesignTab';
 import Render3D from '../components/tabs/Render3DTab';
+import { MRNAData, AlignmentData } from '../components/types';
+import { useNavigate } from "react-router-dom";
 
 interface AnalysisProps {
-  tab : number;
+  tab: number;
   setTab: Dispatch<SetStateAction<number>>;
   mRNAReceived: boolean;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   PDBReceived: boolean;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   workingHistory: string;
+  setWorkingHistory: Dispatch<SetStateAction<string>>;
+  linearDesignData: MRNAData | null;
+  setLinearDesignData:Dispatch<SetStateAction<MRNAData | null>>;
+  PDBids: string[];
+  setPDBids: Dispatch<SetStateAction<string[]>>;
+  PDBInfo: string[];
+  setPDBInfo: Dispatch<SetStateAction<string[]>>;
+  selectedPDBid: string;
+  setSelectedPDBid: Dispatch<SetStateAction<string>>;
+  alignmentData: AlignmentData;
+  setHistory: Dispatch<SetStateAction<string[]>>;
+  setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
 }
 
-const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory }) => {
-  const location = useLocation();
-  const responseData = location.state?.responseData || null;
+const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData }) => {
   const [modalRegion, setModalRegion] = useState('');
   const handleModalRegion = (region: string) => {
-      setModalRegion(region);
+    setModalRegion(region);
   };
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const serverResponse = await fetch("http://localhost:8080/history/list", {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (!serverResponse.ok) {
+          throw new Error("Failed to fetch history list");
+        }
+        const responseData = await serverResponse.json();
+        setHistory(responseData);
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      }
+    };
+
+    fetchHistory();
+  },[]);
 
   return (
     <div>
@@ -41,18 +71,22 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
           </Nav>
           <div>
             {tab === 0 && (
-                <Alignment
-                    responseData={responseData}
-                    setMRNAReceived={setMRNAReceived}
-                    setPDBReceived={setPDBReceived}
-                    setTab={setTab}
-                    onRegionUpdate={handleModalRegion}
-                    workingHistory={workingHistory}
-                />
+              <Alignment
+                alignmentData={alignmentData}
+                setMRNAReceived={setMRNAReceived}
+                setPDBReceived={setPDBReceived}
+                setTab={setTab}
+                onRegionUpdate={handleModalRegion}
+                workingHistory={workingHistory}
+                setLinearDesignData={setLinearDesignData}
+                setPDBids={setPDBids}
+                setPDBInfo={setPDBInfo}
+                setSelectedPDBid={setSelectedPDBid}
+              />
             )}
-            {tab === 1 && <MRNAdesign />}
-            {tab === 2 && <Render3D region={modalRegion} />}
-        </div>
+            {tab === 1 && <MRNAdesign workingHistory={workingHistory} linearDesignData={linearDesignData}/>}
+            {tab === 2 && <Render3D region={modalRegion} PDBids={PDBids} PDBInfo={PDBInfo} selectedPDBid={selectedPDBid} setSelectedPDBid={setSelectedPDBid} />}
+          </div>
         </>
       </div>
     </div>

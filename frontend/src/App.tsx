@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./styles/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -7,6 +7,7 @@ import InputSeq from "./pages/InputSeq";
 import Analysis from "./pages/Analysis";
 import Sidebar from "./components/Sidebar";
 import HeaderBar from "./components/HeaderBar";
+import { MRNAData, AlignmentData, PDBResponse } from './components/types';
 
 function App() {
   let navigate = useNavigate();
@@ -18,6 +19,15 @@ function App() {
   const [PDBReceived, setPDBReceived] = useState(false);
   const [tab, setTab] = useState(0);
   const [workingHistory, setWorkingHistory] = useState("");
+  const [linearDesignData, setLinearDesignData] = useState<MRNAData | null>(null);
+  const [PDBids, setPDBids] = useState<string[]>([]);
+  const [PDBInfo, setPDBInfo] = useState<string[]>([]);
+  const [selectedPDBid, setSelectedPDBid] = useState("");
+  const [alignmentData, setAlignmentData] = useState<AlignmentData>({
+    aligned_sequences: {},
+    alignment_index: {},
+  });
+  
 
   useEffect(() => {
     if (location.pathname === "/") {
@@ -29,26 +39,13 @@ function App() {
     }
   }, [location.pathname]);
 
-  useEffect(() => {
-    const fetchHistory = async () => {
-      try {
-        const serverResponse = await fetch("http://localhost:8080/history/list");
-        if (!serverResponse.ok) {
-          throw new Error("Failed to fetch history list");
-        }
-        const responseData = await serverResponse.json();
-        setHistory(responseData.reverse());
-      } catch (error) {
-        console.error("Error fetching history:", error);
-      }
-    };
 
-    fetchHistory();
-  }, [navigate]);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleEditClick = () => {return;};
+  const handleEditClick = () => { return; };
+
+
   return (
     <div className="App">
       <Sidebar
@@ -62,6 +59,11 @@ function App() {
         setTab={setTab}
         workingHistory={workingHistory}
         setWorkingHistory={setWorkingHistory}
+        setLinearDesignData={setLinearDesignData}
+        setPDBids={setPDBids}
+        setPDBInfo={setPDBInfo}
+        setSelectedPDBid={setSelectedPDBid}
+        setAlignmentData={setAlignmentData}
       />
 
       <div className={`content-container ${show ? "shrink" : ""}`}>
@@ -75,11 +77,24 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Home setHistory={setHistory} setShow={setShow} setMRNAReceived={setMRNAReceived} setPDBReceived={setPDBReceived} />}
+            element={<Home 
+              history={history}
+              setHistory={setHistory} 
+              setShow={setShow} 
+              setMRNAReceived={setMRNAReceived} 
+              setPDBReceived={setPDBReceived} />}
           />
           <Route
             path="/inputSeq"
-            element={<InputSeq setTab={setTab} setWorkingHistory={setWorkingHistory} setMRNAReceived={setMRNAReceived} setPDBReceived={setPDBReceived}/>}
+            element={<InputSeq
+              setTab={setTab}
+              setWorkingHistory={setWorkingHistory}
+              workingHistory={workingHistory}
+              setMRNAReceived={setMRNAReceived}
+              setPDBReceived={setPDBReceived}
+              setAlignmentData={setAlignmentData}
+              setHistory={setHistory}
+            />}
           />
           <Route
             path="/analysis"
@@ -91,6 +106,18 @@ function App() {
               PDBReceived={PDBReceived}
               setPDBReceived={setPDBReceived}
               workingHistory={workingHistory}
+              setWorkingHistory={setWorkingHistory}
+              linearDesignData={linearDesignData}
+              setLinearDesignData={setLinearDesignData}
+              PDBids={PDBids}
+              setPDBids={setPDBids}
+              PDBInfo={PDBInfo}
+              setPDBInfo={setPDBInfo}
+              selectedPDBid={selectedPDBid}
+              setSelectedPDBid={setSelectedPDBid}
+              alignmentData={alignmentData}
+              setHistory={setHistory}
+              setAlignmentData={setAlignmentData}
             />}
           />
         </Routes>

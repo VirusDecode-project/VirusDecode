@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class HistoryDTO {
+public class HistoryDto {
     private String historyName;
     private String newName;
 }

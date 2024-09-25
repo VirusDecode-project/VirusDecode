@@ -1,17 +1,17 @@
-import React, {Dispatch, SetStateAction} from 'react';
+import React, { useEffect, Dispatch, SetStateAction } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
 
 interface HomeProps {
+  history: string[],
   setHistory: Dispatch<SetStateAction<string[]>>;
   setShow: Dispatch<SetStateAction<boolean>>;
-  setMRNAReceived:Dispatch<SetStateAction<boolean>>;
+  setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
-} 
+}
 
-const Home: React.FC<HomeProps> = ({ setHistory, setShow, setMRNAReceived, setPDBReceived }) => {
+const Home: React.FC<HomeProps> = ({ history, setHistory, setShow, setMRNAReceived, setPDBReceived }) => {
   let navigate = useNavigate();
-
   return (
     <div>
       <div className="main-bg"></div>
@@ -25,7 +25,28 @@ const Home: React.FC<HomeProps> = ({ setHistory, setShow, setMRNAReceived, setPD
         onClick={() => {
           const fetchHistory = async () => {
             try {
-              const serverResponse = await fetch("http://localhost:8080/history/list");
+              ///////////////test Login
+              const loginData = { username: "root", password: "1234" };
+              const loginResponse = await fetch('http://localhost:8080/user/login', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+              });
+
+              if (!loginResponse.ok) {
+                const errorMessage = await loginResponse.text();
+                throw new Error(errorMessage);
+              }
+              await loginResponse.text();
+              ////////////////////////test
+
+              const serverResponse = await fetch("http://localhost:8080/history/list", {
+                method: 'GET',
+                credentials: 'include',
+              });
               if (!serverResponse.ok) {
                 throw new Error("Failed to fetch history list");
               }
@@ -37,10 +58,10 @@ const Home: React.FC<HomeProps> = ({ setHistory, setShow, setMRNAReceived, setPD
           };
 
           fetchHistory();
-          navigate("inputSeq");
           setShow(true); // Make sure the sidebar shows after navigation
           setMRNAReceived(false);
           setPDBReceived(false);
+          navigate("inputSeq");
         }}
       >
         Try Decoding

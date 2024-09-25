@@ -30,21 +30,7 @@ const CreateModal: React.FC<CreateModalProps> = ({ show, onClose }) => {
     onClose();
   }
 
-  const handleStartNew = async() => {
-      try {
-        const serverResponse = await fetch("http://localhost:8080/history/deleteData");
-  
-        if (!serverResponse.ok) {
-          const errorMessage = await serverResponse.text();
-          throw new Error(errorMessage);
-        }
-  
-        await serverResponse.text();
-      } catch (error) {
-        if (error instanceof Error){
-          console.error("An error occurred while fetching history details: ", error.message);
-        }
-      }
+  const handleStartNew = () => {
     navigate('/InputSeq'); // Navigate to the InputSeq page
     onClose(); // Close the modal after navigation
   };
