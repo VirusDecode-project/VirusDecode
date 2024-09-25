@@ -1,23 +1,26 @@
 package VirusDecode.backend.entity;
 
 import jakarta.persistence.*;
-//import lombok.AllArgsConstructor;
-import lombok.Data;
-//import lombok.NoArgsConstructor;
 
 @Entity
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-public class JsonDataEntity {
+@Table(name = "history_data")
+public class HistoryData {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;  // This will be the unique key to identify each JSON object (e.g., "metadata", "alignment")
+    @Id
+    @Column(name = "data_type", nullable = false)
+    private String dataType;  // This will be the unique key to identify each JSON object (e.g., "metadata", "alignment")
 
-    @Column(columnDefinition = "TEXT")  // Store JSON data as a large text field in the database
-    private String jsonData;  // This will store the actual JSON string
+//    @Column(name = "data_value", columnDefinition = "TEXT")
+    @Column(name = "data_value", columnDefinition = "json")
+    private String dataValue;  // This will store the actual JSON string
+
+    @ManyToOne
+    @JoinColumn(name = "history_id")
+    private History history;  // 해당 데이터가 속하는 히스토리
+
 
     public Long getId() {
         return id;
@@ -27,18 +30,25 @@ public class JsonDataEntity {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDataType() {
+        return dataType;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 
-    public void setJsonData(String jsonData){
-        this.jsonData=jsonData;
+    public void setDataValue(String dataValue){
+        this.dataValue = dataValue;
     }
-    public String getJsonData(){
-        return jsonData;
+    public String getDataValue(){
+        return dataValue;
+    }
+    public History getHistory() {
+        return history;
+    }
+
+    public void setHistory(History history) {
+        this.history = history;
     }
 }
