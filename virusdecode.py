@@ -359,9 +359,8 @@ if __name__ == "__main__":
         if len(sys.argv) < 5:
             sys.exit(2)
 
-        # get metadata
-        metadata = json.loads(sys.argv[3])
-        reference_id = metadata.get("Sequence ID", None)
+        # get reference_id
+        reference_id = sys.argv[3]
 
         # read fasta file
         variant_sequences = {}
@@ -389,9 +388,8 @@ if __name__ == "__main__":
         if len(sys.argv) < 9:
             sys.exit(2)
             
-        # get metadata
-        metadata = json.loads(sys.argv[3])
-        reference_id = metadata.get("Sequence ID", None)
+        # get reference_id
+        reference_id = sys.argv[3]
 
         # get alignment data
         alignment_data = json.loads(sys.argv[4])
@@ -423,9 +421,8 @@ if __name__ == "__main__":
         if len(sys.argv) < 6:
             sys.exit(2)
 
-        # get metadata
-        metadata = json.loads(sys.argv[3])
-        reference_id = metadata.get("Sequence ID", None)
+        # get reference_id
+        reference_id = sys.argv[3]
 
         # get alignment data
         alignment_data = json.loads(sys.argv[4])
