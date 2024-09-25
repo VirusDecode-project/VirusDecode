@@ -12,4 +12,6 @@ public class VarientDto {
     private String referenceSequenceId;
     private Map<String, String> sequences;
     private List<FastaFileDto> files;
+    private String historyName;
+    private String referenceId;
 }

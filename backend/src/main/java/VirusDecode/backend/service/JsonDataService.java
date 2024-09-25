@@ -1,57 +1,54 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.entity.JsonDataEntity;
+import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.repository.JsonDataRepository;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class JsonDataService {
 
-    private final JsonDataRepository jsonDataRepository;
-
     @Autowired
-    public JsonDataService(JsonDataRepository jsonDataRepository) {
-        this.jsonDataRepository = jsonDataRepository;
-    }
+    private JsonDataRepository jsonDataRepository;
 
-    // Store JSON data
     @Transactional
-    public void saveJsonData(String name, String jsonData) {
-        JsonDataEntity jsonDataEntity = new JsonDataEntity();
-        jsonDataEntity.setName(name);
-        jsonDataEntity.setJsonData(jsonData);
-        jsonDataRepository.save(jsonDataEntity);
+    public JsonData saveJsonData(JsonData jsonData) {
+        return jsonDataRepository.save(jsonData);
     }
 
-    // Retrieve JSON data
-    public String getJsonData(String name) {
-        Optional<JsonDataEntity> jsonDataEntity = jsonDataRepository.findByName(name);
-        return jsonDataEntity.map(JsonDataEntity::getJsonData).orElse(null);
-    }
-
-    // Retrieve all JSON data
-    public Iterable<JsonDataEntity> getAllJsonData() {
-        return jsonDataRepository.findAll();
+    public Optional<JsonData> getJsonDataById(Long id) {
+        return jsonDataRepository.findById(id);
     }
 
     @Transactional
-    public void deleteAllJsonData() {
-        jsonDataRepository.deleteAll();  // 기존 데이터 삭제
+    public void deleteJsonData(Long id) {
+        jsonDataRepository.deleteById(id);
     }
 
-    // Delete JSON data by key
+    public JsonData getJsonData(String historyName, Long userId) {
+        return jsonDataRepository.findByHistoryNameAndUserId(historyName, userId);
+    }
+
+    public List<String> getHistoryNamesByUserId(Long userId) {
+        List<String> historyNames = jsonDataRepository.findHistoryNamesByUserId(userId);
+        Collections.reverse(historyNames);
+        return historyNames;
+    }
+
     @Transactional
-    public void deleteJsonData(String name) {
-        jsonDataRepository.deleteByName(name);
+    public void updateHistoryName(String historyName, String newName, Long userId) {
+        jsonDataRepository.updateHistoryName(historyName, newName, userId);
     }
 
-    public Optional<JsonDataEntity> findByName(String name) {
-        return jsonDataRepository.findByName(name);
+    @Transactional
+    public void deleteHistory(String historyName, Long userId){
+        jsonDataRepository.deleteByHistoryNameAndUserId(historyName, userId);
     }
+
 }
