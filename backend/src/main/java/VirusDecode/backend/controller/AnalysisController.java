@@ -8,6 +8,7 @@ import VirusDecode.backend.service.JsonDataService;
 import VirusDecode.backend.service.PythonScriptService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.nio.file.Path;
@@ -35,13 +36,18 @@ public class AnalysisController {
         String start = String.valueOf(request.getStart());
         String end = String.valueOf(request.getEnd());
         String historyName = request.getHistoryName();
-
-        Long userId = (Long) session.getAttribute("userId");
-
         String referenceId;
         String alignmentJson;
 
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
         JsonData jsonData = jsonDataService.getJsonData(historyName, userId);
+        if (jsonData == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
+        }
+
         referenceId = jsonData.getReferenceId();
         alignmentJson = jsonData.getAlignment();
 
@@ -58,12 +64,18 @@ public class AnalysisController {
     public ResponseEntity<String> getPdb(@RequestBody PdbDto request, HttpSession session) {
         String gene = request.getGene();
         String historyName = request.getHistoryName();
-
-        Long userId = (Long) session.getAttribute("userId");
         String referenceId;
         String alignmentJson;
 
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
         JsonData jsonData = jsonDataService.getJsonData(historyName, userId);
+        if (jsonData == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
+        }
+
         referenceId = jsonData.getReferenceId();
         alignmentJson = jsonData.getAlignment();
 
