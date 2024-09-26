@@ -20,13 +20,19 @@ FROM base AS frontend
 WORKDIR /VirusDecode/frontend
 
 # Copy the frontend files from the host machine
-COPY ./frontend /VirusDecode/frontend
+COPY . /VirusDecode/frontend
 
 # Install Node.js dependencies
 RUN npm install
 
 # Build the React frontend
 RUN npm run build
+
+# Stage 3: Serve the frontend
+FROM base AS serve
+
+WORKDIR /VirusDecode/frontend
+COPY --from=frontend /VirusDecode/frontend/build /VirusDecode/frontend/build
 
 # Expose the frontend port
 EXPOSE 3000

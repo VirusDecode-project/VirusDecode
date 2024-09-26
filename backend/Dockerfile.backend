@@ -53,8 +53,7 @@ FROM base AS backend
 WORKDIR /VirusDecode/backend
 
 # Copy the backend files from the host machine
-COPY ./backend /VirusDecode/backend
-COPY ./virusdecode.py /VirusDecode/
+COPY . /VirusDecode/backend
 
 # Grant executable permissions for Gradle wrapper
 RUN chmod +x ./gradlew
@@ -62,8 +61,18 @@ RUN chmod +x ./gradlew
 # Build the Spring Boot application
 RUN ./gradlew build
 
+# Final image for deployment
+FROM base AS deploy
+
+# Set the working directory for the final image
+WORKDIR /app/backend
+
+# Copy the jar file from the builder stage
+COPY --from=backend /VirusDecode/backend/build/libs/virusdecode.jar /app/backend/virusdecode.jar
+COPY --from=backend /VirusDecode/backend/virusdecode.py /app/backend/virusdecode.py
+COPY --from=backend /VirusDecode/backend/mydb.db /app/backend/mydb.db
 # Expose the backend port
 EXPOSE 8080
 
 # Set the entry point for the backend application
-CMD ["java", "-jar", "/VirusDecode/backend/build/libs/virusdecode.jar"]
+CMD ["java", "-jar", "/app/backend/virusdecode.jar"]

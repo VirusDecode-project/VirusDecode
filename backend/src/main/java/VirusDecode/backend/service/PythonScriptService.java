@@ -14,8 +14,7 @@ import java.util.List;
 
 @Service
 public class PythonScriptService {
-    private static final Path currentDir = Paths.get("").toAbsolutePath();
-    private static final Path pythonScriptPath = currentDir.resolve("../virusdecode.py").normalize();
+    private static final String pythonScriptPath = Paths.get("").toAbsolutePath().resolve("virusdecode.py").normalize().toString();
     private static final Logger logger = LoggerFactory.getLogger(PythonScriptService.class);
 
     // ProcessBuilder를 생성하는 메서드를 따로 분리하여 테스트에서 모의 가능하도록 설계
@@ -33,9 +32,7 @@ public class PythonScriptService {
             } else {
                 command.add("python3"); // Linux, MacOS에서는 python3 사용
             }
-//            command.add("python3");
-            command.add(pythonScriptPath.toString());
-            command.add(currentDir.toString());
+            command.add(pythonScriptPath);
 
             if (args != null) {
                 for (String arg : args) {
@@ -82,9 +79,9 @@ public class PythonScriptService {
                     default -> ResponseEntity.status(500).body("Error executing Python script: " + errorOutput);
                 };
             }
-            if (!output.isEmpty()) {
-                logger.info("Python script output: \n{}", output);
-            }
+//            if (!output.isEmpty()) {
+//                logger.info("Python script output: \n{}", output);
+//            }
             return ResponseEntity.ok(output.toString());
         } catch (Exception e) {
             logger.error("Python Script 실행 과정에서 알 수 없는 오류가 발생했습니다: {}", e.getMessage());
