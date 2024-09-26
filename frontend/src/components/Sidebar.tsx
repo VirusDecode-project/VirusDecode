@@ -116,6 +116,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         setLinearDesignData(linearDesignJson);
         setMRNAReceived(true);
       } else {
+        setTab(0)
         setMRNAReceived(false);
       }
 
@@ -125,6 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         setPDBids(keys);
         const values = Object.values(pdbJson);
         setPDBInfo(values);
+        setPDBReceived(true);
         if (keys.length > 0) {
           for (let i = 0; i < keys.length; i++) {
             const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
@@ -134,12 +136,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             }
           }
         }
-        setPDBReceived(true);
       } else {
         setPDBReceived(false);
       }
       setWorkingHistory(historyName);
-      // setTab(0)
       navigate('/analysis');
     } catch (error) {
       if (error instanceof Error) {
