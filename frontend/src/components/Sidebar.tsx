@@ -139,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         setPDBReceived(false);
       }
       setWorkingHistory(historyName);
-      setTab(0)
+      // setTab(0)
       navigate('/analysis');
     } catch (error) {
       if (error instanceof Error) {
