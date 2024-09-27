@@ -25,9 +25,27 @@ const Home: React.FC<HomeProps> = ({ history, setHistory, setShow, setMRNAReceiv
         onClick={() => {
           const fetchHistory = async () => {
             try {
+              ///////////////test signUp
+              const signUpData = { firstName:"John", lastName:"Doe", loginId: "johndoe123", password: "1234" };
+              const signUpResponse = await fetch('http://localhost:8080/auth/signup', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signUpData),
+              });
+
+              if (!signUpResponse.ok) {
+                const errorMessage = await signUpResponse.text();
+                throw new Error(errorMessage);
+              }
+              await signUpResponse.text();
+
+              ////////////////////////test
               ///////////////test Login
-              const loginData = { username: "root", password: "1234" };
-              const loginResponse = await fetch('http://localhost:8080/user/login', {
+              const loginData = { loginId: "johndoe123", password: "1234" };
+              const loginResponse = await fetch('http://localhost:8080/auth/login', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

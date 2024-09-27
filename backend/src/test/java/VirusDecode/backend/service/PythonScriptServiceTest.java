@@ -27,30 +27,35 @@ class PythonScriptServiceTest {
     }
 
     @Test
-    void testExecutePythonScriptSuccess() throws Exception {
+    void 메타데이터_성공1() throws Exception {
         // Act
         ResponseEntity<String> response = pythonScriptService.executePythonScript("1", "NC_045512");
 
         // Assert
         assertEquals(200, response.getStatusCodeValue());
     }
-//
-//    @Test
-//    void testExecutePythonScriptSuccess2() throws Exception {
-//        String fastaContent = "";
-//        String metadataJson = "{\n" +
-//                "    \"Sequence ID\": \"NC_001803.1\",\n" +
-//                "    \"Name\": \"NC_001803\",\n" +
-//                "    \"Description\": \"Respiratory syncytial virus, complete genome\",\n" +
-//                "    \"Length\": 15191\n" +
-//                "}";
-//
-//        // Act
-//        ResponseEntity<String> response = pythonScriptService.executePythonScript("2", metadataJson, fastaContent);
-//
-//        // Assert
-//        assertEquals(200, response.getStatusCodeValue());
-//    }
+
+    @Test
+    void testExecutePythonScriptSuccess2() throws Exception {
+        String fastaContent = "";
+        String referenceId = "NC_001803.1";
+
+        // Act
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("2", referenceId, fastaContent);
+
+        // Assert
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    @Test
+    void args누락() throws Exception {
+        // Act
+        ResponseEntity<String> response = pythonScriptService.executePythonScript();
+
+        // Assert: Verify the error message for exit code 1
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("Error: No arguments provided.", response.getBody());
+    }
 
     @Test
     void testNotAvailableNucleotide() throws Exception {
@@ -66,31 +71,25 @@ class PythonScriptServiceTest {
     @Test
     void testEmptyArgument() throws Exception {
         // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript();
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("1");
 
         // Assert: Verify the error message for exit code 11
         assertEquals(500, response.getStatusCodeValue());
         assertEquals("전달된 인자가 부족합니다.", response.getBody());
     }
-//
-//    @Test
-//    void testLinearDesignCase31() throws Exception {
-//        String metadataJson = "{\n" +
-//                "    \"Sequence ID\": \"NC_001803.1\",\n" +
-//                "    \"Name\": \"NC_001803\",\n" +
-//                "    \"Description\": \"Respiratory syncytial virus, complete genome\",\n" +
-//                "    \"Length\": 15191\n" +
-//                "}";
-//
-//        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
-//
-//        // Act
-//        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", metadataJson, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
-//
-//        // Assert: Verify the error message for exit code 11
-//        assertEquals(500, response.getStatusCodeValue());
-//        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
-//    }
+
+    @Test
+    void testLinearDesignCase31() throws Exception {
+        String referenceId = "NC_001803.1";
+        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
+
+        // Act
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", referenceId, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
+
+        // Assert: Verify the error message for exit code 11
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
+    }
 
     @Test
     void testExitCode1() throws Exception {
@@ -102,7 +101,7 @@ class PythonScriptServiceTest {
         when(processMock.waitFor()).thenReturn(1);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("2");
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -117,8 +116,11 @@ class PythonScriptServiceTest {
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(21);
 
+        String fastaContent = "";
+        String referenceId = "NC_001803.1";
+
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("2", referenceId, fastaContent);
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -133,8 +135,11 @@ class PythonScriptServiceTest {
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(32);
 
+        String fastaContent = "";
+        String referenceId = "NC_001803.1";
+
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("2", referenceId, fastaContent);
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -149,8 +154,11 @@ class PythonScriptServiceTest {
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(33);
 
-        // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        String referenceId = "NC_001803.1";
+        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
+
+        // Act
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("3", referenceId, alignmentJson, "ORF1ab", "NC_001803.1", "1", "10");
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -165,8 +173,13 @@ class PythonScriptServiceTest {
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(41);
 
+
+        String referenceId = "NC_001803.1";
+        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
+        String gene = "ORF1ab";
+
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("4", referenceId, alignmentJson, gene);
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -181,8 +194,12 @@ class PythonScriptServiceTest {
         when(processMock.getErrorStream()).thenReturn(errorStreamMock);
         when(processMock.waitFor()).thenReturn(42);
 
+        String referenceId = "NC_001803.1";
+        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
+        String gene = "ORF1ab";
+
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("4", referenceId, alignmentJson, gene);
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
@@ -198,7 +215,7 @@ class PythonScriptServiceTest {
         when(processMock.waitFor()).thenReturn(5);
 
         // Act: Python 스크립트 실행
-        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript();
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("1");
 
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());

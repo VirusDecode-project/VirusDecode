@@ -1,4 +1,5 @@
 package VirusDecode.backend.controller;
+import VirusDecode.backend.dto.SignUpDto;
 import VirusDecode.backend.dto.UserLoginDto;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.service.UserService;
@@ -9,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 public class UserController {
     private final UserService userService;
 
@@ -20,21 +21,27 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody UserLoginDto loginDto, HttpSession session) {
-        User user = userService.findUserByUsername(loginDto.getUsername());
+        User user = userService.findUserByLoginId(loginDto.getLoginId());
         session.setMaxInactiveInterval(3600);
 
         if (user == null) {
-            user = userService.createUser(loginDto);
-            session.setAttribute("userId", user.getId());
-            return ResponseEntity.ok("New user created and logged in.");
+            return ResponseEntity.status(401).body("Invalid login ID.");
         }
 
-        // 기존 유저 로그인 처리
         if (userService.checkPassword(user, loginDto.getPassword())) {
             session.setAttribute("userId", user.getId());
             return ResponseEntity.ok("User logged in successfully.");
         } else {
             return ResponseEntity.status(401).body("Invalid password.");
         }
+    }
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(@RequestBody SignUpDto signupDto) {
+        if (userService.findUserByLoginId(signupDto.getLoginId()) != null) {
+            return ResponseEntity.status(400).body("Login ID already exists.");
+        }
+
+        User newUser = userService.createUser(signupDto);
+        return ResponseEntity.ok("User created successfully with ID: " + newUser.getId());
     }
 }
