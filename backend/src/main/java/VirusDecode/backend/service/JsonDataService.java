@@ -22,15 +22,6 @@ public class JsonDataService {
         return jsonDataRepository.save(jsonData);
     }
 
-    public Optional<JsonData> getJsonDataById(Long id) {
-        return jsonDataRepository.findById(id);
-    }
-
-    @Transactional
-    public void deleteJsonData(Long id) {
-        jsonDataRepository.deleteById(id);
-    }
-
     public JsonData getJsonData(String historyName, Long userId) {
         return jsonDataRepository.findByHistoryNameAndUserId(historyName, userId);
     }

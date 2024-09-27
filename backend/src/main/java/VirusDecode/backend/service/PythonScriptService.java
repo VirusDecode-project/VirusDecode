@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -33,12 +34,10 @@ public class PythonScriptService {
                 command.add("python3"); // Linux, MacOS에서는 python3 사용
             }
             command.add(pythonScriptPath);
-
-            if (args != null) {
-                for (String arg : args) {
-                    command.add(arg);
-                }
+            if (args.length == 0) {
+                return ResponseEntity.status(500).body("Error: No arguments provided.");
             }
+            command.addAll(Arrays.asList(args));
 
             ProcessBuilder pb = createProcessBuilder(command);
             Process process = pb.start();
