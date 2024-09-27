@@ -1,6 +1,6 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.dto.UserLoginDto;
+import VirusDecode.backend.dto.SignUpDto;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +12,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class UserServiceTest {
@@ -28,63 +29,113 @@ class UserServiceTest {
     }
 
     @Test
-    void testFindUserByUsername() {
-        String username = "testUser";
+    void testFindUserByLoginId_UserExists() {
+        // Given
         User user = new User();
-        user.setUsername(username);
-        when(userRepository.findByUsername(username)).thenReturn(user);
+        user.setLoginId("testUser");
+        when(userRepository.findByLoginId("testUser")).thenReturn(user);
 
-        User result = userService.findUserByUsername(username);
+        // When
+        User result = userService.findUserByLoginId("testUser");
 
+        // Then
         assertNotNull(result);
-        assertEquals(username, result.getUsername());
-        verify(userRepository, times(1)).findByUsername(username);
+        assertEquals("testUser", result.getLoginId());
+        verify(userRepository, times(1)).findByLoginId("testUser");
     }
 
     @Test
-    void testCreateUser() {
-        UserLoginDto loginDto = new UserLoginDto();
-        loginDto.setUsername("newUser");
-        loginDto.setPassword("password");
+    void testFindUserByLoginId_UserDoesNotExist() {
+        // Given
+        when(userRepository.findByLoginId("nonExistentUser")).thenReturn(null);
+
+        // When
+        User result = userService.findUserByLoginId("nonExistentUser");
+
+        // Then
+        assertNull(result);
+        verify(userRepository, times(1)).findByLoginId("nonExistentUser");
+    }
+
+    @Test
+    void testCreateUser_Success() {
+        // Given
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setFirstName("John");
+        signUpDto.setLastName("Doe");
+        signUpDto.setLoginId("johndoe123");
+        signUpDto.setPassword("securePassword");
 
         User user = new User();
-        user.setUsername("newUser");
-        user.setPassword("password");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setLoginId("johndoe123");
+        user.setPassword("securePassword");
 
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User result = userService.createUser(loginDto);
+        // When
+        User result = userService.createUser(signUpDto);
 
+        // Then
         assertNotNull(result);
-        assertEquals("newUser", result.getUsername());
-        assertEquals("password", result.getPassword());
+        assertEquals("johndoe123", result.getLoginId());
+        assertEquals("securePassword", result.getPassword());
         verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
-    void testCheckPassword() {
+    void testCheckPassword_ValidPassword() {
+        // Given
         User user = new User();
-        user.setPassword("password");
+        user.setPassword("correctPassword");
 
-        boolean result = userService.checkPassword(user, "password");
+        // When
+        boolean result = userService.checkPassword(user, "correctPassword");
 
+        // Then
         assertTrue(result);
+    }
 
-        result = userService.checkPassword(user, "wrongPassword");
+    @Test
+    void testCheckPassword_InvalidPassword() {
+        // Given
+        User user = new User();
+        user.setPassword("correctPassword");
 
+        // When
+        boolean result = userService.checkPassword(user, "wrongPassword");
+
+        // Then
         assertFalse(result);
     }
 
     @Test
-    void testGetUserById() {
-        Long userId = 1L;
+    void testGetUserById_UserExists() {
+        // Given
         User user = new User();
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        user.setId(1L);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
-        Optional<User> result = userService.getUserById(userId);
+        // When
+        Optional<User> result = userService.getUserById(1L);
 
+        // Then
         assertTrue(result.isPresent());
-        assertEquals(user, result.get());
-        verify(userRepository, times(1)).findById(userId);
+        assertEquals(1L, result.get().getId());
+        verify(userRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void testGetUserById_UserDoesNotExist() {
+        // Given
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // When
+        Optional<User> result = userService.getUserById(1L);
+
+        // Then
+        assertFalse(result.isPresent());
+        verify(userRepository, times(1)).findById(1L);
     }
 }
