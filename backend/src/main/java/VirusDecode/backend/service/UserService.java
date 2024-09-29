@@ -6,6 +6,7 @@ import VirusDecode.backend.entity.User;
 import VirusDecode.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,6 +15,10 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId);
@@ -25,14 +30,13 @@ public class UserService {
         newUser.setFirstName(signUpDto.getFirstName());
         newUser.setLastName(signUpDto.getLastName());
         newUser.setLoginId(signUpDto.getLoginId());
-        newUser.setPassword(signUpDto.getPassword());
+        newUser.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
 
         return userRepository.save(newUser);
     }
 
     public boolean checkPassword(User user, String password) {
-        // 비밀번호 확인 로직 구현
-        return user.getPassword().equals(password); // 단순 비교 예시
+        return passwordEncoder.matches(password, user.getPassword());
     }
 
     // userId로 유저 객체를 반환
