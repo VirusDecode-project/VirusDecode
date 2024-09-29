@@ -30,6 +30,7 @@ interface UploadedFile {
 
 const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory}) => {
   let navigate = useNavigate();
+
   useEffect(() => {
     const fetchHistory = async () => {
       try {
@@ -48,7 +49,8 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
     };
 
     fetchHistory();
-  });
+  }, []);
+
 
   const [editingFileIndex, setEditingFileIndex] = useState<number | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
