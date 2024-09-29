@@ -3,6 +3,8 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import "./styles/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import InputSeq from "./pages/InputSeq";
 import Analysis from "./pages/Analysis";
 import Sidebar from "./components/Sidebar";
@@ -30,7 +32,7 @@ function App() {
   
 
   useEffect(() => {
-    if (location.pathname === "/") {
+    if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup") {
       setIsHome(true);
       setShow(false);
     } else {
@@ -77,12 +79,21 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Home 
+            element={<Home/>}
+          />
+          <Route
+            path="/login"
+            element={<Login
               history={history}
               setHistory={setHistory} 
               setShow={setShow} 
               setMRNAReceived={setMRNAReceived} 
-              setPDBReceived={setPDBReceived} />}
+              setPDBReceived={setPDBReceived}
+            />}
+          />
+          <Route
+            path="/signup"
+            element={<Signup/>}
           />
           <Route
             path="/inputSeq"

@@ -1,0 +1,139 @@
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 90vh;
+  margin: 30px auto;
+  width: 100%; 
+  padding: 200px; 
+  box-sizing: border-box; 
+}
+
+.loginTitle{
+  font-size: 30px;
+  font-weight: 550;
+}
+
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.input-container {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.loginInput {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.loginInput:focus {
+  border-color: #0fb9af; 
+}
+
+.loginLabel {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  background-color: white;
+  padding: 0 5px;
+  color: #aaa;
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+.loginInput:focus + .loginLabel,
+.loginInput:not(:placeholder-shown) + .loginLabel {
+  top: 0;
+  left: 10px;
+  color: #0fb9af; 
+  font-size: 12px;
+}
+
+.loginInput:not(:placeholder-shown) {
+  padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .loginInput {
+    padding: 12px;
+  }
+
+  .loginLabel {
+    font-size: 14px;
+  }
+
+  .loginInput:focus + .loginLabel,
+  .loginInput:not(:placeholder-shown) + .loginLabel {
+    font-size: 11px;
+  }
+}
+.loginBtn {
+  width: 100%;
+  padding: 15px;
+  margin-top: 20px;
+  background-color: #0fb9af;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.loginBtn:hover {
+  background-color: #0a8f86;
+}
+
+.linkButtons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.gotoSignupBtn{
+  background-color: transparent;
+  border: none;
+  color: #0fb9af;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.forgotPasswordBtn {
+  background-color: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0 10px;
+  transition: color 0.3s ease;
+}
+
+.gotoSignupBtn:hover{
+  color: #0a8f86;
+  text-decoration: underline;
+}
+
+.forgotPasswordBtn:hover {
+  color: #aaa;
+  text-decoration: underline;
+}
