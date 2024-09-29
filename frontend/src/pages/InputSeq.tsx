@@ -48,7 +48,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
     };
 
     fetchHistory();
-  });
+  },[]);
 
   const [editingFileIndex, setEditingFileIndex] = useState<number | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
