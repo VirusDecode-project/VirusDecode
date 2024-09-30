@@ -29,19 +29,17 @@ public class AnalysisController {
 
 
     @PostMapping("/linearDesign")
-    public ResponseEntity<String> getLinearDesign(@RequestBody LinearDesignDto request, HttpSession session) {
+    public ResponseEntity<String> getLinearDesign(@RequestBody LinearDesignDto request) {
         String region = request.getRegion();
         String varientName = request.getVarientName();
         String start = String.valueOf(request.getStart());
         String end = String.valueOf(request.getEnd());
         String historyName = request.getHistoryName();
 
-        Long userId = (Long) session.getAttribute("userId");
-
         String referenceId;
         String alignmentJson;
 
-        JsonData jsonData = jsonDataService.getJsonData(historyName, userId);
+        JsonData jsonData = jsonDataService.getJsonData(historyName);
         referenceId = jsonData.getReferenceId();
         alignmentJson = jsonData.getAlignment();
 
@@ -55,15 +53,14 @@ public class AnalysisController {
     }
 
     @PostMapping("/pdb")
-    public ResponseEntity<String> getPdb(@RequestBody PdbDto request, HttpSession session) {
+    public ResponseEntity<String> getPdb(@RequestBody PdbDto request) {
         String gene = request.getGene();
         String historyName = request.getHistoryName();
 
-        Long userId = (Long) session.getAttribute("userId");
         String referenceId;
         String alignmentJson;
 
-        JsonData jsonData = jsonDataService.getJsonData(historyName, userId);
+        JsonData jsonData = jsonDataService.getJsonData(historyName);
         referenceId = jsonData.getReferenceId();
         alignmentJson = jsonData.getAlignment();
 

@@ -6,7 +6,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -22,33 +21,24 @@ public class JsonDataService {
         return jsonDataRepository.save(jsonData);
     }
 
-    public Optional<JsonData> getJsonDataById(Long id) {
-        return jsonDataRepository.findById(id);
+    public JsonData getJsonData(String historyName) {
+        return jsonDataRepository.findByHistoryName(historyName);
     }
 
-    @Transactional
-    public void deleteJsonData(Long id) {
-        jsonDataRepository.deleteById(id);
-    }
-
-    public JsonData getJsonData(String historyName, Long userId) {
-        return jsonDataRepository.findByHistoryNameAndUserId(historyName, userId);
-    }
-
-    public List<String> getHistoryNamesByUserId(Long userId) {
-        List<String> historyNames = jsonDataRepository.findHistoryNamesByUserId(userId);
+    public List<String> getHistoryNames() {
+        List<String> historyNames = jsonDataRepository.findHistoryNames();
         Collections.reverse(historyNames);
         return historyNames;
     }
 
     @Transactional
-    public void updateHistoryName(String historyName, String newName, Long userId) {
-        jsonDataRepository.updateHistoryName(historyName, newName, userId);
+    public void updateHistoryName(String historyName, String newName) {
+        jsonDataRepository.updateHistoryName(historyName, newName);
     }
 
     @Transactional
-    public void deleteHistory(String historyName, Long userId){
-        jsonDataRepository.deleteByHistoryNameAndUserId(historyName, userId);
+    public void deleteHistory(String historyName){
+        jsonDataRepository.deleteByHistoryName(historyName);
     }
 
 }

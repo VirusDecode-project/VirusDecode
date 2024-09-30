@@ -3,7 +3,6 @@ package VirusDecode.backend.controller;
 import VirusDecode.backend.dto.initialData.ReferenceDto;
 import VirusDecode.backend.dto.initialData.fasta.VarientDto;
 import VirusDecode.backend.entity.JsonData;
-import VirusDecode.backend.entity.User;
 import VirusDecode.backend.service.*;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
@@ -23,25 +22,24 @@ public class InitialDataController {
     private final PythonScriptService pythonScriptService;
     private final FastaFileService fastaFileService;  // Fasta 파일 처리를 위한 서비스 주입
     private final JsonDataService jsonDataService;
-    private final UserService userService;
 
     @Autowired
-    public InitialDataController(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService, UserService userService) {
+    public InitialDataController(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService) {
         this.pythonScriptService = pythonScriptService;
         this.fastaFileService = fastaFileService;
         this.jsonDataService = jsonDataService;
-        this.userService = userService;
     }
 
     @PostMapping("/metadata")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDto request) {
         String sequenceId = request.getSequenceId();
+        System.out.println(sequenceId);
         ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("1", sequenceId);
         return scriptResponse;
     }
 
     @PostMapping("/alignment")
-    public ResponseEntity<String> getAlignment(@RequestBody(required = false) VarientDto request, HttpSession session) {
+    public ResponseEntity<String> getAlignment(@RequestBody(required = false) VarientDto request) {
         String historyName = request.getHistoryName();
         String referenceId = request.getReferenceId();
         try {
@@ -50,17 +48,9 @@ public class InitialDataController {
             ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("2", referenceId, fastaContent);
             String alignmentJson = scriptResponse.getBody();
             if (scriptResponse.getStatusCode().is2xxSuccessful()) {
-                Long userId = (Long) session.getAttribute("userId");
-                Optional<User> userOptional = userService.getUserById(userId);
-                if (!userOptional.isPresent()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-                }
-                User user = userOptional.get();
-
-                // historyName 중복 체크
                 String originalHistoryName = historyName;
                 int counter = 1;
-                while (jsonDataService.getJsonData(historyName, userId) != null) {
+                while (jsonDataService.getJsonData(historyName) != null) {
                     historyName = originalHistoryName + "_" + counter;
                     counter++;
                 }
@@ -69,7 +59,6 @@ public class InitialDataController {
                 jsonData.setReferenceId(referenceId);
                 jsonData.setAlignment(alignmentJson);
                 jsonData.setHistoryName(historyName);
-                jsonData.setUser(user);
                 jsonDataService.saveJsonData(jsonData);
 
 

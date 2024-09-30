@@ -22,9 +22,7 @@ public class JsonData {
     @Column(columnDefinition = "TEXT")
     private String pdb;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id") // History와 연결
-    private User user;
+
 
     public String getHistoryName() {
         return historyName;
@@ -32,14 +30,6 @@ public class JsonData {
 
     public void setHistoryName(String historyName) {
         this.historyName = historyName;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public String getAlignment() {

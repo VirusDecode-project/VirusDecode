@@ -22,47 +22,29 @@ public class HistoryController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<String>> getListHistory(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-        }
-
-        List<String> historyList = jsonDataService.getHistoryNamesByUserId(userId);
+    public ResponseEntity<List<String>> getListHistory() {
+        List<String> historyList = jsonDataService.getHistoryNames();
         return ResponseEntity.ok(historyList);
     }
 
     @PutMapping("/rename")
-    public ResponseEntity<String> renameHistory(@RequestBody HistoryDto request, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-        }
-
-        jsonDataService.updateHistoryName(request.getHistoryName(), request.getNewName(), userId);
+    public ResponseEntity<String> renameHistory(@RequestBody HistoryDto request) {
+        jsonDataService.updateHistoryName(request.getHistoryName(), request.getNewName());
         return ResponseEntity.ok("History name updated successfully");
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteHistory(@RequestBody HistoryDto request, HttpSession session) {
+    public ResponseEntity<String> deleteHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-        }
 
-        jsonDataService.deleteHistory(historyName, userId);
+        jsonDataService.deleteHistory(historyName);
         return ResponseEntity.ok("History deleted successfully");
     }
 
     @PostMapping("/get")
-    public ResponseEntity<String> getHistory(@RequestBody HistoryDto request, HttpSession session) {
+    public ResponseEntity<String> getHistory(@RequestBody HistoryDto request) {
         String historyName = request.getHistoryName();
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-        }
-        JsonData jsonData = jsonDataService.getJsonData(historyName, userId);
+        JsonData jsonData = jsonDataService.getJsonData(historyName);
         if (jsonData == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
         }
