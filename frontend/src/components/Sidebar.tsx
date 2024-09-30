@@ -84,8 +84,6 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleHistoryClick = async (index: number) => {
     const historyName = history[index];
     const requestData = { historyName: historyName };
-    setWorkingHistory(historyName)
-
     try {
       // Fetch history details
       const serverResponse = await fetch("http://localhost:8080/history/get", {
@@ -127,6 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         const values = Object.values(pdbJson);
         setPDBInfo(values);
         if (keys.length > 0) {
+          setPDBReceived(true);
           for (let i = 0; i < keys.length; i++) {
             const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
             if (exist) {
@@ -135,11 +134,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             }
           }
         }
-        setPDBReceived(true);
       } else {
         setPDBReceived(false);
       }
-      
+      setWorkingHistory(historyName)
       navigate('/analysis');
     } catch (error) {
       if (error instanceof Error) {

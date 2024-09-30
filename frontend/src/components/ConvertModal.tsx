@@ -104,9 +104,9 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       const linearDesignResponse = await mRnaResponse.json();
 
       setMRNAReceived(true);
+      setLinearDesignData(linearDesignResponse);
       setTab(1);
       setIsLoading(false);
-      setLinearDesignData(linearDesignResponse);
   
       // 2. PDB 디자인 POST 요청
       const pdbData = { gene: selectedRegion, historyName: workingHistory};
@@ -129,8 +129,8 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
         setPDBids(keys);
         const values = Object.values(responseData);
         setPDBInfo(values);
-
-         if (keys.length > 0) {
+        if (keys.length > 0) {
+           setPDBReceived(true);
           for (let i = 0; i < keys.length; i++){
             const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
             if (exist) {
@@ -139,10 +139,6 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
             }
           }
         }
-
-      setPDBReceived(true);
-      setIsLoading(false);
-  
     } catch (error) {
       if (error instanceof Error){
         console.error("An error occurred during the request: ", error.message);
