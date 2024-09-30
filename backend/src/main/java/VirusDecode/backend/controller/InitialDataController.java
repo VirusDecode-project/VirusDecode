@@ -33,7 +33,6 @@ public class InitialDataController {
     @PostMapping("/metadata")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDto request) {
         String sequenceId = request.getSequenceId();
-        System.out.println(sequenceId);
         ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("1", sequenceId);
         return scriptResponse;
     }
