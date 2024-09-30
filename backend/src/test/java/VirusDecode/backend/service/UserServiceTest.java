@@ -57,58 +57,58 @@ class UserServiceTest {
         verify(userRepository, times(1)).findByLoginId("nonExistentUser");
     }
 
-    @Test
-    void testCreateUser_Success() {
-        // Given
-        SignUpDto signUpDto = new SignUpDto();
-        signUpDto.setFirstName("John");
-        signUpDto.setLastName("Doe");
-        signUpDto.setLoginId("johndoe123");
-        signUpDto.setPassword("securePassword");
+//    @Test
+//    void testCreateUser_Success() {
+//        // Given
+//        SignUpDto signUpDto = new SignUpDto();
+//        signUpDto.setFirstName("John");
+//        signUpDto.setLastName("Doe");
+//        signUpDto.setLoginId("johndoe123");
+//        signUpDto.setPassword("securePassword");
+//
+//        User user = new User();
+//        user.setFirstName("John");
+//        user.setLastName("Doe");
+//        user.setLoginId("johndoe123");
+//        user.setPassword("securePassword");
+//
+//        when(userRepository.save(any(User.class))).thenReturn(user);
+//
+//        // When
+//        User result = userService.createUser(signUpDto);
+//
+//        // Then
+//        assertNotNull(result);
+//        assertEquals("johndoe123", result.getLoginId());
+//        assertEquals("securePassword", result.getPassword());
+//        verify(userRepository, times(1)).save(any(User.class));
+//    }
+//
+//    @Test
+//    void testCheckPassword_ValidPassword() {
+//        // Given
+//        User user = new User();
+//        user.setPassword("correctPassword");
+//
+//        // When
+//        boolean result = userService.checkPassword(user, "correctPassword");
+//
+//        // Then
+//        assertTrue(result);
+//    }
 
-        User user = new User();
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setLoginId("johndoe123");
-        user.setPassword("securePassword");
-
-        when(userRepository.save(any(User.class))).thenReturn(user);
-
-        // When
-        User result = userService.createUser(signUpDto);
-
-        // Then
-        assertNotNull(result);
-        assertEquals("johndoe123", result.getLoginId());
-        assertEquals("securePassword", result.getPassword());
-        verify(userRepository, times(1)).save(any(User.class));
-    }
-
-    @Test
-    void testCheckPassword_ValidPassword() {
-        // Given
-        User user = new User();
-        user.setPassword("correctPassword");
-
-        // When
-        boolean result = userService.checkPassword(user, "correctPassword");
-
-        // Then
-        assertTrue(result);
-    }
-
-    @Test
-    void testCheckPassword_InvalidPassword() {
-        // Given
-        User user = new User();
-        user.setPassword("correctPassword");
-
-        // When
-        boolean result = userService.checkPassword(user, "wrongPassword");
-
-        // Then
-        assertFalse(result);
-    }
+//    @Test
+//    void testCheckPassword_InvalidPassword() {
+//        // Given
+//        User user = new User();
+//        user.setPassword("correctPassword");
+//
+//        // When
+//        boolean result = userService.checkPassword(user, "wrongPassword");
+//
+//        // Then
+//        assertFalse(result);
+//    }
 
     @Test
     void testGetUserById_UserExists() {

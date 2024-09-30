@@ -12,7 +12,7 @@ const Signup: React.FC = () => {
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const signUpResponse = await fetch("http://localhost:8080/auth/signup", {
+      const signUpResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/signup`, {
         method: "POST",
         credentials: 'include',
         headers: {
