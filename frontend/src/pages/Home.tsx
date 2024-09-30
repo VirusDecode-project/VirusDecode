@@ -25,27 +25,8 @@ const Home: React.FC<HomeProps> = ({ history, setHistory, setShow, setMRNAReceiv
         onClick={() => {
           const fetchHistory = async () => {
             try {
-              ///////////////test Login
-              const loginData = { username: "root", password: "1234" };
-              const loginResponse = await fetch('http://localhost:8080/user/login', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(loginData),
-              });
-
-              if (!loginResponse.ok) {
-                const errorMessage = await loginResponse.text();
-                throw new Error(errorMessage);
-              }
-              await loginResponse.text();
-              ////////////////////////test
-
               const serverResponse = await fetch("http://localhost:8080/history/list", {
                 method: 'GET',
-                credentials: 'include',
               });
               if (!serverResponse.ok) {
                 throw new Error("Failed to fetch history list");

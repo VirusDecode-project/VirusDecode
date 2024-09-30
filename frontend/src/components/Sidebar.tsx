@@ -84,12 +84,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   const handleHistoryClick = async (index: number) => {
     const historyName = history[index];
     const requestData = { historyName: historyName };
+    setWorkingHistory(historyName)
 
     try {
       // Fetch history details
       const serverResponse = await fetch("http://localhost:8080/history/get", {
         method: "POST",
-        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
@@ -117,6 +117,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         setMRNAReceived(true);
       } else {
         setMRNAReceived(false);
+        setTab(0);
       }
 
       if (responseData.pdb) {
@@ -138,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       } else {
         setPDBReceived(false);
       }
-      setTab(0)
+      
       navigate('/analysis');
     } catch (error) {
       if (error instanceof Error) {
@@ -171,7 +172,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           "http://localhost:8080/history/rename",
           {
             method: "PUT",
-            credentials: 'include',
             headers: {
               "Content-Type": "application/json",
             },
@@ -215,7 +215,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           "http://localhost:8080/history/delete",
           {
             method: "DELETE",
-            credentials: 'include',
             headers: {
               "Content-Type": "application/json",
             },

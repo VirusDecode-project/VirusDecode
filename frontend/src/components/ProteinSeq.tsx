@@ -4,6 +4,7 @@ import ConvertModal from './ConvertModal';
 import helpIcon from '../assets/help.png';
 import HelpModal from './HelpModal';
 import SequenceDisplay from './SequenceDisplay'
+import Loading from './Loading';
 import { Sequence, AlignmentData, MRNAData } from '../components/types';
 
 interface ProteinSeqProps {
@@ -20,9 +21,10 @@ interface ProteinSeqProps {
   setPDBids: Dispatch<SetStateAction<string[]>>;
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
+  isLoading: boolean;
 }
 
-const ProteinSeq: React.FC<ProteinSeqProps> = ({ onRegionUpdate, selectedRegion, setSelectedRegion, alignmentData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid }) => {
+const ProteinSeq: React.FC<ProteinSeqProps> = ({ onRegionUpdate, selectedRegion, setSelectedRegion, alignmentData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, isLoading }) => {
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [displayedSequences, setDisplayedSequences] = useState<Sequence[]>([]);
   const [selectedSequence, setSelectedSequence] = useState<Sequence | null>(null);
@@ -43,15 +45,13 @@ const ProteinSeq: React.FC<ProteinSeqProps> = ({ onRegionUpdate, selectedRegion,
     }
   }, [alignmentData]);
 
-  const handleShowMore = () => {
-    setDisplayedSequences(prevDisplayed => [
-      ...prevDisplayed,
-      ...sequences.slice(prevDisplayed.length, prevDisplayed.length + SEQUENCES_TO_SHOW),
-    ]);
-  };
 
   if (!displayedSequences.length || !alignmentData.alignment_index[selectedRegion]) {
-    return <p>Loading sequences...</p>;
+    return (
+      <div>
+        <Loading text="Loading" />
+      </div>
+    );
   }
 
   const referenceSequence = sequences[0].sequence;
@@ -107,11 +107,6 @@ const ProteinSeq: React.FC<ProteinSeqProps> = ({ onRegionUpdate, selectedRegion,
           regionIndices={regionIndices}
           selectedRegion={selectedRegion}
         />
-        {displayedSequences.length < sequences.length && (
-          <button className="show-more-button" onClick={handleShowMore}>
-            Show More
-          </button>
-        )}
       </div>
       <ConvertModal
         onRegionUpdate={onRegionUpdate}

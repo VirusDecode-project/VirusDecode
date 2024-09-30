@@ -49,6 +49,7 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
   
   useEffect(() => {
     if (alignmentData) {
+      setIsLoading(true);
       const firstRegion = Object.keys(alignmentData.alignment_index).length > 0 ? Object.keys(alignmentData.alignment_index)[0] : '';
       setSelectedRegion(firstRegion);
       try {
@@ -67,13 +68,19 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
         console.error('Error processing response data:', error);
       }
     }
+    setIsLoading(false);
+
   }, [alignmentData]);
 
 
   
 
-  if (!alignmentData || !alignmentData.alignment_index) {
-    return <div>Loading...</div>;
+  if (!alignmentData.alignment_index[selectedRegion]) {
+    return (
+      <div>
+        <Loading text="Loading" />
+      </div>
+    );
   }
   
 
@@ -101,6 +108,7 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
               setPDBids={setPDBids}
               setPDBInfo={setPDBInfo}
               setSelectedPDBid={setSelectedPDBid}
+              isLoading={isLoading}
             />
           )}
         </div>

@@ -4,8 +4,9 @@ import '../styles/Analysis.css';
 import Alignment from '../components/tabs/AlignmentTab';
 import MRNAdesign from '../components/tabs/MRNAdesignTab';
 import Render3D from '../components/tabs/Render3DTab';
-import { MRNAData, AlignmentData } from '../components/types';
+import { MRNAData, AlignmentData, PDBResponse } from '../components/types';
 import { useNavigate } from "react-router-dom";
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 interface AnalysisProps {
   tab: number;
@@ -27,27 +28,93 @@ interface AnalysisProps {
   alignmentData: AlignmentData;
   setHistory: Dispatch<SetStateAction<string[]>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
-const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData }) => {
+const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData, setIsLoading }) => {
   const [modalRegion, setModalRegion] = useState('');
   const handleModalRegion = (region: string) => {
     setModalRegion(region);
   };
+  const checkPDBFileExists = async (url: string) => {
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Error checking PDB file existence:', error);
+      return false;
+    }
+  };
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const serverResponse = await fetch("http://localhost:8080/history/list", {
+        setIsLoading(true);
+        const historyListResponse = await fetch("http://localhost:8080/history/list", {
           method: 'GET',
-          credentials: 'include',
         });
-        if (!serverResponse.ok) {
+        if (!historyListResponse.ok) {
           throw new Error("Failed to fetch history list");
         }
+        const responseHistoryListData = await historyListResponse.json();
+        setHistory(responseHistoryListData);
+
+
+        const requestData = { historyName: workingHistory };
+        const serverResponse = await fetch("http://localhost:8080/history/get", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
+        });
+  
+        if (!serverResponse.ok) {
+          const errorMessage = await serverResponse.text();
+          throw new Error(errorMessage);
+        }
+  
         const responseData = await serverResponse.json();
-        setHistory(responseData);
+        console.log("History details fetched successfully: ", responseData);
+  
+        if (responseData.alignment) {
+          const alignmentJson = JSON.parse(responseData.alignment);
+          setAlignmentData(alignmentJson);
+        } else {
+          console.warn('Alignment data is null or undefined');
+        }
+  
+        if (responseData.linearDesign) {
+          const linearDesignJson = JSON.parse(responseData.linearDesign);
+          setLinearDesignData(linearDesignJson);
+          setMRNAReceived(true);
+        } else {
+          setMRNAReceived(false);
+          setTab(0);
+        }
+  
+        if (responseData.pdb) {
+          const pdbJson: PDBResponse = JSON.parse(responseData.pdb);
+          const keys = Object.keys(pdbJson);
+          setPDBids(keys);
+          const values = Object.values(pdbJson);
+          setPDBInfo(values);
+          if (keys.length > 0) {
+            for (let i = 0; i < keys.length; i++) {
+              const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
+              if (exist) {
+                setSelectedPDBid(keys[i]);
+                break;
+              }
+            }
+          }
+          setPDBReceived(true);
+        } else {
+          setPDBReceived(false);
+        }
       } catch (error) {
         console.error("Error fetching history:", error);
+      } finally{
+        setIsLoading(false);
       }
     };
 

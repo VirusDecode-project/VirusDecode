@@ -21,6 +21,8 @@ interface InputSeqProps {
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 interface UploadedFile {
@@ -28,14 +30,13 @@ interface UploadedFile {
   file: File;
 }
 
-const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory}) => {
+const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, isLoading, setIsLoading}) => {
   let navigate = useNavigate();
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         const serverResponse = await fetch("http://localhost:8080/history/list", {
           method: 'GET',
-          credentials: 'include',
         });
         if (!serverResponse.ok) {
           throw new Error("Failed to fetch history list");
@@ -48,7 +49,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
     };
 
     fetchHistory();
-  });
+  }, []);
 
   const [editingFileIndex, setEditingFileIndex] = useState<number | null>(null);
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -60,7 +61,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [metadata, setMetadata] = useState("");
-  let [isLoading, setIsLoading] = useState(false);
+  // let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
   const [doneReceived, setDoneReceived] = useState(true);
 
@@ -75,7 +76,6 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
       setDoneReceived(false);
       const serverResponse = await fetch("http://localhost:8080/inputSeq/metadata", {
         method: "POST",
-        credentials: 'include',  // 세션 쿠키 포함
         headers: {
           "Content-Type": "application/json",
         },
@@ -149,7 +149,6 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
       setIsLoading(true);
       const serverResponse = await fetch("http://localhost:8080/inputSeq/alignment", {
         method: "POST",
-        credentials: 'include',  // 세션 쿠키 포함
         headers: {
           "Content-Type": "application/json",
         },
@@ -165,6 +164,8 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
       const createdHistoryName = responseData["historyName"];
       setWorkingHistory(createdHistoryName);
       setTab(0);
+      setMRNAReceived(false);
+      setPDBReceived(false);
       navigate("/analysis");
     } catch (error) {
       if (error instanceof Error){
