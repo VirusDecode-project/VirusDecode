@@ -5,6 +5,7 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "8080:8080"
+    image: guhokim/virusdecode-backend:latest
   
   frontend:
     build:
@@ -12,3 +13,4 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
+    image: guhokim/virusdecode-frontend:latest

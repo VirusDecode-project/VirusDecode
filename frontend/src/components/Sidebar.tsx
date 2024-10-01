@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     try {
       // Fetch history details
-      const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/history/get`, {
+      const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history/get`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -169,7 +169,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       try {
         const serverResponse = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/history/rename`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/history/rename`,
           {
             method: "PUT",
             credentials: 'include',
@@ -213,7 +213,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
       try {
         const serverResponse = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/history/delete`,
+          `${process.env.REACT_APP_BACKEND_URL}/api/history/delete`,
           {
             method: "DELETE",
             credentials: 'include',

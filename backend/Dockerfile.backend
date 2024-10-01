@@ -9,6 +9,7 @@ ENV PYTHONUNBUFFERED=1 \
 # Install general dependencies for backend
 RUN apt-get update && \
     apt-get install -y \
+    mysql-server \
     locales \
     openjdk-21-jdk \
     curl \
@@ -59,7 +60,7 @@ COPY . /VirusDecode/backend
 RUN chmod +x ./gradlew
 
 # Build the Spring Boot application
-RUN ./gradlew build
+RUN ./gradlew assemble
 
 # Final image for deployment
 FROM base AS deploy
@@ -70,7 +71,7 @@ WORKDIR /app/backend
 # Copy the jar file from the builder stage
 COPY --from=backend /VirusDecode/backend/build/libs/virusdecode.jar /app/backend/virusdecode.jar
 COPY --from=backend /VirusDecode/backend/virusdecode.py /app/backend/virusdecode.py
-COPY --from=backend /VirusDecode/backend/mydb.db /app/backend/mydb.db
+
 # Expose the backend port
 EXPOSE 8080
 

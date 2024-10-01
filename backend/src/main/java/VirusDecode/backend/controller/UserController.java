@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class UserController {
     private final UserService userService;
 
@@ -25,20 +25,20 @@ public class UserController {
         session.setMaxInactiveInterval(3600);
 
         if (user == null) {
-            return ResponseEntity.status(401).body("Invalid login ID.");
+            return ResponseEntity.status(401).body("유효하지 않은 ID 입니다.");
         }
 
         if (userService.checkPassword(user, loginDto.getPassword())) {
             session.setAttribute("userId", user.getId());
             return ResponseEntity.ok("User logged in successfully.");
         } else {
-            return ResponseEntity.status(401).body("Invalid password.");
+            return ResponseEntity.status(401).body("비밀번호가 틀렸습니다.");
         }
     }
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignUpDto signupDto) {
         if (userService.findUserByLoginId(signupDto.getLoginId()) != null) {
-            return ResponseEntity.status(400).body("Login ID already exists.");
+            return ResponseEntity.status(400).body("이미 존재하는 ID 입니다.");
         }
 
         User newUser = userService.createUser(signupDto);

@@ -22,6 +22,9 @@ WORKDIR /VirusDecode/frontend
 # Copy the frontend files from the host machine
 COPY . /VirusDecode/frontend
 
+# Environment variable for React build
+ENV REACT_APP_BACKEND_URL=http://www.virusdecode.site:8080
+
 # Install Node.js dependencies
 RUN npm install
 

@@ -15,6 +15,7 @@
     "@types/react-dom": "^16.9.17",
     "bootstrap": "^5.3.3",
     "fornac": "^1.1.8",
+    "pm2": "^5.4.2",
     "react": "16.14.0",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^16.14.0",

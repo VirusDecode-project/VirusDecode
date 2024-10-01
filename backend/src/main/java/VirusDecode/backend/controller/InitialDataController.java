@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/inputSeq")
+@RequestMapping("/api/inputSeq")
 public class InitialDataController {
 
     private final PythonScriptService pythonScriptService;

@@ -12,7 +12,7 @@ const Signup: React.FC = () => {
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const signUpResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/signup`, {
+      const signUpResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -29,9 +29,14 @@ const Signup: React.FC = () => {
       if(signUpResponse.ok) {
         alert("회원가입이 완료되었습니다.");
         navigate("/login");
+      }else{
+        const errorMessage = await signUpResponse.text();
+        throw new Error(errorMessage);
       }
-    } catch(error) {
-      console.error("에러:", error);
+    } catch (error) {
+      if(error instanceof Error){
+        window.alert(error.message);
+      }
     }
   };
 

@@ -37,7 +37,7 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/history/list`, {
+        const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history/list`, {
           method: 'GET',
           credentials: 'include',
         });
