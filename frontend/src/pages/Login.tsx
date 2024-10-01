@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
   const handleLoginSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/auth/login`, {
+      const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -33,7 +33,7 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
       if (loginResponse.ok) {
         const fetchHistory = async () => {
           try {
-            const historyResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/history/list`, {
+            const historyResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history/list`, {
               method: 'GET',
               credentials: 'include',
             });
@@ -52,12 +52,17 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
         setMRNAReceived(false);
         setPDBReceived(false);
         navigate("/inputSeq");
-      } else {
-        alert("잘못된 ID나 비밀번호입니다.");
+      }else{
+        const errorMessage = await loginResponse.text();
+        throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error("로그인 요청 중 에러 발생:", error);
-      alert("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
+      if(error instanceof Error){
+        window.alert(error.message);
+
+      }
+      // console.error("로그인 요청 중 에러 발생:", error);
+      // alert("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
   };
   

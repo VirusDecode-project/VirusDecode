@@ -5,6 +5,14 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "8080:8080"
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/virus_decode?useSSL=false&serverTimezone=UTC
+      DB_USERNAME: root
+      DB_PASSWORD: 1526
+      DB_DRIVER: com.mysql.cj.jdbc.Driver
+      JPA_DIALECT: org.hibernate.dialect.MySQLDialect
+    depends_on:
+      - mysql
   
   frontend:
     build:
@@ -12,3 +20,11 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 1526
+      MYSQL_DATABASE: virus_decode
+    ports:
+      - "3306:3306"

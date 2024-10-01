@@ -11,16 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/analysis")
+@RequestMapping("/api/analysis")
 public class AnalysisController {
     private final PythonScriptService pythonScriptService;
     private final JsonDataService jsonDataService;
-    private static final Path currentDir = Paths.get("").toAbsolutePath();
-    private static final Path HISTORY_DIR = currentDir.resolve("history");
 
     @Autowired
     public AnalysisController(PythonScriptService pythonScriptService, JsonDataService jsonDataService) {
