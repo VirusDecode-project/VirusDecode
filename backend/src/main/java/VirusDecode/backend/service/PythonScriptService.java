@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class PythonScriptService {
     private static final Path currentDir = Paths.get("").toAbsolutePath();
-    private static final Path pythonScriptPath = currentDir.resolve("../virusdecode.py").normalize();
+    private static final Path pythonScriptPath = currentDir.resolve("virusdecode.py").normalize();
     private static final Logger logger = LoggerFactory.getLogger(PythonScriptService.class);
 
     // ProcessBuilder를 생성하는 메서드를 따로 분리하여 테스트에서 모의 가능하도록 설계

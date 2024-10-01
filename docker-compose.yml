@@ -1,15 +1,18 @@
-version: '3'
 services:
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.backend
     ports:
       - "8080:8080"
+    image: virusdecode-backend
+    volumes:
+      - ./backend/mydb.db:/app/backend/mydb.db
   
   frontend:
     build:
-      context: .
+      context: ./frontend
       dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
+    image: virusdecode-frontend
