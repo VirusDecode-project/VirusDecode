@@ -4,8 +4,5 @@
 # IntelliJ IDEA 설정 디렉토리 제외
 .idea/
 
-# env
-.env
-
 # SQLite
 *.db
