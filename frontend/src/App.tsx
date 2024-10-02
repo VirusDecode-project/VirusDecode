@@ -32,7 +32,7 @@ function App() {
   
 
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "/inputSeq" || location.pathname === "/login" || location.pathname === "/signup") {
+    if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup") {
       setIsHome(true);
       setShow(false);
     } else {

@@ -12,7 +12,6 @@ import uploadIcon from "../assets/upload_icon.png";
 import Loading from '../components/Loading';
 import { AlignmentData } from '../components/types';
 import { setSelectionRange } from "@testing-library/user-event/dist/utils";
-import LoginModal from "../components/tabs/LoginModal";
 
 interface InputSeqProps {
   setTab: Dispatch<SetStateAction<number>>;
@@ -66,8 +65,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   const [metadata, setMetadata] = useState("");
   let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
-  const [doneReceived, setDoneReceived] = useState(true);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(true);
+  const [doneReceived, setDoneReceived] = useState(true);  
 
   const handleDoneSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
@@ -231,25 +229,13 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
     ]);
     setNextId(nextId + 1);
   };
-
-  const closeLoginModal = () => {
-    setIsLoginModalOpen(false);
-
-  }
-
+  
   return (
     <div>
       {isLoading ? (
         <Loading text="Analyzing" />
       ) : (
-        <div>
-          <LoginModal
-            isOpen={isLoginModalOpen}
-            onClose={() => 
-              {setIsLoginModalOpen(false);
-                setShow(true);
-            }}
-          />
+        <div>          
           <div className="container mt-4" style={{ marginLeft: "75px" }}>
             <Form>
               <Row className="align-items-center">
