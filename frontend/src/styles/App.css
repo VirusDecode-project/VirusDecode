@@ -102,7 +102,14 @@
 .username-display {
   margin-left: auto;
   padding-left: 20px;
+  padding-right: 20px;
 }
+
+.logoutBtn {
+
+}
+
+
 .history-item {
   position: relative;
   padding: 10px 0px 10px 10px;
