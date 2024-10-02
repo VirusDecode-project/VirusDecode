@@ -5,7 +5,9 @@ services:
       dockerfile: Dockerfile.backend
     ports:
       - "8080:8080"
-    image: guhokim/virusdecode-backend:latest
+    image: virusdecode-backend:latest
+    volumes:
+      - ./backend/mydb.db:/app/backend/mydb.db
   
   frontend:
     build:
@@ -13,4 +15,4 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "3000:3000"
-    image: guhokim/virusdecode-frontend:latest
+    image: virusdecode-frontend:latest
