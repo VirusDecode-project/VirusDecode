@@ -32,7 +32,7 @@ function App() {
   
 
   useEffect(() => {
-    if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup") {
+    if (location.pathname === "/" || location.pathname === "/inputSeq" || location.pathname === "/login" || location.pathname === "/signup") {
       setIsHome(true);
       setShow(false);
     } else {
@@ -99,6 +99,7 @@ function App() {
             path="/inputSeq"
             element={<InputSeq
               setTab={setTab}
+              setShow={setShow}
               setWorkingHistory={setWorkingHistory}
               workingHistory={workingHistory}
               setMRNAReceived={setMRNAReceived}

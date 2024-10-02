@@ -256,3 +256,75 @@
   cursor: pointer;
   color: #333;
 }
+
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* 흐림 처리 배경 */
+  display: flex;
+  justify-content: center; /* 가로 가운데 정렬 */
+  align-items: center; /* 세로 가운데 정렬 */
+  z-index: 999; /* 모달보다 아래에 위치 */
+}
+
+.login-modal {
+  width: 400px;
+  max-width: 90%; /* 화면 크기에 따라 모달 너비 제한 */
+  max-height: 90%; /* 화면 크기에 따라 모달 높이 제한 */
+  padding: 30px;
+  border-radius: 8px;
+  border: 2px solid #d6d6d6;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  text-align: center; /* 텍스트 가운데 정렬 */
+  overflow: auto; /* 모달이 화면을 넘으면 스크롤 생김 */
+}
+
+.welcomeTitle {
+  font-weight: bold; /* 제목을 두껍게 */
+  font-size: 20px; /* 제목 크기 조정 */
+  margin-bottom: 20px; /* 제목과 내용 사이의 간격 */
+}
+
+.welcomeText {
+  font-weight: normal; /* 일반 굵기 */
+  margin-bottom: 20px; /* 내용과 버튼 사이의 간격 */
+  line-height: 2; /* 줄 간격 조정 (1.5배) */
+}
+
+.loginBtn_modal,
+.signupBtn_modal {
+  width: 100%;
+  padding: 17px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 7px;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.loginBtn_modal {
+  background-color: #0fb9af;
+  color: white;
+}
+
+.signupBtn_modal {
+  background-color: #45454561;
+  color: white;
+}
+
+.stayLoggedOutBtn {
+  background-color: transparent;
+  border: none;
+  margin-top: 30px;
+  color: #828282;
+  font-size: 14px;
+  text-decoration: underline; /* 밑줄 추가 */
+  cursor: pointer;
+  padding: 0 10px;
+  transition: color 0.3s ease;
+}

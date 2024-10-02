@@ -12,7 +12,7 @@ const Home: React.FC = () => {
           Decode the virus’s genetic code, analyze its mutations, and determine the vaccine sequence.
         </p>
       </div>
-      <button className="decode-button" onClick={() => navigate("/login")}>
+      <button className="decode-button" onClick={() => navigate("/inputSeq")}>
         Try Decoding
       </button>
     </div>
