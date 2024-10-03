@@ -24,6 +24,10 @@ public class UserService {
         return userRepository.findByLoginId(loginId);
     }
 
+    public User findUserByUserId(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
     @Transactional
     public User createUser(SignUpDto signUpDto) {
         User newUser = new User();
@@ -48,4 +52,5 @@ public class UserService {
         Optional<User> user = userRepository.findById(userId);
         return user.map(User::getFirstName).orElse(null);
     }
+
 }

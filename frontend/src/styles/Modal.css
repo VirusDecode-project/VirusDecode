@@ -281,6 +281,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   text-align: center; /* 텍스트 가운데 정렬 */
   overflow: auto; /* 모달이 화면을 넘으면 스크롤 생김 */
+  position: relative; /* close-button의 위치를 relative로 설정 */
 }
 
 .welcomeTitle {
