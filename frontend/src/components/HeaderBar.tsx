@@ -16,7 +16,7 @@ interface HeaderBarProps {
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate, userName, setUserName })=> {
-  // const [userName, setUserName] = useState<string | null>(null);
+  const [loginId, setLoginId] = useState<string | null>(null);
   const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(false);
 
   const handleRestart = () => {
@@ -24,7 +24,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   };
 
   const toggleUserInfoOpen = () => {
-    setIsUserInfoOpen(!isUserInfoOpen);
+    if(userName != null){
+      setIsUserInfoOpen(!isUserInfoOpen);
+    }
   }
 
   useEffect(() => {
@@ -39,17 +41,16 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
         });
     
         if (nameResponse.ok) {
-          const responseData = await nameResponse.text();
-          setUserName(responseData);
+          const responseData = await nameResponse.json();
+          setUserName(responseData.userName);
+          setLoginId(responseData.loginId);
         }else{
           const errorMessage = await nameResponse.text();
           throw new Error(errorMessage);
         }
       } catch (error) {
-        // if(error instanceof Error){
-            // window.alert(error.message);
-          // }
          setUserName(null);
+         setLoginId(null);
        }
      };
     fetchName();
@@ -130,7 +131,8 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
         />
         {isUserInfoOpen &&  (
           <div className="userInfo-menu">
-            <div className="userInfo-display">{userName}</div>
+            <div className="userInfo-display">Name: {userName}</div>
+            <div className="userInfo-display">ID: {loginId}</div>
             <div className="divider"></div>
             <button className="logoutBtn" onClick={handleLogout}>logout</button>
           </div>
