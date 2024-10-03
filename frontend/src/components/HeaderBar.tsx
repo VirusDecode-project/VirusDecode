@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, Dispatch, SetStateAction,  } from 'react';
+import React, { useEffect, useState, Dispatch, SetStateAction, useRef } from 'react';
 import historyIcon from '../assets/history.png';
 import editIcon from '../assets/edit.png';
 import logo from '../assets/logo.png';
@@ -18,6 +18,7 @@ interface HeaderBarProps {
 const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate, userName, setUserName })=> {
   const [loginId, setLoginId] = useState<string | null>(null);
   const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(false);
+  const userInfoRef = useRef<HTMLDivElement | null>(null);
 
   const handleRestart = () => {
     navigate('/');
@@ -70,7 +71,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
       if (nameResponse.ok) {
         setUserName(null)
         navigate("/");
-        toggleUserInfoOpen();
+        setIsUserInfoOpen(false);
       }else{
         const errorMessage = await nameResponse.text();
         throw new Error(errorMessage);
@@ -81,6 +82,24 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
       }
     }
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userInfoRef.current && !userInfoRef.current.contains(event.target as Node)) {
+        setIsUserInfoOpen(false);
+      }
+    };
+
+    if (isUserInfoOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserInfoOpen]);
 
   return (
     <div className="header-bar">
@@ -121,7 +140,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
           VirusDecode
         </span>
       </div>
-      <div className="userInfo-wrapper">
+      <div className="userInfo-wrapper" ref={userInfoRef}>
         <img
           src={userIcon}
           className="user-icon"
