@@ -100,10 +100,7 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
       </form>
       <div className="linkBtns">
         <button className="gotoSignupBtn" onClick={() => navigate("/signup")}>
-          Signup
-        </button>
-        <button className="forgotPasswordBtn" onClick={() => navigate("/signup")}>
-          Forgot password?
+          Create a new account
         </button>
       </div>
     </div>

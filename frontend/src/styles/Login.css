@@ -109,7 +109,7 @@
 .gotoSignupBtn{
   background-color: transparent;
   border: none;
-  color: #0fb9af;
+  color: #aaa;
   font-size: 14px;
   text-decoration: none;
   cursor: pointer;
@@ -129,7 +129,7 @@
 }
 
 .gotoSignupBtn:hover{
-  color: #0a8f86;
+  color: #aaa;
   text-decoration: underline;
 }
 
