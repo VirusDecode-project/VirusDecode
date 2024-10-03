@@ -15,12 +15,15 @@ import { setSelectionRange } from "@testing-library/user-event/dist/utils";
 
 interface InputSeqProps {
   setTab: Dispatch<SetStateAction<number>>;
+  setShow: Dispatch<SetStateAction<boolean>>;
   setWorkingHistory: Dispatch<SetStateAction<string>>;
   workingHistory: string;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 interface UploadedFile {
@@ -28,7 +31,7 @@ interface UploadedFile {
   file: File;
 }
 
-const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory}) => {
+const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, isLoading, setIsLoading }) => {
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -62,9 +65,9 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [metadata, setMetadata] = useState("");
-  let [isLoading, setIsLoading] = useState(false);
+  // let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
-  const [doneReceived, setDoneReceived] = useState(true);
+  const [doneReceived, setDoneReceived] = useState(true);  
 
   const handleDoneSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
@@ -167,6 +170,8 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
       const createdHistoryName = responseData["historyName"];
       setWorkingHistory(createdHistoryName);
       setTab(0);
+      setMRNAReceived(false);
+      setPDBReceived(false);
       navigate("/analysis");
     } catch (error) {
       if (error instanceof Error){
@@ -228,13 +233,13 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setWorkingHistory, workingH
     ]);
     setNextId(nextId + 1);
   };
-
+  
   return (
     <div>
       {isLoading ? (
         <Loading text="Analyzing" />
       ) : (
-        <div>
+        <div>          
           <div className="container mt-4" style={{ marginLeft: "75px" }}>
             <Form>
               <Row className="align-items-center">
