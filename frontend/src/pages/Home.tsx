@@ -10,6 +10,29 @@ const Home: React.FC = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const isLoggedIn = useRecoilValue(authState);
 
+  const handleDecodeBtn = async(event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {
+        method: "POST",
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (nameResponse.ok) { // 로그인 상태라면 inputSeq로 넘어감
+        navigate("/inputSeq");
+      }else{ // 로그인 정보가 없으면 로그인 모달 오픈
+        setIsLoginModalOpen(true);
+        const errorMessage = await nameResponse.text();
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      if(error instanceof Error){
+        window.alert(error.message);
+      }
+    }
+  }
   return (
     <div>
       <div className="main-bg"></div>
@@ -18,7 +41,7 @@ const Home: React.FC = () => {
           Decode the virus’s genetic code, analyze its mutations, and determine the vaccine sequence.
         </p>
       </div>
-      <button className="decode-button" onClick={(e) => setIsLoginModalOpen(true)}>
+      <button className="decode-button" onClick={handleDecodeBtn}>
         Try Decoding
       </button>
           {isLoginModalOpen && (
