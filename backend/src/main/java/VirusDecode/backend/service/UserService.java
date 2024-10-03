@@ -43,4 +43,9 @@ public class UserService {
     public Optional<User> getUserById(Long userId) {
         return userRepository.findById(userId);
     }
+
+    public String getUsernameByUserId(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.map(User::getFirstName).orElse(null);
+    }
 }
