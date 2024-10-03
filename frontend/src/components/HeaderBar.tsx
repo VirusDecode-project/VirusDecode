@@ -13,7 +13,7 @@ interface HeaderBarProps {
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate })=> {
-  const [userName, setUserName] = useState<string | null>('경연');
+  const [userName, setUserName] = useState<string | null>(null);
   const [logOutIsOpen, setLogOutIsOpen] = useState<boolean>(false);
 
   const handleRestart = () => {
@@ -39,9 +39,10 @@ useEffect(() => {
         throw new Error(errorMessage);
       }
     } catch (error) {
-      if(error instanceof Error){
-          window.alert(error.message);
-        }
+      // if(error instanceof Error){
+          // window.alert(error.message);
+        // }
+        setUserName(null);
       }
     };
     fetchName();
