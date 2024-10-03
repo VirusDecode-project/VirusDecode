@@ -15,7 +15,7 @@ const Home: React.FC<HomeProps> = ({setUserName}) => {
 
   const handleDecodeBtn = async(event: React.MouseEvent<HTMLButtonElement>) => {
     try {
-      const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {
+      const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -27,8 +27,6 @@ const Home: React.FC<HomeProps> = ({setUserName}) => {
         navigate("/inputSeq");
       }else{ // 로그인 정보가 없으면 로그인 모달 오픈
         setIsLoginModalOpen(true);
-        const errorMessage = await nameResponse.text();
-        throw new Error(errorMessage);
       }
     } catch (error) {
       if(error instanceof Error){
