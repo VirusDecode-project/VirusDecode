@@ -26,6 +26,7 @@ function App() {
   const [PDBInfo, setPDBInfo] = useState<string[]>([]);
   const [selectedPDBid, setSelectedPDBid] = useState("");
   let [isLoading, setIsLoading] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
   const [alignmentData, setAlignmentData] = useState<AlignmentData>({
     aligned_sequences: {},
     alignment_index: {},
@@ -83,11 +84,15 @@ function App() {
           handleShow={handleShow}
           handleEditClick={handleEditClick}
           navigate={navigate}
+          userName={userName}
+          setUserName={setUserName}
         />
         <Routes>
           <Route
             path="/"
-            element={<Home/>}
+            element={<Home
+              setUserName={setUserName}
+              />}
           />
           <Route
             path="/login"
@@ -97,6 +102,7 @@ function App() {
               setShow={setShow} 
               setMRNAReceived={setMRNAReceived} 
               setPDBReceived={setPDBReceived}
+              setUserName={setUserName}
             />}
           />
           <Route

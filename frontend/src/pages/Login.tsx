@@ -10,9 +10,10 @@ interface LoginProps {
   setShow: Dispatch<SetStateAction<boolean>>;
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
+  setUserName:Dispatch<SetStateAction<string | null>>;
 }
 
-const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNAReceived, setPDBReceived}) => {
+const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNAReceived, setPDBReceived, setUserName}) => {
   let navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(authState);
   const [loginId, setLoginId] = useState<string | null>(null);
@@ -34,6 +35,31 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
       });
 
       if (loginResponse.ok) {
+        const fetchName = async () => {
+          try {
+            const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
+              method: "POST",
+              credentials: 'include',
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+        
+            if (nameResponse.ok) {
+              const responseData = await nameResponse.text();
+              setUserName(responseData);
+            }else{
+              const errorMessage = await nameResponse.text();
+              throw new Error(errorMessage);
+            }
+          } catch (error) {
+            // if(error instanceof Error){
+                // window.alert(error.message);
+              // }
+              setUserName(null);
+            }
+          };
+          fetchName();
         const fetchHistory = async () => {
           try {
             const historyResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history/list`, {

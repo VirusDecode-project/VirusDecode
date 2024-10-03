@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, Dispatch, SetStateAction,  } from 'react';
 import historyIcon from '../assets/history.png';
 import editIcon from '../assets/edit.png';
 import logo from '../assets/logo.png';
@@ -10,10 +10,12 @@ interface HeaderBarProps {
   handleShow: () => void;
   handleEditClick: () => void;
   navigate: NavigateFunction;
+  userName: string | null;
+  setUserName:Dispatch<SetStateAction<string | null>>;
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate })=> {
-  const [userName, setUserName] = useState<string | null>(null);
+const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate, userName, setUserName })=> {
+  // const [userName, setUserName] = useState<string | null>(null);
   const [logOutIsOpen, setLogOutIsOpen] = useState<boolean>(false);
 
   const handleRestart = () => {
@@ -46,7 +48,7 @@ useEffect(() => {
       }
     };
     fetchName();
-  },[]);
+  },[userName]);
 
   const handleLogout = async(event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -60,6 +62,7 @@ useEffect(() => {
       });
   
       if (nameResponse.ok) {
+        setUserName(null)
         navigate("/");
       }else{
         const errorMessage = await nameResponse.text();

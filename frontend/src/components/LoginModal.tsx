@@ -7,9 +7,10 @@ import { authState } from '../state/authState';
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
+  setUserName:Dispatch<SetStateAction<string | null>>;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName }) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useRecoilState(authState);
   const loginId = 'virusdecode';
@@ -30,7 +31,31 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           }),
       });
 
-      if (loginResponse.ok) {
+      if (loginResponse.ok) {const fetchName = async () => {
+        try {
+          const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
+            method: "POST",
+            credentials: 'include',
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+      
+          if (nameResponse.ok) {
+            const responseData = await nameResponse.text();
+            setUserName(responseData);
+          }else{
+            const errorMessage = await nameResponse.text();
+            throw new Error(errorMessage);
+          }
+        } catch (error) {
+          // if(error instanceof Error){
+              // window.alert(error.message);
+            // }
+            setUserName(null);
+          }
+        };
+        fetchName();
         setIsLoggedIn(true);
         navigate("/inputSeq");
       } else {

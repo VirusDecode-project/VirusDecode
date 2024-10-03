@@ -4,8 +4,11 @@ import '../styles/Home.css';
 import LoginModal from '../components/LoginModal';
 import { useRecoilValue } from "recoil";
 import { authState } from "../state/authState";
+interface HomeProps {
+  setUserName:Dispatch<SetStateAction<string | null>>;
+}
 
-const Home: React.FC = () => {
+const Home: React.FC<HomeProps> = ({setUserName}) => {
   let navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const isLoggedIn = useRecoilValue(authState);
@@ -26,7 +29,9 @@ const Home: React.FC = () => {
               isOpen={isLoginModalOpen}
               onClose={() => {
                 setIsLoginModalOpen(false);
-              }}
+              }
+            }
+            setUserName={setUserName}
             /> 
           )}
     </div>
