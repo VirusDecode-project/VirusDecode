@@ -4,6 +4,7 @@ import VirusDecode.backend.dto.UserLoginDto;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
@@ -44,4 +45,24 @@ public class UserController {
         User newUser = userService.createUser(signupDto);
         return ResponseEntity.ok("User created successfully with ID: " + newUser.getId());
     }
+
+    @PostMapping("/userinfo")
+    public ResponseEntity<String> getUserInfo(HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+        String userFirstName = userService.getUsernameByUserId(userId);
+        if(userFirstName==null){
+            return ResponseEntity.status(400).body("유저 이름을 찾을 수 없습니다.");
+        }
+        return ResponseEntity.ok(userFirstName);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate();  // 세션 무효화
+        return ResponseEntity.ok("User logged out successfully.");
+    }
+
 }
