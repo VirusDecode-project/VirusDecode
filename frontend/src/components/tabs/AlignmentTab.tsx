@@ -72,8 +72,12 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
 
   
 
-  if (!alignmentData || !alignmentData.alignment_index) {
-    return <div>Loading...</div>;
+  if (!alignmentData.alignment_index[selectedRegion]) {
+    return (
+      <div>
+        <Loading text="Loading" />
+      </div>
+    );
   }
   
 
@@ -101,6 +105,7 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
               setPDBids={setPDBids}
               setPDBInfo={setPDBInfo}
               setSelectedPDBid={setSelectedPDBid}
+              isLoading={isLoading}
             />
           )}
         </div>

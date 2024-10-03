@@ -20,16 +20,24 @@ function App() {
   const [mRNAReceived, setMRNAReceived] = useState(false);
   const [PDBReceived, setPDBReceived] = useState(false);
   const [tab, setTab] = useState(0);
-  const [workingHistory, setWorkingHistory] = useState("");
+  // const [workingHistory, setWorkingHistory] = useState("");
   const [linearDesignData, setLinearDesignData] = useState<MRNAData | null>(null);
   const [PDBids, setPDBids] = useState<string[]>([]);
   const [PDBInfo, setPDBInfo] = useState<string[]>([]);
   const [selectedPDBid, setSelectedPDBid] = useState("");
+  let [isLoading, setIsLoading] = useState(false);
   const [alignmentData, setAlignmentData] = useState<AlignmentData>({
     aligned_sequences: {},
     alignment_index: {},
   });
   
+  const [workingHistory, setWorkingHistory] = useState(() => {
+    const savedWorkingHistory = localStorage.getItem("workingHistory");
+    return savedWorkingHistory ? savedWorkingHistory : "";
+  });
+  useEffect(() => {
+    localStorage.setItem("workingHistory", workingHistory);
+  }, [workingHistory]);
 
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "/login" || location.pathname === "/signup") {
@@ -106,6 +114,8 @@ function App() {
               setPDBReceived={setPDBReceived}
               setAlignmentData={setAlignmentData}
               setHistory={setHistory}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
             />}
           />
           <Route
@@ -130,6 +140,7 @@ function App() {
               alignmentData={alignmentData}
               setHistory={setHistory}
               setAlignmentData={setAlignmentData}
+              setIsLoading={setIsLoading}
             />}
           />
         </Routes>

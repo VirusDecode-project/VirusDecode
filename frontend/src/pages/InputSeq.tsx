@@ -22,6 +22,8 @@ interface InputSeqProps {
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
+  isLoading: boolean;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 interface UploadedFile {
@@ -29,7 +31,7 @@ interface UploadedFile {
   file: File;
 }
 
-const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory}) => {
+const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, isLoading, setIsLoading }) => {
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -63,7 +65,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [metadata, setMetadata] = useState("");
-  let [isLoading, setIsLoading] = useState(false);
+  // let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
   const [doneReceived, setDoneReceived] = useState(true);  
 
@@ -168,6 +170,8 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
       const createdHistoryName = responseData["historyName"];
       setWorkingHistory(createdHistoryName);
       setTab(0);
+      setMRNAReceived(false);
+      setPDBReceived(false);
       navigate("/analysis");
     } catch (error) {
       if (error instanceof Error){

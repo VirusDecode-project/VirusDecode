@@ -131,9 +131,9 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
         setPDBids(keys);
         const values = Object.values(responseData);
         setPDBInfo(values);
-        setPDBReceived(true);
-
-         if (keys.length > 0) {
+        
+        if (keys.length > 0) {
+          setPDBReceived(true);
           for (let i = 0; i < keys.length; i++){
             const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
             if (exist) {
