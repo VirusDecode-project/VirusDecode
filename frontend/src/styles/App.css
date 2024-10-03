@@ -115,14 +115,14 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   z-index: 1;
-  width: 100px; /* 메뉴 너비 */
+  width: 190px; /* 메뉴 너비 */
   padding: 15px;
 }
 
 .divider {
   height: 1px; /* 구분선 두께 */
   background-color: #ccc; /* 구분선 색상 */
-  margin: 10px 0; /* 구분선 위아래 간격 */
+  margin: 5px 0; /* 구분선 위아래 간격 */
 }
 
 .userInfo-display {
@@ -130,6 +130,7 @@
   color: rgb(97, 97, 97);
   border: none;
   padding: 10px;
+  margin-bottom: 10px;
   font-size: 14px;
   width: 100%;
   text-align: left;

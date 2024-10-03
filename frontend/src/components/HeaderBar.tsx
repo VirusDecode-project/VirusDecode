@@ -131,8 +131,11 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
         />
         {isUserInfoOpen &&  (
           <div className="userInfo-menu">
-            <div className="userInfo-display">Name: {userName}</div>
-            <div className="userInfo-display">ID: {loginId}</div>
+            <div className="userInfo-display">
+                Name: {userName}
+                <br/>
+                ID: {loginId}
+            </div>
             <div className="divider"></div>
             <button className="logoutBtn" onClick={handleLogout}>logout</button>
           </div>
