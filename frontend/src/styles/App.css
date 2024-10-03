@@ -99,16 +99,54 @@
   padding: 10px;
 }
 
-.username-display {
+.userInfo-wrapper {
   margin-left: auto;
-  padding-left: 20px;
-  padding-right: 20px;
+  right: 10px;
+  position: relative; /* userInfo-menu를 userIcon 아래에 배치하기 위한 상대적 위치 */
+  display: inline-block;
+}
+
+.userInfo-menu {
+  position: absolute;
+  top: 110%; /* userIcon 바로 아래에 배치 */
+  left: auto; /* 자동으로 오른쪽 맞추기 */
+  right: 0; /* 오른쪽 끝에 맞추기 */
+  background-color: white;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 1;
+  width: 100px; /* 메뉴 너비 */
+  padding: 15px;
+}
+
+.divider {
+  height: 1px; /* 구분선 두께 */
+  background-color: #ccc; /* 구분선 색상 */
+  margin: 10px 0; /* 구분선 위아래 간격 */
+}
+
+.userInfo-display {
+  background-color: white;
+  color: rgb(97, 97, 97);
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  width: 100%;
+  text-align: left;
+  cursor: default;
 }
 
 .logoutBtn {
-
+  background-color: white;
+  color: rgb(255, 0, 0);
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  margin-top: 5px; /* 로그아웃 버튼과 유저 네임 사이 간격 */
 }
-
 
 .history-item {
   position: relative;

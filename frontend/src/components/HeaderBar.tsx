@@ -3,6 +3,7 @@ import historyIcon from '../assets/history.png';
 import editIcon from '../assets/edit.png';
 import logo from '../assets/logo.png';
 import { NavigateFunction } from 'react-router-dom';
+import userIcon from '../assets/user.png';
 
 interface HeaderBarProps {
   show: boolean;
@@ -16,14 +17,14 @@ interface HeaderBarProps {
 
 const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate, userName, setUserName })=> {
   // const [userName, setUserName] = useState<string | null>(null);
-  const [logOutIsOpen, setLogOutIsOpen] = useState<boolean>(false);
+  const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(false);
 
   const handleRestart = () => {
     navigate('/');
   };
 
-  const toggleSignOutIsOpen = () => {
-    setLogOutIsOpen(!logOutIsOpen);
+  const toggleUserInfoOpen = () => {
+    setIsUserInfoOpen(!isUserInfoOpen);
   }
 
   useEffect(() => {
@@ -68,7 +69,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
       if (nameResponse.ok) {
         setUserName(null)
         navigate("/");
-        toggleSignOutIsOpen();
+        toggleUserInfoOpen();
       }else{
         const errorMessage = await nameResponse.text();
         throw new Error(errorMessage);
@@ -119,10 +120,22 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
           VirusDecode
         </span>
       </div>
-      <button className="username-display" onClick={toggleSignOutIsOpen}>{userName}</button>
-      {logOutIsOpen &&  (
-        <button className="logoutBtn" onClick={handleLogout}>logout</button>
-      )}
+      <div className="userInfo-wrapper">
+        <img
+          src={userIcon}
+          className="user-icon"
+          style={{ cursor: "pointer" }}
+          alt="User Icon"
+          onClick={toggleUserInfoOpen}
+        />
+        {isUserInfoOpen &&  (
+          <div className="userInfo-menu">
+            <div className="userInfo-display">{userName}</div>
+            <div className="divider"></div>
+            <button className="logoutBtn" onClick={handleLogout}>logout</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
