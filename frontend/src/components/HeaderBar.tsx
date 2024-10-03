@@ -19,34 +19,38 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   const [logOutIsOpen, setLogOutIsOpen] = useState<boolean>(false);
 
   const handleRestart = () => {
-    navigate('/inputSeq');
-};
+    navigate('/');
+  };
 
-useEffect(() => {
-  const fetchName = async () => {
-    try {
-      const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
-        method: "POST",
-        credentials: 'include',
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (nameResponse.ok) {
-        const responseData = await nameResponse.text();
-        setUserName(responseData);
-      }else{
-        const errorMessage = await nameResponse.text();
-        throw new Error(errorMessage);
-      }
-    } catch (error) {
-      // if(error instanceof Error){
-          // window.alert(error.message);
-        // }
-        setUserName(null);
-      }
-    };
+  const toggleSignOutIsOpen = () => {
+    setLogOutIsOpen(!logOutIsOpen);
+  }
+
+  useEffect(() => {
+    const fetchName = async () => {
+      try {
+        const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
+          method: "POST",
+          credentials: 'include',
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+    
+        if (nameResponse.ok) {
+          const responseData = await nameResponse.text();
+          setUserName(responseData);
+        }else{
+          const errorMessage = await nameResponse.text();
+          throw new Error(errorMessage);
+        }
+      } catch (error) {
+        // if(error instanceof Error){
+            // window.alert(error.message);
+          // }
+         setUserName(null);
+       }
+     };
     fetchName();
   },[userName]);
 
@@ -64,6 +68,7 @@ useEffect(() => {
       if (nameResponse.ok) {
         setUserName(null)
         navigate("/");
+        toggleSignOutIsOpen();
       }else{
         const errorMessage = await nameResponse.text();
         throw new Error(errorMessage);
@@ -74,12 +79,6 @@ useEffect(() => {
       }
     }
   };
-
-  
-const toggleSignOutIsOpen = () => {
-  setLogOutIsOpen(!logOutIsOpen);
-}
-
 
   return (
     <div className="header-bar">
