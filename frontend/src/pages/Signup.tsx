@@ -8,6 +8,7 @@ const Signup: React.FC = () => {
   const [lastName, setLastName] = useState<string | null>(null);
   const [loginId, setLoginId] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
+  const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
 
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -92,6 +93,7 @@ const Signup: React.FC = () => {
             type="password" 
             name="cPassword" 
             placeholder=" "
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <label className="signupLabel" htmlFor="cPassword">Confirm Password</label>
         </div>
