@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Signup.css"
 
@@ -9,9 +9,23 @@ const Signup: React.FC = () => {
   const [loginId, setLoginId] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (firstName && lastName && loginId && password && confirmPassword && password === confirmPassword) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
+    }
+  }, [firstName, lastName, loginId, password, confirmPassword]);
 
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!isFormValid) {
+      alert("모든 필드를 올바르게 입력해 주세요.");
+      return;
+    }
+
     try {
       const signUpResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
         method: "POST",
