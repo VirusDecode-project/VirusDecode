@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Signup.css"
+import "../styles/Signup.css";
+import checkIcon from "../assets/check.png";
+import xIcon from "../assets/x.png";
 
 const Signup: React.FC = () => {
   let navigate = useNavigate();
@@ -108,7 +110,7 @@ const Signup: React.FC = () => {
           />
           <label className="signupLabel" htmlFor="password">Password</label>
         </div>
-        <div className="input-container">
+        <div className={`input-container ${password && confirmPassword && confirmPassword !== ' ' && password !== confirmPassword ? "error" : ""}`}>
           <input 
             className="signupInput"
             type="password" 
@@ -117,6 +119,12 @@ const Signup: React.FC = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <label className="signupLabel" htmlFor="cPassword">Confirm Password</label>
+          {password && confirmPassword && password === confirmPassword && (
+            <img src={checkIcon} className="icon success" />
+          )}
+          {password && confirmPassword && password !== confirmPassword && (
+            <img src={xIcon} className="icon error" />
+          )}
           <div className={`signupError ${signupError ? 'visible' : ''}`}>{signupError}</div>
         </div>
         <button className="SignupBtn" type="submit">
