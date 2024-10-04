@@ -9,7 +9,6 @@ ENV PYTHONUNBUFFERED=1 \
 # Install general dependencies for backend
 RUN apt-get update && \
     apt-get install -y \
-    mysql-server \
     locales \
     openjdk-21-jdk \
     curl \
