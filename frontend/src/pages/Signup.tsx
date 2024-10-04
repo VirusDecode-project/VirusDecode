@@ -10,10 +10,17 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState<string | null>(null);
   const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
   const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [signupError, setSignupError] = useState<string | null>(null); 
 
-  useEffect(() => {
-    if (firstName && lastName && loginId && password && confirmPassword && password === confirmPassword) {
-      setIsFormValid(true);
+ useEffect(() => {
+    if (firstName && lastName && loginId && password && confirmPassword) {
+      if (password === confirmPassword) {
+        setIsFormValid(true);
+        setSignupError(null);  
+      } else {
+        setIsFormValid(false);
+        setSignupError("Passwords do not match."); 
+      }
     } else {
       setIsFormValid(false);
     }
@@ -110,6 +117,7 @@ const Signup: React.FC = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <label className="signupLabel" htmlFor="cPassword">Confirm Password</label>
+          <div className={`signupError ${signupError ? 'visible' : ''}`}>{signupError}</div>
         </div>
         <button className="SignupBtn" type="submit">
           Signup
