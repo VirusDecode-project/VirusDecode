@@ -24,8 +24,11 @@
     "recoil": "^0.7.7",
     "typescript": "^4.9.5",
     "viztein": "0.1.7",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "http-proxy-middleware": "^3.0.0",
+    "identity-obj-proxy": "^3.0.0"
   },
+  "proxy": "http://localhost:8080",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

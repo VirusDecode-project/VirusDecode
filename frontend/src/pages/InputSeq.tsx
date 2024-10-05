@@ -37,7 +37,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history/list`, {
+        const serverResponse = await fetch(`/api/history/list`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -78,7 +78,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
     const requestData = { sequenceId: referenceSequenceId };
     try {
       setDoneReceived(false);
-      const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/inputSeq/metadata`, {
+      const serverResponse = await fetch(`/api/inputSeq/metadata`, {
         method: "POST",
         credentials: 'include',  // 세션 쿠키 포함
         headers: {
@@ -152,7 +152,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
 
     try {
       setIsLoading(true);
-      const serverResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/inputSeq/alignment`, {
+      const serverResponse = await fetch(`/api/inputSeq/alignment`, {
         method: "POST",
         credentials: 'include',  // 세션 쿠키 포함
         headers: {

@@ -88,7 +88,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setIsLoading(true);
   
       // 1. mRNA 디자인 POST 요청
-      const mRnaResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/analysis/linearDesign`, {
+      const mRnaResponse = await fetch(`/api/analysis/linearDesign`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -111,7 +111,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
   
       // 2. PDB 디자인 POST 요청
       const pdbData = { gene: selectedRegion, historyName: workingHistory};
-      const pdbResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/analysis/pdb`, {
+      const pdbResponse = await fetch(`/api/analysis/pdb`, {
         method: 'POST',
         credentials: 'include',
         headers: {

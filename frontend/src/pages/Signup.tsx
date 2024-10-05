@@ -36,7 +36,7 @@ const Signup: React.FC = () => {
     }
 
     try {
-      const signUpResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
+      const signUpResponse = await fetch(`/api/auth/signup`, {
         method: "POST",
         credentials: 'include',
         headers: {

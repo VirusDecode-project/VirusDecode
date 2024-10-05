@@ -33,7 +33,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   useEffect(() => {
     const fetchName = async () => {
       try {
-        const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
+        const nameResponse = await fetch(`/api/auth/userinfo`, { 
           method: "POST",
           credentials: 'include',
           headers: {
@@ -60,7 +60,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   const handleLogout = async(event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
-      const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {
+      const nameResponse = await fetch(`/api/auth/logout`, {
         method: "POST",
         credentials: 'include',
         headers: {

@@ -15,7 +15,7 @@ const Home: React.FC<HomeProps> = ({setUserName}) => {
 
   const handleDecodeBtn = async(event: React.MouseEvent<HTMLButtonElement>) => {
     try {
-      const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, {
+      const nameResponse = await fetch(`/api/auth/userinfo`, {
         method: "POST",
         credentials: 'include',
         headers: {
