@@ -19,7 +19,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName })
   
   const login = useCallback(async () => {
     try {
-      const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
+      const loginResponse = await fetch(`/api/auth/login`, {
           method: "POST",
           credentials: 'include',
           headers: {
@@ -33,7 +33,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName })
 
       if (loginResponse.ok) {const fetchName = async () => {
         try {
-          const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
+          const nameResponse = await fetch(`/api/auth/userinfo`, { 
             method: "POST",
             credentials: 'include',
             headers: {

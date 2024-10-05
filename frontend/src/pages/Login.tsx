@@ -22,7 +22,7 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
   const handleLoginSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const loginResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/login`, {
+      const loginResponse = await fetch(`/api/auth/login`, {
         method: "POST",
         credentials: 'include',
         headers: {
@@ -37,7 +37,7 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
       if (loginResponse.ok) {
         const fetchName = async () => {
           try {
-            const nameResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/userinfo`, { 
+            const nameResponse = await fetch(`/api/auth/userinfo`, { 
               method: "POST",
               credentials: 'include',
               headers: {
@@ -62,7 +62,7 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
           fetchName();
         const fetchHistory = async () => {
           try {
-            const historyResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history/list`, {
+            const historyResponse = await fetch(`/api/history/list`, {
               method: 'GET',
               credentials: 'include',
             });
