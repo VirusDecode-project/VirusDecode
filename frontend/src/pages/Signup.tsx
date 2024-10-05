@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../styles/Signup.css"
+import "../styles/Signup.css";
+import checkIcon from "../assets/check.png";
+import xIcon from "../assets/x.png";
 
 const Signup: React.FC = () => {
   let navigate = useNavigate();
@@ -8,9 +10,31 @@ const Signup: React.FC = () => {
   const [lastName, setLastName] = useState<string | null>(null);
   const [loginId, setLoginId] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
+  const [confirmPassword, setConfirmPassword] = useState<string | null>(null);
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+  const [signupError, setSignupError] = useState<string | null>(null); 
+
+ useEffect(() => {
+    if (firstName && lastName && loginId && password && confirmPassword) {
+      if (password === confirmPassword) {
+        setIsFormValid(true);
+        setSignupError(null);  
+      } else {
+        setIsFormValid(false);
+        setSignupError("Passwords do not match."); 
+      }
+    } else {
+      setIsFormValid(false);
+    }
+  }, [firstName, lastName, loginId, password, confirmPassword]);
 
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!isFormValid) {
+      alert("모든 필드를 올바르게 입력해 주세요.");
+      return;
+    }
+
     try {
       const signUpResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, {
         method: "POST",
@@ -86,14 +110,22 @@ const Signup: React.FC = () => {
           />
           <label className="signupLabel" htmlFor="password">Password</label>
         </div>
-        <div className="input-container">
+        <div className={`input-container ${password && confirmPassword && confirmPassword !== ' ' && password !== confirmPassword ? "error" : ""}`}>
           <input 
             className="signupInput"
             type="password" 
             name="cPassword" 
             placeholder=" "
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
           <label className="signupLabel" htmlFor="cPassword">Confirm Password</label>
+          {password && confirmPassword && password === confirmPassword && (
+            <img src={checkIcon} className="icon success" />
+          )}
+          {password && confirmPassword && password !== confirmPassword && (
+            <img src={xIcon} className="icon error" />
+          )}
+          <div className={`signupError ${signupError ? 'visible' : ''}`}>{signupError}</div>
         </div>
         <button className="SignupBtn" type="submit">
           Signup

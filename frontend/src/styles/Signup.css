@@ -52,6 +52,7 @@
 .signupInput {
   width: 100%;
   padding: 15px;
+  padding-right: 40px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
@@ -61,6 +62,19 @@
 
 .signupInput:focus {
   border-color: #0fb9af; 
+}
+
+.input-container.error .signupInput {
+  border-color: red;
+}
+
+input ~ img {
+  position: absolute;
+  right: 15px; /* 폼 오른쪽 끝에 배치 */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px; 
+  height: 20px;
 }
 
 .signupLabel {
@@ -101,6 +115,22 @@
   .signupInput:not(:placeholder-shown) + .signupLabel {
     font-size: 11px;
   }
+}
+
+.signupError{
+  height: 10px;
+  position: absolute;
+  top: 100%;
+  left: 10px;
+  color: red;
+  font-size: 12px;
+  visibility: hidden; 
+  text-align: left;
+  margin-top: 5px;
+}
+
+.signupError.visible {
+  visibility: visible; 
 }
 
 .SignupBtn {
