@@ -4,7 +4,7 @@ VirusDecode is an open-source project that integrates various bioinformatics too
 # Client Access #
 For users interested in utilizing the VirusDecode platform, a server has been set up for your convenience. You can access it at the following link:
 
-www.virusdecode.site
+[virusdecode.com](https://virusdecode.com)
 
 This server allows you to explore the features of VirusDecode without needing to set up a local development environment.
 
@@ -78,10 +78,10 @@ To run the VirusDecode application:
       │   ...
       └── VirusDecode
           ├── backend
-          │   ...
+          │   └── virusdecode.py
           ├── frontend
           │   ...
-          └── virusdecode.py
+          
       ```
 
 2. **Start the Backend Server**
@@ -95,13 +95,7 @@ To run the VirusDecode application:
         ```bash
         cd backend
         chmod +x gradlew
-        ./gradlew build
-        ```
-
-    - Run the Backend
-      - After building, run the Spring Boot application:
-        ```bash
-        java -jar build/libs/virusdecode.jar
+        ./gradlew bootRun
         ```
 
 3. **Start the Frontend Development Server**
@@ -111,20 +105,12 @@ To run the VirusDecode application:
         ```bash
         curl -fsSL https://deb.nodesource.com/setup_18.x | sudo bash -
         sudo apt-get install -y nodejs
-        sudo npm install -g serve
         ```
       - Navigate to the frontend directory and install dependencies:
         ```bash
         cd frontend
         npm install
-        npm run build
-        ```
-
-    - Run the Frontend
-      - Serve the built frontend using the `serve` package:
-        ```bash
-        serve -s build
-        ```
+        npm start
 
 4. **Analyzing Virus Sequences**
    - Use the web interface to upload and analyze virus sequences. Follow the on-screen instructions for different types of analysis.
@@ -143,12 +129,12 @@ Follow these steps to get started with Docker for VirusDecode:
     ```bash
     git clone https://github.com/VirusDecode-project/VirusDecode.git
     cd VirusDecode
-    docker-compose build
+    docker compose build
     ```
 ## 2. Running the Application
   1. **Run both Backend and Frontend simultaneously**
       ```bash
-      docker-compose up
+      docker compose up
       ```
       - Open your web browser and navigate to http://localhost:3000 to access the frontend.
   2. **Run only the Backend on port 8080**
