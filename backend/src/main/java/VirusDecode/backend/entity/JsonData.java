@@ -13,7 +13,7 @@ public class JsonData {
 
     private String referenceId;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String alignment;
 
     @Column(columnDefinition = "TEXT")
