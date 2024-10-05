@@ -1,41 +1,25 @@
-# Stage 1: Base image with essential tools for frontend
-FROM ubuntu:22.04 AS base
+# 1. Step 1: Build React app
+FROM node:18 AS build
 
-# Install Node.js and npm
-RUN apt-get update && \
-    apt-get install -y \
-    curl \
-    wget \
-    build-essential \
-    git && \
-    curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install -g serve && \
-    apt-get clean
+WORKDIR /app
 
-# Stage 2: Build the frontend (React)
-FROM base AS frontend
-
-# Set the working directory to the frontend folder
-WORKDIR /VirusDecode/frontend
-
-# Copy the frontend files from the host machine
-COPY . /VirusDecode/frontend
-
-# Install Node.js dependencies
+# Install dependencies
+COPY package*.json ./
 RUN npm install
 
-# Build the React frontend
+# Copy all files and build the app
+COPY . .
 RUN npm run build
 
-# Stage 3: Serve the frontend
-FROM base AS serve
+# 2. Step 2: Set up Nginx and copy React build files
+FROM nginx:alpine
 
-WORKDIR /VirusDecode/frontend
-COPY --from=frontend /VirusDecode/frontend/build /VirusDecode/frontend/build
+# Copy built files from the build stage
+COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose the frontend port
-EXPOSE 3000
+# Expose port 80 for HTTP
+EXPOSE 80
+EXPOSE 443
 
-# Serve the frontend
-CMD ["serve", "-s", "build"]
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]
