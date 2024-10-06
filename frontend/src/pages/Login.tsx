@@ -1,8 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/Login.css"
-import { useRecoilState } from "recoil";
-import { authState } from "../state/authState";
 
 interface LoginProps {
   history: string[],
@@ -15,7 +13,6 @@ interface LoginProps {
 
 const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNAReceived, setPDBReceived, setUserName}) => {
   let navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(authState);
   const [loginId, setLoginId] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
 
@@ -76,7 +73,6 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
             console.error("Error fetching history:", error);
           }
         };
-        setIsLoggedIn(true);
         fetchHistory();
         setShow(true); // Make sure the sidebar shows after navigation
         setMRNAReceived(false);

@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import { useNavigate } from "react-router-dom";
 import '../styles/Modal.css';
-import { useRecoilState } from "recoil";
-import { authState } from '../state/authState';
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,7 +10,6 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName }) => {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useRecoilState(authState);
   const loginId = 'virusdecode';
   const password = 'virusdecode';
   const modalRef = useRef<HTMLDivElement>(null); // 모달을 참조하기 위한 useRef
@@ -56,7 +53,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName })
           }
         };
         fetchName();
-        setIsLoggedIn(true);
         navigate("/inputSeq");
       } else {
         const errorMessage = await loginResponse.text();
@@ -67,7 +63,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName })
         window.alert(error.message);
       }
     }
-  },[setIsLoggedIn]);
+  },[]);
 
   const handleStayLoggedOut = () => {
     onClose();
