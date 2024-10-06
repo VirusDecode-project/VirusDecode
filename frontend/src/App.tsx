@@ -9,6 +9,7 @@ import InputSeq from "./pages/InputSeq";
 import Analysis from "./pages/Analysis";
 import Sidebar from "./components/Sidebar";
 import HeaderBar from "./components/HeaderBar";
+import CreateModal from "./components/CreateModal";
 import { MRNAData, AlignmentData, PDBResponse } from './components/types';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
     aligned_sequences: {},
     alignment_index: {},
   });
+  const [showEditModal, setShowEditModal] = useState(false);
   
   const [workingHistory, setWorkingHistory] = useState(() => {
     const savedWorkingHistory = localStorage.getItem("workingHistory");
@@ -54,11 +56,17 @@ function App() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const handleEditClick = () => { return; };
+  const handleEditClick = () => {
+    setShowEditModal(true); // 편집 모달 열기
+  };
 
 
   return (
     <div className="App">
+        <CreateModal
+        show={showEditModal}
+        onClose={() => setShowEditModal(false)}
+      />
       <Sidebar
         show={show}
         handleClose={handleClose}
@@ -75,6 +83,7 @@ function App() {
         setPDBInfo={setPDBInfo}
         setSelectedPDBid={setSelectedPDBid}
         setAlignmentData={setAlignmentData}
+        handleEditClick={handleEditClick}
       />
 
       <div className={`content-container ${show ? "shrink" : ""}`}>

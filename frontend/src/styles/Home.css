@@ -2,22 +2,24 @@
   height: 400px;
   background-image: url(../assets/background.png);
   background-position: center;
-  background-repeat: repeat;
 }
 
 .decode-button {
   background-size: cover;
   background-repeat: no-repeat;
-  width: 200px;
+  width: 100%;
+  max-width: 200px;
   height: 50px;
   border: none;
   cursor: pointer;
   border-radius: 15px;
   background-color: #0fb9af;
   color: white;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
+  margin: 0 auto;
 }
+
 .decode-button:hover {
   background-color: #00a99d;
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
@@ -25,12 +27,61 @@
 }
 
 .text-box {
-  line-height: 2;  
-  width: 450px;
-  margin: 30px auto; /* 수평 가운데 정렬 */
+  line-height: 1.8;
+  width: 90%;
+  max-width: 450px;
+  margin: 30px auto;
 }
 
 .text-box p {
   text-align: left;
-  font-size: 20px;
+  font-size: 18px;
+}
+
+/* 반응형 디자인을 위한 미디어 쿼리 */
+@media screen and (max-width: 768px) {
+  .main-bg {
+    height: 300px;
+    background-size: 100% 100%; /* 화면 크기에 맞춰 이미지 높이를 채움 */
+  }
+
+  .decode-button {
+    font-size: 16px;
+    width: 80%;
+    max-width: 180px;
+  }
+
+  .text-box p {
+    font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .main-bg {
+    height: 250px;
+    background-size: 100% 100%; /* 화면 크기에 맞춰 이미지 높이를 채움 */
+  }
+
+  .decode-button {
+    font-size: 14px;
+    width: 100%;
+    max-width: 150px;
+  }
+
+  .text-box p {
+    font-size: 14px;
+  }
+}
+
+
+
+
+
+@media screen and (max-width: 480px) {
+  .main-bg {
+    height: 200px;
+    background-image: url(../assets/background.png);
+    background-position: center;
+    background-size: cover;
+  }
 }
