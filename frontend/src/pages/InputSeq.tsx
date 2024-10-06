@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, MouseEvent, useState ,useEffect} from "react";
+import React, { Dispatch, SetStateAction, MouseEvent, useState, useEffect } from "react";
 import { Button, Form, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "../styles/InputSeq.css";
@@ -67,14 +67,14 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   const [metadata, setMetadata] = useState("");
   // let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
-  const [doneReceived, setDoneReceived] = useState(true);  
+  const [doneReceived, setDoneReceived] = useState(true);
 
   const handleDoneSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
     if (!referenceSequenceId.trim()) {  // 입력이 없거나 빈 문자열인 경우
       setResponseMessage("Please enter a valid sequence ID.");
       return; // 값이 없으므로 요청을 보내지 않음
-  }
+    }
     const requestData = { sequenceId: referenceSequenceId };
     try {
       setDoneReceived(false);
@@ -105,11 +105,11 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
       setResponseMessage(formattedMessage);
       setResponseReceived(true);
     } catch (error) {
-      if (error instanceof Error){
+      if (error instanceof Error) {
         console.error("An error occurred during the request: ", error.message);
         setResponseMessage(error.message);
       }
-    }finally{
+    } finally {
       setDoneReceived(true);
       setWorkingHistory(referenceSequenceId);
     }
@@ -120,7 +120,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
     e.preventDefault(); // 폼의 기본 제출 동작 방지
 
     // sequences를 Map 형태로 변환
-    const sequencesMap = new Map<string,string>();
+    const sequencesMap = new Map<string, string>();
 
     sequences.forEach((seq) => {
       if (seq.value) {
@@ -174,12 +174,12 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
       setPDBReceived(false);
       navigate("/analysis");
     } catch (error) {
-      if (error instanceof Error){
+      if (error instanceof Error) {
         console.error("An error occurred during the request: ", error.message);
         window.alert(error.message);
       }
     }
-    finally{
+    finally {
       setIsLoading(false);
     }
   };
@@ -233,44 +233,41 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
     ]);
     setNextId(nextId + 1);
   };
-  
+
   return (
     <div>
       {isLoading ? (
         <Loading text="Analyzing" />
       ) : (
-        <div>          
-          <div className="container mt-4" style={{ marginLeft: "75px" }}>
+        <div>
+          <div className="container mt-4 custom-container">
             <Form>
-              <Row className="align-items-center">
-                <Col md={6}>
-                  <p className="RS-id">Reference Sequence ID</p>
-                  <Form.Group controlId="referenceSequenceId">
-                    <Form.Control
-                      type="text"
-                      placeholder="Enter sequence ID"
-                      className="input-field"
-                      value={referenceSequenceId}
-                      onChange={(e) => setReferenceSequenceId(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col
-                  md={1}
-                  className="d-flex justify-content-end align-items-center"
+              <p className="RS-id">Reference Sequence ID</p>
+              <div className="d-flex align-items-center justify-content-between">
+                <Form.Group controlId="referenceSequenceId" className="flex-grow-1">
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter sequence ID"
+                    value={referenceSequenceId}
+                    onChange={(e) => setReferenceSequenceId(e.target.value)}
+                  />
+                </Form.Group>
+                <Button
+                  type="submit"
+                  variant="primary"
+                  onClick={handleDoneSubmit}
+                  className="done-button"
+                  disabled={!doneReceived}
+                  style={{ marginLeft: '10px' }}
                 >
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    onClick={handleDoneSubmit}
-                    className="done-button"
-                    disabled={!doneReceived}
-                  >
-                    DONE
-                  </Button>
-                </Col>
-              </Row>
+                  DONE
+                </Button>
+              </div>
             </Form>
+
+
+
+
             {responseMessage && (
               <div className="response-message">
                 <p className="metadata">Metadata</p>
@@ -336,7 +333,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
                 </Row>
               </Form.Group>
 
-              <Form.Group>
+              <Form.Group className="mb-3">
                 <Form.Label>Paste Sequence</Form.Label>
                 <Row>
                   <Col md={9} className="text-left">

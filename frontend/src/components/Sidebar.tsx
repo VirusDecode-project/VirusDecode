@@ -26,6 +26,7 @@ interface SidebarProps {
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
+  handleEditClick: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -44,8 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({
   setPDBInfo,
   setSelectedPDBid,
   setAlignmentData,
+  handleEditClick,
 }) => {
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [activeHistoryItem, setActiveHistoryItem] = useState<number | null>(null);
@@ -68,9 +69,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     };
   }, []);
 
-  const handleEditClick = () => {
-    setShowEditModal(true); // 편집 모달 열기
-  };
   const checkPDBFileExists = async (url: string) => {
     try {
       const response = await fetch(url, { method: 'HEAD' });
@@ -310,11 +308,6 @@ const Sidebar: React.FC<SidebarProps> = ({
           </div>
         )}
       </div>
-      {/* 커스텀 모달들을 추가 */}
-      <CreateModal
-        show={showEditModal}
-        onClose={() => setShowEditModal(false)}
-      />
       <RenameModal
         show={showRenameModal}
         onClose={() => setShowRenameModal(false)}

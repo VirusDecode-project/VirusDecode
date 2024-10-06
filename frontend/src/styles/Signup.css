@@ -166,3 +166,10 @@ input ~ img {
   color: #aaa;
   text-decoration: underline;
 }
+
+/* 모바일 화면에서 탭 스타일 */
+@media screen and (max-width: 480px) {
+  .signup-wrapper {
+    padding: 0px; 
+  }
+}

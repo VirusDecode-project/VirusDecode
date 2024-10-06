@@ -2,7 +2,6 @@
     from {
         transform: rotate(0deg);
     }
-
     to {
         transform: rotate(360deg);
     }
@@ -10,13 +9,10 @@
 
 .analysis-container {
     position: relative;
-    height: 100vh;
     transition: padding-left 0.3s ease;
 }
 
-
 /* Custom Tab Styles */
-
 .nav-tabs .nav-link {
     background-color: #0fb9af;
     color: white;
@@ -25,7 +21,6 @@
     font-weight: bold;
     font-size: 18px;
     padding: 4px 0;
-
 }
 
 .nav-tabs .nav-item {
@@ -58,4 +53,20 @@
     border-color: #ddd;
     cursor: not-allowed;
     pointer-events: none;
+}
+/* 모바일 화면에서 탭 스타일 */
+@media screen and (max-width: 480px) {
+    .nav-tabs .nav-item .nav-link {
+        width: 100px; /* 모바일 화면에서 탭 너비를 작게 조정 */
+        font-size: 12px; /* 모바일에서 탭 텍스트 크기 조정 */
+        /* margin-left: 0px; */
+        /* padding-left: 0px; */
+    }
+    .nav-tabs .nav-item {
+        margin-left: 10px;
+    }
+
+    .sequence-container{
+        padding-left: 150px;
+    }
 }

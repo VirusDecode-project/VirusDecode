@@ -1,7 +1,7 @@
 .reference3D {
   display: flex;
   justify-content: center;
-  padding: 50px;
+  /* padding: 50px; */
   position: relative;
 }
 
@@ -9,13 +9,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 900px;
-  height: 1020px;
-  position: relative;
+  width: 1080px;  
+  height: 720px;
+  /* position: relative; */
 }
 
 .representation-container {
-  position: absolute;
+  position: relative;
+  /* width: '50vw'; */
   top: 70px;
   left: 0;
 }
@@ -42,6 +43,7 @@
   position: absolute;
   bottom: 0;
   right: 0;
+  margin-right: 10px;
   color: #999;
   font-size: 20px;
 }
@@ -53,7 +55,7 @@
   flex-direction: column;
   align-items: center;
   width: 120px;
-  position: relative;
+  /* position: absolute; */
 }
 
 .list-header {
@@ -93,7 +95,7 @@
   border-bottom: 1px solid #ddd;
   transition: background-color 0.3s ease, transform 0.2s ease;
   cursor: pointer;
-  position: relative;
+  /* position: relative; */
 }
 
 .list-row:hover {
@@ -168,4 +170,11 @@
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+}
+
+
+@media screen and (max-width: 480px) {
+  .left-column {
+    margin-left: 820px;
+  }
 }

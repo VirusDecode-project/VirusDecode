@@ -238,22 +238,22 @@ body {
   /* 좌측 정렬 설정 */
   font-weight: 500;
   font-size: 19px;
+  width: 300px;
 }
-
+.mb-3{
+  width: 1200px;
+}
 .done-button {
   background-color: #0fb9af;
   border: none;
   border-radius: 8px;
   padding: 10px 17px;
   font-size: 16px;
-  width: 150px;
+  width: 120px;
   height: 38px;
-  /* 높이를 입력 필드와 동일하게 설정 */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 45px;
-  margin-left: 20px;
 }
 .done-button:disabled {
   background-color: #d3d3d3;
@@ -442,4 +442,33 @@ svg {
 }
 .next-button:active {
   background-color: #0c9e94 !important;
+}
+
+
+.custom-container {
+  margin-left: 75px; /* 기본 마진 */
+  padding-right: 75px;
+  width: 50vw;
+}
+
+/* 매우 작은 화면에 대한 설정 (예: 모바일) */
+@media screen and (max-width: 480px) {
+  .custom-container {
+    margin-left: 20px; /* 작은 화면에서는 마진을 더 줄임 */
+    padding-right: 40px;
+    width: 100vw;
+  }
+  .mb-3{
+    width: 300px;
+  }
+  .done-button {
+    width: 80px;
+  }
+  .response-message {
+    width: 300px;
+  }
+  .input-field{
+    width: 100px;
+  }
+  
 }

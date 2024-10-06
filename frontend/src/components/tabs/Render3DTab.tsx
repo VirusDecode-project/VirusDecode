@@ -12,10 +12,39 @@ interface Render3DProps {
 
 
 
-const Render3D: React.FC<Render3DProps> = ({ region, PDBids ,PDBInfo, selectedPDBid, setSelectedPDBid }) => {
+const Render3D: React.FC<Render3DProps> = ({ region, PDBids, PDBInfo, selectedPDBid, setSelectedPDBid }) => {
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
+  const [viewportStyle, setViewportStyle] = useState({ width: '1080px', height: '720px' });
+
+  useEffect(() => {
+    // 탭에 들어갈 때 스크롤 비활성화
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      // 탭에서 나올 때 스크롤 다시 활성화
+      document.body.style.overflow = 'auto';
+    };
+  }, []);
+  useEffect(() => {
+    // 화면 크기 감지
+    const updateViewportStyle = () => {
+      if (window.innerWidth <= 480) {
+        setViewportStyle({ width: '320px', height: '240px' }); // 모바일 크기
+      } else {
+        setViewportStyle({ width: '1080px', height: '720px' }); // 기본 크기
+      }
+    };
+
+    // 처음 로드될 때와 창 크기 변경 시 업데이트
+    updateViewportStyle();
+    window.addEventListener('resize', updateViewportStyle);
+
+    return () => {
+      window.removeEventListener('resize', updateViewportStyle);
+    };
+  }, []);
 
   const checkPDBFileExists = async (url: string) => {
     try {
@@ -30,11 +59,10 @@ const Render3D: React.FC<Render3DProps> = ({ region, PDBids ,PDBInfo, selectedPD
   if (PDBids.length === 0) {
     return <div>Loading...</div>;
   }
-  const viewportStyle = {
-    width: '900px',
-    height: '900px',
-  };
-
+  // const viewportStyle = {
+  //   width: '50vw',  // Viewport width의 100%로 설정
+  //   height: '80vh',  // Viewport height의 70%로 설정
+  // };
   const refData = {
     filename: `https://files.rcsb.org/download/${selectedPDBid}.pdb`,
     ...(representation !== "default" && {
@@ -87,8 +115,8 @@ const Render3D: React.FC<Render3DProps> = ({ region, PDBids ,PDBInfo, selectedPD
             <option value="cartoon"> Cartoon </option>
           </select>
           <Viztein key={vizteinKey} data={refData} viewportStyle={viewportStyle} />
+          <p className='PDBname'>{selectedPDBid}.pdb</p>
         </div>
-        <p className='PDBname'>{selectedPDBid}.pdb</p>
       </div>
       <div className='right-column'>
         <div className='list-header'>
