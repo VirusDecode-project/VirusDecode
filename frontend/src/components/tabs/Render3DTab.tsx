@@ -103,7 +103,7 @@ const Render3D: React.FC<Render3DProps> = ({ region, PDBids, PDBInfo, selectedPD
   return (
     <div className='reference3D'>
       <div className='left-column'>
-        <p className='renderTitle'>{region}</p>
+          {/* <div className='renderTitle'>{region}</div> */}
         <div className='representation-container'>
           <select
             className="style"

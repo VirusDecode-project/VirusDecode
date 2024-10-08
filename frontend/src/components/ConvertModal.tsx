@@ -75,13 +75,13 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
     setMRNAReceived(false);
     setPDBReceived(false);
     const mRnaData = {
-      region: selectedRegion,
+      gene: selectedRegion,
       varientName: selectedGenome,
       start: parseInt(startIndex, 10),
       end: parseInt(endIndex, 10),
       historyName: workingHistory,
     };
-    onRegionUpdate(mRnaData.region);
+    onRegionUpdate(mRnaData.gene);
     console.log("Data being sent to backend:", mRnaData);
   
     try {
