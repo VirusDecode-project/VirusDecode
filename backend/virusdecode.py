@@ -187,54 +187,12 @@ class SequenceAlignment:
 
 
 class SequenceAnalysis:
-    def __init__(self, alignment_index, alignment_dict, reference_id, gene, variant_id, start, end):
-        self.alignment_index = alignment_index
-        self.alignment_dict = alignment_dict
-        self.reference_id = reference_id
-        self.gene = gene
-        self.variant_id = variant_id
-        self.start = start
-        self.end = end
-        self.amino_acid_sequence = None
+    def __init__(self, amino_acid_sequence):
+        self.amino_acid_sequence = amino_acid_sequence
         self.linearDesign = []
         self.protParam = []
 
     def run_linear_design(self):
-        start=self.start-1
-        end=self.end
-
-        # Update region
-        (idx_start,idx_end) = self.alignment_index[self.gene]
-        input_sequence = self.alignment_dict[self.reference_id][idx_start:idx_end]
-
-        while True:
-            initial_gap_count = input_sequence[:start].count("-")
-            gap_count = input_sequence[:start + initial_gap_count].count("-")
-            if initial_gap_count == gap_count:
-                start += initial_gap_count
-                end += initial_gap_count
-                break
-
-        while True:
-            gap_count_in_range = input_sequence[start:end].count("-")
-            updated_end = end + gap_count_in_range
-            if updated_end > idx_end:
-                end = idx_end
-                break
-            
-            gap_count = input_sequence[start:end + gap_count_in_range].count("-")
-            
-            if gap_count_in_range == gap_count:
-                end += gap_count_in_range
-                break
-        
-        # Get target sequence
-        amino_acid_sequence = self.alignment_dict[self.variant_id][idx_start:idx_end][start:end].replace("-", "")
-        
-        if(amino_acid_sequence == ""):
-            sys.stderr.write("Error: No amino acid sequence found")
-            sys.exit(31)
-
         # Run LinearDesign
         # Execute the command and capture the result
         try:
@@ -388,25 +346,13 @@ if __name__ == "__main__":
 
     # linearDesign, protparam data
     elif option == 3:
-        if len(sys.argv) < 8:
+        if len(sys.argv) < 3:
             sys.exit(2)
             
-        # get reference_id
-        reference_id = sys.argv[2]
-
-        # get alignment data
-        alignment_data = json.loads(sys.argv[3])
-        alignment_index = alignment_data.get("alignment_index", None)
-        alignment_dict = alignment_data.get("aligned_sequences", None)
-
-        # set gene, variant_id, start, end
-        gene=sys.argv[4]
-        variant_id=sys.argv[5]
-        start = int(sys.argv[6])
-        end = int(sys.argv[7])
+        amino_acid_sequence = sys.argv[2]
 
         # run sequence analysis
-        analysis = SequenceAnalysis(alignment_index, alignment_dict, reference_id, gene, variant_id, start, end)
+        analysis = SequenceAnalysis(amino_acid_sequence)
         analysis.run()
 
         # get linearDesign and protParam data
@@ -421,22 +367,10 @@ if __name__ == "__main__":
 
 
     elif option == 4:
-        if len(sys.argv) < 5:
+        if len(sys.argv) < 3:
             sys.exit(2)
 
-        # get reference_id
-        reference_id = sys.argv[2]
-
-        # get alignment data
-        alignment_data = json.loads(sys.argv[3])
-        alignment_index = alignment_data.get("alignment_index", None)
-        alignment_dict = alignment_data.get("aligned_sequences", None)
-
-        # set gene, variant_id, start, end
-        gene=sys.argv[4]
-        
-        # PDB search
-        sequence = alignment_dict[reference_id][alignment_index[gene][0]:alignment_index[gene][1]].replace("-", "")
+        sequence = sys.argv[2]
 
         pdb_ids = get_pdb_ids_by_sequence(sequence)
         pdb_ids=pdb_ids[:10]
