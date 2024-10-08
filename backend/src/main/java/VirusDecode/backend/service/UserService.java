@@ -1,7 +1,6 @@
 package VirusDecode.backend.service;
 
 import VirusDecode.backend.dto.SignUpDto;
-import VirusDecode.backend.dto.UserLoginDto;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -29,12 +28,13 @@ public class UserService {
     }
 
     @Transactional
-    public User createUser(SignUpDto signUpDto) {
+    public User createUser(SignUpDto signUpDto, String role) {
         User newUser = new User();
         newUser.setFirstName(signUpDto.getFirstName());
         newUser.setLastName(signUpDto.getLastName());
         newUser.setLoginId(signUpDto.getLoginId());
         newUser.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+        newUser.setRole(role);
 
         return userRepository.save(newUser);
     }

@@ -9,8 +9,10 @@ public class JsonData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String historyName;
 
+    @Column(nullable = false)
     private String referenceId;
 
     @Column(columnDefinition = "MEDIUMTEXT")
@@ -23,7 +25,7 @@ public class JsonData {
     private String pdb;
 
     @ManyToOne
-    @JoinColumn(name = "user_id") // History와 연결
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     public String getHistoryName() {

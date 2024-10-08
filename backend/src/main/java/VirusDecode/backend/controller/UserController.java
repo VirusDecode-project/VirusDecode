@@ -46,7 +46,7 @@ public class UserController {
             return ResponseEntity.status(400).body("이미 존재하는 ID 입니다.");
         }
 
-        User newUser = userService.createUser(signupDto);
+        User newUser = userService.createUser(signupDto, "USER");
         return ResponseEntity.ok("User created successfully with ID: " + newUser.getId());
     }
 
