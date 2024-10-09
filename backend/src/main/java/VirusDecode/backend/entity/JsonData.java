@@ -10,9 +10,6 @@ public class JsonData {
     private Long id;
 
     @Column(nullable = false)
-    private String historyName;
-
-    @Column(nullable = false)
     private String referenceId;
 
     @Column(columnDefinition = "MEDIUMTEXT")
@@ -25,23 +22,15 @@ public class JsonData {
     private String pdb;
 
     @ManyToOne
-    @JoinColumn(nullable = false, name = "user_id")
-    private User user;
+    @JoinColumn(nullable = false, name = "history_id")
+    private History history;
 
-    public String getHistoryName() {
-        return historyName;
+    public History getHistory() {
+        return history;
     }
 
-    public void setHistoryName(String historyName) {
-        this.historyName = historyName;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setHistory(History history) {
+        this.history = history;
     }
 
     public String getAlignment() {

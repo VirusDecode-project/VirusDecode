@@ -29,7 +29,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<JsonData> jsonDataList = new ArrayList<>(); // JsonData 리스트
+    private List<History> historyList = new ArrayList<>();
 
     private String role;
 
@@ -41,12 +41,12 @@ public class User {
     private LocalDateTime updatedAt;
 
 
-    public List<JsonData> getJsonDataList() {
-        return jsonDataList;
+    public List<History> getHistoryList() {
+        return historyList;
     }
 
-    public void setJsonDataList(List<JsonData> jsonDataList) {
-        this.jsonDataList = jsonDataList;
+    public void setHistoryList(List<History> historyList) {
+        this.historyList = historyList;
     }
 
     public String getFirstName() {

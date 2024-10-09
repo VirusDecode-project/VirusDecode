@@ -2,6 +2,7 @@ package VirusDecode.backend.service;
 
 import VirusDecode.backend.dto.initialData.ReferenceDto;
 import VirusDecode.backend.dto.initialData.fasta.VarientDto;
+import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.entity.User;
 import com.google.gson.Gson;
@@ -20,13 +21,15 @@ public class InitialDataService {
     private final FastaFileService fastaFileService;
     private final JsonDataService jsonDataService;
     private final UserService userService;
+    private final HistoryService historyService;
 
     @Autowired
-    public InitialDataService(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService, UserService userService) {
+    public InitialDataService(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService, UserService userService, HistoryService historyService) {
         this.pythonScriptService = pythonScriptService;
         this.fastaFileService = fastaFileService;
         this.jsonDataService = jsonDataService;
         this.userService = userService;
+        this.historyService = historyService;
     }
 
     public ResponseEntity<String> processMetadata(ReferenceDto request) {
@@ -52,14 +55,18 @@ public class InitialDataService {
                 User user = userOptional.get();
 
                 // historyName 중복 체크
-                String validatedHistoryName = validateHistoryName(historyName, userId);
+                String validatedHistoryName = historyService.validateHistoryName(historyName, userId);
+
+                History history = new History();
+                history.setUser(user);
+                history.setHistoryName(validatedHistoryName);
+                historyService.createHistory(history);
 
                 // JsonData 생성 및 저장
                 JsonData jsonData = new JsonData();
                 jsonData.setReferenceId(referenceId);
                 jsonData.setAlignment(alignmentJson);
-                jsonData.setHistoryName(validatedHistoryName);
-                jsonData.setUser(user);
+                jsonData.setHistory(history);
                 jsonDataService.saveJsonData(jsonData);
 
                 // JSON 응답 생성
@@ -75,16 +82,5 @@ public class InitialDataService {
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fasta 파일 저장에 문제 발생하였습니다.");
         }
-    }
-
-    // historyName 중복 체크 및 이름 생성
-    private String validateHistoryName(String historyName, Long userId) {
-        String originalHistoryName = historyName;
-        int counter = 1;
-        while (jsonDataService.getJsonData(historyName, userId) != null) {
-            historyName = originalHistoryName + "_" + counter;
-            counter++;
-        }
-        return historyName;
     }
 }
