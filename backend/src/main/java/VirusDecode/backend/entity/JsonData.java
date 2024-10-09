@@ -1,7 +1,11 @@
 package VirusDecode.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name="json_data")
 public class JsonData {
@@ -24,52 +28,4 @@ public class JsonData {
     @ManyToOne
     @JoinColumn(nullable = false, name = "history_id")
     private History history;
-
-    public History getHistory() {
-        return history;
-    }
-
-    public void setHistory(History history) {
-        this.history = history;
-    }
-
-    public String getAlignment() {
-        return alignment;
-    }
-
-    public void setAlignment(String alignment) {
-        this.alignment = alignment;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLinearDesign() {
-        return linearDesign;
-    }
-
-    public void setLinearDesign(String linearDesign) {
-        this.linearDesign = linearDesign;
-    }
-
-    public String getReferenceId() {
-        return referenceId;
-    }
-
-    public void setReferenceId(String referenceId) {
-        this.referenceId = referenceId;
-    }
-
-    public String getPdb() {
-        return pdb;
-    }
-
-    public void setPdb(String pdb) {
-        this.pdb = pdb;
-    }
 }

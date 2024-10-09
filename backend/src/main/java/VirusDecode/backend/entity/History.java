@@ -1,12 +1,16 @@
 package VirusDecode.backend.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name="history")
 public class History {
@@ -24,9 +28,6 @@ public class History {
 
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL)
     private List<JsonData> jsonDataList = new ArrayList<>();
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -35,47 +36,4 @@ public class History {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public String getHistoryName() {
-        return historyName;
-    }
-
-    public void setHistoryName(String historyName) {
-        this.historyName = historyName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public List<JsonData> getJsonDataList() {
-        return jsonDataList;
-    }
-
-    public void setJsonDataList(List<JsonData> jsonDataList) {
-        this.jsonDataList = jsonDataList;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
