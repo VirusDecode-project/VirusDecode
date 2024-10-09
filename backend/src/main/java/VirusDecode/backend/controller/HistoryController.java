@@ -1,7 +1,9 @@
 package VirusDecode.backend.controller;
 
 import VirusDecode.backend.dto.HistoryDto;
+import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.JsonData;
+import VirusDecode.backend.service.HistoryService;
 import VirusDecode.backend.service.JsonDataService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
@@ -15,10 +17,12 @@ import java.util.*;
 @RequestMapping("/api/history")
 public class HistoryController {
     private final JsonDataService jsonDataService;
+    private final HistoryService historyService;
 
     @Autowired
-    public HistoryController(JsonDataService jsonDataService) {
+    public HistoryController(JsonDataService jsonDataService, HistoryService historyService) {
         this.jsonDataService = jsonDataService;
+        this.historyService = historyService;
     }
 
     @GetMapping("/list")
@@ -28,7 +32,7 @@ public class HistoryController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        List<String> historyList = jsonDataService.getHistoryNamesByUserId(userId);
+        List<String> historyList = historyService.getHistoryNamesByUserId(userId);
         return ResponseEntity.ok(historyList);
     }
 
@@ -38,8 +42,7 @@ public class HistoryController {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
-
-        jsonDataService.updateHistoryName(request.getHistoryName(), request.getNewName(), userId);
+        historyService.updateHistoryName(request.getHistoryName(), request.getNewName(), userId);
         return ResponseEntity.ok("History name updated successfully");
     }
 
@@ -51,7 +54,10 @@ public class HistoryController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
 
-        jsonDataService.deleteHistory(historyName, userId);
+        History history = historyService.getHistory(historyName, userId);
+        jsonDataService.deleteJsonData(history);
+        historyService.deleteHistory(historyName, userId);
+
         return ResponseEntity.ok("History deleted successfully");
     }
 
@@ -62,7 +68,9 @@ public class HistoryController {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
-        JsonData jsonData = jsonDataService.getJsonData(historyName, userId);
+
+        History history = historyService.getHistory(historyName, userId);
+        JsonData jsonData = jsonDataService.getJsonData(history);
         if (jsonData == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
         }

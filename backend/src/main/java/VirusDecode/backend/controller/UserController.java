@@ -2,6 +2,7 @@ package VirusDecode.backend.controller;
 import VirusDecode.backend.dto.SignUpDto;
 import VirusDecode.backend.dto.UserLoginDto;
 import VirusDecode.backend.entity.User;
+import VirusDecode.backend.service.GuestLoginService;
 import VirusDecode.backend.service.UserService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,12 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class UserController {
     private final UserService userService;
+    private final GuestLoginService guestLoginService;
 
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, GuestLoginService guestLoginService){
         this.userService = userService;
+        this.guestLoginService = guestLoginService;
     }
 
     @PostMapping("/login")
@@ -30,24 +33,29 @@ public class UserController {
         session.setMaxInactiveInterval(3600);
 
         if (user == null) {
-            return ResponseEntity.status(401).body("유효하지 않은 ID 입니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 ID 입니다.");
         }
 
         if (userService.checkPassword(user, loginDto.getPassword())) {
             session.setAttribute("userId", user.getId());
             return ResponseEntity.ok("User logged in successfully.");
         } else {
-            return ResponseEntity.status(401).body("비밀번호가 틀렸습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("비밀번호가 틀렸습니다.");
         }
     }
     @PostMapping("/signup")
     public ResponseEntity<String> signup(@RequestBody SignUpDto signupDto) {
         if (userService.findUserByLoginId(signupDto.getLoginId()) != null) {
-            return ResponseEntity.status(400).body("이미 존재하는 ID 입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이미 존재하는 ID 입니다.");
         }
 
-        User newUser = userService.createUser(signupDto);
+        User newUser = userService.createUser(signupDto, "USER");
         return ResponseEntity.ok("User created successfully with ID: " + newUser.getId());
+    }
+
+    @PostMapping("/guest-login")
+    public ResponseEntity<String> guestLogin(HttpSession session) {
+        return guestLoginService.loginAsGuest(session);
     }
 
     @PostMapping("/userinfo")
@@ -59,7 +67,7 @@ public class UserController {
 
         User user = userService.findUserByUserId(userId);
         if(user==null){
-            return ResponseEntity.status(400).body("유저 이름을 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("유저 이름을 찾을 수 없습니다.");
         }
 
 

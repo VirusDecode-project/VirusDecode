@@ -1,5 +1,6 @@
 package VirusDecode.backend.service;
 
+import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.repository.JsonDataRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,10 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class JsonDataServiceTest {
@@ -29,63 +29,49 @@ class JsonDataServiceTest {
 
     @Test
     void testSaveJsonData() {
+        // Given
         JsonData jsonData = new JsonData();
+        jsonData.setId(1L);
         when(jsonDataRepository.save(any(JsonData.class))).thenReturn(jsonData);
 
-        JsonData result = jsonDataService.saveJsonData(jsonData);
+        // When
+        JsonData savedJsonData = jsonDataService.saveJsonData(jsonData);
 
-        assertNotNull(result);
+        // Then
+        assertNotNull(savedJsonData);
+        assertEquals(1L, savedJsonData.getId());
         verify(jsonDataRepository, times(1)).save(jsonData);
     }
 
     @Test
     void testGetJsonData() {
-        String historyName = "testHistory";
-        Long userId = 1L;
+        // Given
+        History history = new History();
+        history.setId(1L);
         JsonData jsonData = new JsonData();
-        when(jsonDataRepository.findByHistoryNameAndUserId(historyName, userId)).thenReturn(jsonData);
+        jsonData.setId(1L);
+        jsonData.setHistory(history);
+        when(jsonDataRepository.findByHistoryId(1L)).thenReturn(jsonData);
 
-        JsonData result = jsonDataService.getJsonData(historyName, userId);
+        // When
+        JsonData retrievedJsonData = jsonDataService.getJsonData(history);
 
-        assertNotNull(result);
-        assertEquals(jsonData, result);
-        verify(jsonDataRepository, times(1)).findByHistoryNameAndUserId(historyName, userId);
+        // Then
+        assertNotNull(retrievedJsonData);
+        assertEquals(1L, retrievedJsonData.getId());
+        verify(jsonDataRepository, times(1)).findByHistoryId(1L);
     }
 
     @Test
-    void testGetHistoryNamesByUserId() {
-        Long userId = 1L;
-        List<String> historyNames = Arrays.asList("History1", "History2", "History3");
-        when(jsonDataRepository.findHistoryNamesByUserId(userId)).thenReturn(historyNames);
+    void testDeleteJsonData() {
+        // Given
+        History history = new History();
+        history.setId(1L);
 
-        List<String> result = jsonDataService.getHistoryNamesByUserId(userId);
+        // When
+        jsonDataService.deleteJsonData(history);
 
-        assertNotNull(result);
-        assertEquals(3, result.size());
-        assertEquals("History3", result.get(0)); // Collections.reverse가 작동하는지 확인
-        verify(jsonDataRepository, times(1)).findHistoryNamesByUserId(userId);
-    }
-
-    @Test
-    void testUpdateHistoryName() {
-        String oldName = "oldName";
-        String newName = "newName";
-        Long userId = 1L;
-        doNothing().when(jsonDataRepository).updateHistoryName(oldName, newName, userId);
-
-        jsonDataService.updateHistoryName(oldName, newName, userId);
-
-        verify(jsonDataRepository, times(1)).updateHistoryName(oldName, newName, userId);
-    }
-
-    @Test
-    void testDeleteHistory() {
-        String historyName = "testHistory";
-        Long userId = 1L;
-        doNothing().when(jsonDataRepository).deleteByHistoryNameAndUserId(historyName, userId);
-
-        jsonDataService.deleteHistory(historyName, userId);
-
-        verify(jsonDataRepository, times(1)).deleteByHistoryNameAndUserId(historyName, userId);
+        // Then
+        verify(jsonDataRepository, times(1)).deleteByHistoryId(1L);
     }
 }

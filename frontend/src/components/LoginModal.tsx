@@ -10,22 +10,16 @@ interface LoginModalProps {
 
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose, setUserName }) => {
   const navigate = useNavigate();
-  const loginId = 'virusdecode';
-  const password = 'virusdecode';
   const modalRef = useRef<HTMLDivElement>(null); // 모달을 참조하기 위한 useRef
   
   const login = useCallback(async () => {
     try {
-      const loginResponse = await fetch(`/api/auth/login`, {
+      const loginResponse = await fetch(`/api/auth/guest-login`, {
           method: "POST",
           credentials: 'include',
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            loginId,
-            password,
-          }),
       });
 
       if (loginResponse.ok) {const fetchName = async () => {

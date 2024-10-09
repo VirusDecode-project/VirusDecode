@@ -1,170 +1,200 @@
-//package VirusDecode.backend.controller;
-//
-//import VirusDecode.backend.dto.SignUpDto;
-//import VirusDecode.backend.dto.UserLoginDto;
-//import VirusDecode.backend.entity.User;
-//import VirusDecode.backend.service.UserService;
-//import com.google.gson.Gson;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.http.MediaType;
-//import org.springframework.mock.web.MockHttpSession;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//
-//import static org.junit.jupiter.api.Assertions.assertNull;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//class UserControllerTest {
-//
-//    private MockMvc mockMvc;
-//
-//    @Mock
-//    private UserService userService;
-//
-//    @InjectMocks
-//    private UserController userController;
-//
-//    private MockHttpSession mockSession;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
-//        mockSession = new MockHttpSession();
-//    }
-//
-//    @Test
-//    void testLogin_Successful() throws Exception {
-//        // Given
-//        UserLoginDto loginDto = new UserLoginDto();
-//        loginDto.setLoginId("user123");
-//        loginDto.setPassword("securePassword");
-//
-//        User user = new User();
-//        user.setId(1L);
-//        user.setLoginId("user123");
-//        user.setPassword("hashedPassword");
-//
-//        when(userService.findUserByLoginId("user123")).thenReturn(user);
-//        when(userService.checkPassword(user, "securePassword")).thenReturn(true);
-//
-//        // When & Then
-//        mockMvc.perform(post("/auth/login")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(loginDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("User logged in successfully."));
-//
-//        verify(userService, times(1)).findUserByLoginId("user123");
-//        verify(userService, times(1)).checkPassword(user, "securePassword");
-//        Assertions.assertEquals(1L, mockSession.getAttribute("userId"));
-//    }
-//
-//    @Test
-//    void testLogin_InvalidLoginId() throws Exception {
-//        // Given
-//        UserLoginDto loginDto = new UserLoginDto();
-//        loginDto.setLoginId("invalidUser");
-//        loginDto.setPassword("somePassword");
-//
-//        when(userService.findUserByLoginId("invalidUser")).thenReturn(null);
-//
-//        // When & Then
-//        mockMvc.perform(post("/auth/login")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(loginDto)))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(content().string("Invalid login ID."));
-//
-//        verify(userService, times(1)).findUserByLoginId("invalidUser");
-//        verify(userService, never()).checkPassword(any(), any());
-//        assertNull(mockSession.getAttribute("userId"));
-//    }
-//
-//    @Test
-//    void testLogin_InvalidPassword() throws Exception {
-//        // Given
-//        UserLoginDto loginDto = new UserLoginDto();
-//        loginDto.setLoginId("user123");
-//        loginDto.setPassword("wrongPassword");
-//
-//        User user = new User();
-//        user.setId(1L);
-//        user.setLoginId("user123");
-//        user.setPassword("hashedPassword");
-//
-//        when(userService.findUserByLoginId("user123")).thenReturn(user);
-//        when(userService.checkPassword(user, "wrongPassword")).thenReturn(false);
-//
-//        // When & Then
-//        mockMvc.perform(post("/auth/login")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(loginDto)))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(content().string("Invalid password."));
-//
-//        verify(userService, times(1)).findUserByLoginId("user123");
-//        verify(userService, times(1)).checkPassword(user, "wrongPassword");
-//        assertNull(mockSession.getAttribute("userId"));
-//    }
-//
-//    @Test
-//    void testSignup_UserAlreadyExists() throws Exception {
-//        // Given
-//        SignUpDto signupDto = new SignUpDto();
-//        signupDto.setLoginId("user123");
-//        signupDto.setPassword("securePassword");
-//        signupDto.setFirstName("John");
-//        signupDto.setLastName("Doe");
-//
-//        when(userService.findUserByLoginId("user123")).thenReturn(new User());
-//
-//        // When & Then
-//        mockMvc.perform(post("/auth/signup")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(signupDto)))
-//                .andExpect(status().isBadRequest())
-//                .andExpect(content().string("Login ID already exists."));
-//
-//        verify(userService, times(1)).findUserByLoginId("user123");
-//        verify(userService, never()).createUser(any(SignUpDto.class));
-//    }
-//
-//    @Test
-//    void testSignup_Successful() throws Exception {
-//        // Given
-//        SignUpDto signupDto = new SignUpDto();
-//        signupDto.setLoginId("newUser123");
-//        signupDto.setPassword("securePassword");
-//        signupDto.setFirstName("John");
-//        signupDto.setLastName("Doe");
-//
-//        User newUser = new User();
-//        newUser.setId(1L);
-//        newUser.setLoginId("newUser123");
-//
-//        when(userService.findUserByLoginId("newUser123")).thenReturn(null);
-//        when(userService.createUser(any(SignUpDto.class))).thenReturn(newUser);
-//
-//        // When & Then
-//        mockMvc.perform(post("/auth/signup")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(signupDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("User created successfully with ID: 1"));
-//
-//        verify(userService, times(1)).findUserByLoginId("newUser123");
-//        verify(userService, times(1)).createUser(any(SignUpDto.class));
-//    }
-//}
+package VirusDecode.backend.controller;
+
+import VirusDecode.backend.dto.SignUpDto;
+import VirusDecode.backend.dto.UserLoginDto;
+import VirusDecode.backend.entity.User;
+import VirusDecode.backend.service.GuestLoginService;
+import VirusDecode.backend.service.UserService;
+import com.google.gson.Gson;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import jakarta.servlet.http.HttpSession;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+class UserControllerTest {
+
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private GuestLoginService guestLoginService;
+
+    @Mock
+    private HttpSession session;
+
+    @InjectMocks
+    private UserController userController;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testLogin_Success() {
+        UserLoginDto loginDto = new UserLoginDto();
+        loginDto.setLoginId("testUser");
+        loginDto.setPassword("password");
+
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setLoginId("testUser");
+
+        when(userService.findUserByLoginId("testUser")).thenReturn(mockUser);
+        when(userService.checkPassword(mockUser, "password")).thenReturn(true);
+
+        ResponseEntity<String> response = userController.login(loginDto, session);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User logged in successfully.", response.getBody());
+        verify(session).setAttribute("userId", mockUser.getId());
+    }
+
+    @Test
+    void testLogin_InvalidUser() {
+        UserLoginDto loginDto = new UserLoginDto();
+        loginDto.setLoginId("nonExistentUser");
+        loginDto.setPassword("password");
+
+        when(userService.findUserByLoginId("nonExistentUser")).thenReturn(null);
+
+        ResponseEntity<String> response = userController.login(loginDto, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("유효하지 않은 ID 입니다.", response.getBody());
+    }
+
+    @Test
+    void testLogin_InvalidPassword() {
+        UserLoginDto loginDto = new UserLoginDto();
+        loginDto.setLoginId("testUser");
+        loginDto.setPassword("wrongPassword");
+
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setLoginId("testUser");
+
+        when(userService.findUserByLoginId("testUser")).thenReturn(mockUser);
+        when(userService.checkPassword(mockUser, "wrongPassword")).thenReturn(false);
+
+        ResponseEntity<String> response = userController.login(loginDto, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("비밀번호가 틀렸습니다.", response.getBody());
+    }
+
+    @Test
+    void testSignup_Success() {
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setLoginId("newUser");
+        signUpDto.setPassword("password");
+
+        when(userService.findUserByLoginId("newUser")).thenReturn(null);
+
+        User newUser = new User();
+        newUser.setId(1L);
+        newUser.setLoginId("newUser");
+
+        when(userService.createUser(signUpDto, "USER")).thenReturn(newUser);
+
+        ResponseEntity<String> response = userController.signup(signUpDto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User created successfully with ID: " + newUser.getId(), response.getBody());
+    }
+
+    @Test
+    void testSignup_UserAlreadyExists() {
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setLoginId("existingUser");
+
+        when(userService.findUserByLoginId("existingUser")).thenReturn(new User());
+
+        ResponseEntity<String> response = userController.signup(signUpDto);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("이미 존재하는 ID 입니다.", response.getBody());
+    }
+
+    @Test
+    void testGuestLogin_Success() {
+        when(guestLoginService.loginAsGuest(session)).thenReturn(ResponseEntity.ok("New temporary user created and logged in"));
+
+        ResponseEntity<String> response = userController.guestLogin(session);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("New temporary user created and logged in", response.getBody());
+    }
+
+    @Test
+    void testGetUserInfo_Success() {
+        Long userId = 1L;
+        User mockUser = new User();
+        mockUser.setId(userId);
+        mockUser.setFirstName("First");
+        mockUser.setLoginId("testUser");
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(userService.findUserByUserId(userId)).thenReturn(mockUser);
+
+        ResponseEntity<String> response = userController.getUserInfo(session);
+
+        Map<String, String> expectedJson = new HashMap<>();
+        expectedJson.put("userName", "First");
+        expectedJson.put("loginId", "testUser");
+
+        String expectedResponse = new Gson().toJson(expectedJson);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedResponse, response.getBody());
+    }
+    @Test
+    void testGetUserInfo_UserNotFound() {
+        // Given
+        Long userId = 1L;
+
+        // 세션에 userId가 존재하는 경우
+        when(session.getAttribute("userId")).thenReturn(userId);
+        // 유저를 찾을 수 없는 경우 null 반환
+        when(userService.findUserByUserId(userId)).thenReturn(null);
+
+        // When
+        ResponseEntity<String> response = userController.getUserInfo(session);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("유저 이름을 찾을 수 없습니다.", response.getBody());
+    }
+
+    @Test
+    void testGetUserInfo_NotAuthenticated() {
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        ResponseEntity<String> response = userController.getUserInfo(session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("User not authenticated", response.getBody());
+    }
+
+    @Test
+    void testLogout() {
+        ResponseEntity<String> response = userController.logout(session);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("User logged out successfully.", response.getBody());
+        verify(session).invalidate();
+    }
+}

@@ -1,165 +1,191 @@
-//package VirusDecode.backend.controller;
-//
-//import VirusDecode.backend.dto.HistoryDto;
-//import VirusDecode.backend.entity.JsonData;
-//import VirusDecode.backend.service.JsonDataService;
-//import com.google.gson.Gson;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.InjectMocks;
-//import org.mockito.Mock;
-//import org.mockito.MockitoAnnotations;
-//import org.springframework.http.MediaType;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.mock.web.MockHttpSession;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-//
-//import java.util.*;
-//
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.*;
-//import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-//
-//class HistoryControllerTest {
-//
-//    private MockMvc mockMvc;
-//
-//    @Mock
-//    private JsonDataService jsonDataService;
-//
-//    @InjectMocks
-//    private HistoryController historyController;
-//
-//    private MockHttpSession mockSession;
-//
-//    @BeforeEach
-//    void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        mockMvc = MockMvcBuilders.standaloneSetup(historyController).build();
-//
-//        // Mock된 세션 생성
-//        mockSession = new MockHttpSession();
-//        mockSession.setAttribute("userId", 1L);
-//    }
-//
-//    @Test
-//    void testGetListHistory_Unauthorized() throws Exception {
-//        mockMvc.perform(get("/history/list"))
-//                .andExpect(status().isUnauthorized());
-//    }
-//
-//    @Test
-//    void testGetListHistory_Success() throws Exception {
-//        List<String> historyList = Arrays.asList("History1", "History2");
-//        when(jsonDataService.getHistoryNamesByUserId(anyLong())).thenReturn(historyList);
-//
-//        mockMvc.perform(get("/history/list").session(mockSession))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$[0]").value("History1"))
-//                .andExpect(jsonPath("$[1]").value("History2"));
-//    }
-//
-//    @Test
-//    void testRenameHistory_Unauthorized() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("OldHistory");
-//        historyDto.setNewName("NewHistory");
-//
-//        mockMvc.perform(put("/history/rename")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isUnauthorized());
-//    }
-//
-//    @Test
-//    void testRenameHistory_Success() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("OldHistory");
-//        historyDto.setNewName("NewHistory");
-//
-//        mockMvc.perform(put("/history/rename")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("History name updated successfully"));
-//
-//        verify(jsonDataService, times(1)).updateHistoryName("OldHistory", "NewHistory", 1L);
-//    }
-//
-//    @Test
-//    void testDeleteHistory_Unauthorized() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("HistoryToDelete");
-//
-//        mockMvc.perform(delete("/history/delete")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isUnauthorized());
-//    }
-//
-//    @Test
-//    void testDeleteHistory_Success() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("HistoryToDelete");
-//
-//        mockMvc.perform(delete("/history/delete")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(content().string("History deleted successfully"));
-//
-//        verify(jsonDataService, times(1)).deleteHistory("HistoryToDelete", 1L);
-//    }
-//
-//    @Test
-//    void testGetHistory_Unauthorized() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("SomeHistory");
-//
-//        mockMvc.perform(post("/history/get")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isUnauthorized());
-//    }
-//
-//    @Test
-//    void testGetHistory_Success() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("SomeHistory");
-//
-//        JsonData jsonData = new JsonData();
-//        jsonData.setAlignment("AlignmentData");
-//        jsonData.setLinearDesign("LinearDesignData");
-//        jsonData.setPdb("PdbData");
-//
-//        when(jsonDataService.getJsonData("SomeHistory", 1L)).thenReturn(jsonData);
-//
-//        mockMvc.perform(post("/history/get")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.alignment").value("AlignmentData"))
-//                .andExpect(jsonPath("$.linearDesign").value("LinearDesignData"))
-//                .andExpect(jsonPath("$.pdb").value("PdbData"));
-//    }
-//
-//    @Test
-//    void testGetHistory_NoHistory() throws Exception {
-//        HistoryDto historyDto = new HistoryDto();
-//        historyDto.setHistoryName("NonExistentHistory");
-//
-//        when(jsonDataService.getJsonData("NonExistentHistory", 1L)).thenReturn(null);
-//
-//        mockMvc.perform(post("/history/get")
-//                        .session(mockSession)
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(new Gson().toJson(historyDto)))
-//                .andExpect(status().isUnauthorized())
-//                .andExpect(content().string("There is no history"));
-//    }
-//}
+package VirusDecode.backend.controller;
+
+import VirusDecode.backend.dto.HistoryDto;
+import VirusDecode.backend.entity.History;
+import VirusDecode.backend.entity.JsonData;
+import VirusDecode.backend.service.HistoryService;
+import VirusDecode.backend.service.JsonDataService;
+import com.google.gson.Gson;
+import jakarta.servlet.http.HttpSession;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+class HistoryControllerTest {
+
+    @Mock
+    private JsonDataService jsonDataService;
+
+    @Mock
+    private HistoryService historyService;
+
+    @Mock
+    private HttpSession session;
+
+    @InjectMocks
+    private HistoryController historyController;
+
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    void testGetListHistory_Success() {
+        Long userId = 1L;
+        List<String> mockHistoryList = Arrays.asList("history1", "history2");
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(historyService.getHistoryNamesByUserId(userId)).thenReturn(mockHistoryList);
+
+        ResponseEntity<List<String>> response = historyController.getListHistory(session);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockHistoryList, response.getBody());
+    }
+
+    @Test
+    void testGetListHistory_Unauthorized() {
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        ResponseEntity<List<String>> response = historyController.getListHistory(session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals(null, response.getBody());
+    }
+
+    @Test
+    void testRenameHistory_Success() {
+        Long userId = 1L;
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName("oldHistory");
+        request.setNewName("newHistory");
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+
+        ResponseEntity<String> response = historyController.renameHistory(request, session);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("History name updated successfully", response.getBody());
+        verify(historyService, times(1)).updateHistoryName("oldHistory", "newHistory", userId);
+    }
+
+    @Test
+    void testRenameHistory_Unauthorized() {
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName("oldHistory");
+        request.setNewName("newHistory");
+
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        ResponseEntity<String> response = historyController.renameHistory(request, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("User not authenticated", response.getBody());
+    }
+
+    @Test
+    void testDeleteHistory_Success() {
+        Long userId = 1L;
+        String historyName = "testHistory";
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName(historyName);
+
+        History mockHistory = new History();
+        mockHistory.setId(1L);
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(historyService.getHistory(historyName, userId)).thenReturn(mockHistory);
+
+        ResponseEntity<String> response = historyController.deleteHistory(request, session);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("History deleted successfully", response.getBody());
+        verify(jsonDataService, times(1)).deleteJsonData(mockHistory);
+        verify(historyService, times(1)).deleteHistory(historyName, userId);
+    }
+
+    @Test
+    void testDeleteHistory_Unauthorized() {
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName("testHistory");
+
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        ResponseEntity<String> response = historyController.deleteHistory(request, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("User not authenticated", response.getBody());
+    }
+
+    @Test
+    void testGetHistory_Success() {
+        Long userId = 1L;
+        String historyName = "testHistory";
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName(historyName);
+
+        History mockHistory = new History();
+        JsonData mockJsonData = new JsonData();
+        mockJsonData.setAlignment("alignmentData");
+        mockJsonData.setLinearDesign("linearDesignData");
+        mockJsonData.setPdb("pdbData");
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(historyService.getHistory(historyName, userId)).thenReturn(mockHistory);
+        when(jsonDataService.getJsonData(mockHistory)).thenReturn(mockJsonData);
+
+        ResponseEntity<String> response = historyController.getHistory(request, session);
+
+        Map<String, String> expectedJson = new HashMap<>();
+        expectedJson.put("alignment", "alignmentData");
+        expectedJson.put("linearDesign", "linearDesignData");
+        expectedJson.put("pdb", "pdbData");
+        String expectedResponse = new Gson().toJson(expectedJson);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedResponse, response.getBody());
+    }
+
+    @Test
+    void testGetHistory_Unauthorized() {
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName("testHistory");
+
+        when(session.getAttribute("userId")).thenReturn(null);
+
+        ResponseEntity<String> response = historyController.getHistory(request, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("User not authenticated", response.getBody());
+    }
+
+    @Test
+    void testGetHistory_NoHistoryFound() {
+        Long userId = 1L;
+        String historyName = "testHistory";
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName(historyName);
+
+        History mockHistory = new History();
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(historyService.getHistory(historyName, userId)).thenReturn(mockHistory);
+        when(jsonDataService.getJsonData(mockHistory)).thenReturn(null);
+
+        ResponseEntity<String> response = historyController.getHistory(request, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("There is no history", response.getBody());
+    }
+}

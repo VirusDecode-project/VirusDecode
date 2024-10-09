@@ -3,15 +3,11 @@ package VirusDecode.backend.service;
 import VirusDecode.backend.dto.initialData.fasta.FastaFileDto;
 import VirusDecode.backend.dto.initialData.fasta.VarientDto;
 import org.springframework.stereotype.Service;
-
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 @Service
 public class FastaFileService {
-    private static final Path currentDir = Paths.get("").toAbsolutePath();
     // FASTA 형식의 콘텐츠를 저장하는 메서드
     public String saveFastaContent(VarientDto request) throws IOException {
         StringBuilder fastaContent = new StringBuilder();  // FASTA 콘텐츠를 저장할 StringBuilder 객체

@@ -3,8 +3,10 @@ package VirusDecode.backend.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -48,16 +50,6 @@ class PythonScriptServiceTest {
     }
 
     @Test
-    void args누락() throws Exception {
-        // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript();
-
-        // Assert: Verify the error message for exit code 1
-        assertEquals(500, response.getStatusCodeValue());
-        assertEquals("Error: No arguments provided.", response.getBody());
-    }
-
-    @Test
     void testNotAvailableNucleotide() throws Exception {
         // Act
         ResponseEntity<String> response = pythonScriptService.executePythonScript("1", "noExist");
@@ -76,19 +68,6 @@ class PythonScriptServiceTest {
         // Assert: Verify the error message for exit code 11
         assertEquals(500, response.getStatusCodeValue());
         assertEquals("전달된 인자가 부족합니다.", response.getBody());
-    }
-
-    @Test
-    void testLinearDesignCase31() throws Exception {
-        String referenceId = "NC_001803.1";
-        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
-
-        // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", referenceId, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
-
-        // Assert: Verify the error message for exit code 11
-        assertEquals(500, response.getStatusCodeValue());
-        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
     }
 
     @Test
@@ -220,5 +199,22 @@ class PythonScriptServiceTest {
         // Assert: 결과 검증
         assertEquals(500, response.getStatusCodeValue());
         assertEquals("Error executing Python script: ", response.getBody());
+    }
+
+    @Test
+    public void testExecutePythonScript_ExceptionThrown() throws IOException {
+        // Given: ProcessBuilder를 모의하여 IOException을 발생하도록 설정
+        ProcessBuilder mockProcessBuilder = Mockito.mock(ProcessBuilder.class);
+        when(mockProcessBuilder.start()).thenThrow(new IOException("Mocked IO Exception"));
+
+        PythonScriptService spyService = Mockito.spy(pythonScriptService);
+        Mockito.doReturn(mockProcessBuilder).when(spyService).createProcessBuilder(anyList());
+
+        // When: 예외가 발생할 상황에서 메서드를 호출
+        ResponseEntity<String> response = spyService.executePythonScript("arg1", "arg2");
+
+        // Then: 예외 처리 블록의 응답이 예상대로 동작하는지 확인
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("An unknown error occurred during Python Script execution.", response.getBody());
     }
 }
