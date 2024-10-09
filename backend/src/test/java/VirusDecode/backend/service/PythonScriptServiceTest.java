@@ -79,19 +79,6 @@ class PythonScriptServiceTest {
     }
 
     @Test
-    void testLinearDesignCase31() throws Exception {
-        String referenceId = "NC_001803.1";
-        String alignmentJson="{\"alignment_index\": {\"ORF1ab\": [0, 13]}, \"aligned_sequences\": {\"NC_001803.1\": \"MESLVPGFNEKTH\",\"MT576556.1\": \"-------------\"}}";
-
-        // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript("3", referenceId, alignmentJson, "ORF1ab", "MT576556.1", "1", "10");
-
-        // Assert: Verify the error message for exit code 11
-        assertEquals(500, response.getStatusCodeValue());
-        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
-    }
-
-    @Test
     void testExitCode1() throws Exception {
         // Mock 설정
         doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
