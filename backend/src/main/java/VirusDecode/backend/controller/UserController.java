@@ -1,11 +1,8 @@
 package VirusDecode.backend.controller;
 import VirusDecode.backend.dto.SignUpDto;
 import VirusDecode.backend.dto.UserLoginDto;
-import VirusDecode.backend.entity.History;
-import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.entity.User;
-import VirusDecode.backend.service.HistoryService;
-import VirusDecode.backend.service.JsonDataService;
+import VirusDecode.backend.service.GuestLoginService;
 import VirusDecode.backend.service.UserService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -23,14 +19,12 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class UserController {
     private final UserService userService;
-    private final HistoryService historyService;
-    private final JsonDataService jsonDataService;
+    private final GuestLoginService guestLoginService;
 
     @Autowired
-    public UserController(UserService userService, HistoryService historyService, JsonDataService jsonDataService){
+    public UserController(UserService userService, GuestLoginService guestLoginService){
         this.userService = userService;
-        this.historyService = historyService;
-        this.jsonDataService = jsonDataService;
+        this.guestLoginService = guestLoginService;
     }
 
     @PostMapping("/login")
@@ -61,53 +55,7 @@ public class UserController {
 
     @PostMapping("/guest-login")
     public ResponseEntity<String> guestLogin(HttpSession session) {
-        session.setMaxInactiveInterval(3600);
-        String sessionId = session.getId();
-        String uniqueLoginId = "Guest_" + sessionId.substring(0, 6);
-        User existingUser = userService.findUserByLoginId(uniqueLoginId);
-        if (existingUser != null) {
-            // 이미 존재하는 유저가 있으면 그 유저로 로그인 처리
-            session.setAttribute("userId", existingUser.getId());
-            return ResponseEntity.ok("Existing user logged in with ID: " + uniqueLoginId);
-        }
-
-        // signupDto 생성 및 LoginId에 고유한 값 설정
-        SignUpDto signupDto = new SignUpDto();
-        signupDto.setLoginId(uniqueLoginId);  // 세션 ID를 포함한 고유한 ID
-        signupDto.setPassword("default_password");  // 기본 비밀번호 설정
-        signupDto.setFirstName("Guest");
-        signupDto.setLastName("Guest");
-
-        User newUser = userService.createUser(signupDto, "GUEST");
-
-        Long guestUserId = userService.getUserIdByLoginId("Guest");
-        List<String> guestHistoryNames = historyService.getHistoryNamesByUserId(guestUserId);
-
-        if (guestHistoryNames.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history for Guest user");
-        }
-
-        // 각 history_name에 대해 JsonData를 복사하여 새 유저로 저장
-        for (String historyName : guestHistoryNames) {
-            History history = historyService.getHistory(historyName, guestUserId);
-            JsonData originalJsonData = jsonDataService.getJsonData(history);
-            if (originalJsonData != null) {
-                History newHistory = new History();
-                newHistory.setHistoryName(historyName);
-                newHistory.setUser(newUser);
-                historyService.createHistory(newHistory);
-
-                JsonData newJsonData = new JsonData();
-                newJsonData.setReferenceId(originalJsonData.getReferenceId());
-                newJsonData.setAlignment(originalJsonData.getAlignment());
-                newJsonData.setLinearDesign(originalJsonData.getLinearDesign());
-                newJsonData.setPdb(originalJsonData.getPdb());
-                newJsonData.setHistory(newHistory);
-                jsonDataService.saveJsonData(newJsonData);
-            }
-        }
-        session.setAttribute("userId", newUser.getId());
-        return ResponseEntity.ok("New temporary user created and logged in with ID: " + uniqueLoginId);
+        return guestLoginService.loginAsGuest(session);
     }
 
     @PostMapping("/userinfo")
