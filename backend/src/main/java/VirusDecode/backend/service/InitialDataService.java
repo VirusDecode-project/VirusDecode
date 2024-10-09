@@ -44,41 +44,41 @@ public class InitialDataService {
         try {
             String fastaContent = fastaFileService.saveFastaContent(request);
             ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("2", referenceId, fastaContent);
+            if (!scriptResponse.getStatusCode().is2xxSuccessful()) {
+                return scriptResponse;
+            }
+
             String alignmentJson = scriptResponse.getBody();
 
-            if (scriptResponse.getStatusCode().is2xxSuccessful()) {
-                Optional<User> userOptional = userService.getUserById(userId);
-                if (!userOptional.isPresent()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-                }
-
-                User user = userOptional.get();
-
-                // historyName 중복 체크
-                String validatedHistoryName = historyService.validateHistoryName(historyName, userId);
-
-                History history = new History();
-                history.setUser(user);
-                history.setHistoryName(validatedHistoryName);
-                historyService.createHistory(history);
-
-                // JsonData 생성 및 저장
-                JsonData jsonData = new JsonData();
-                jsonData.setReferenceId(referenceId);
-                jsonData.setAlignment(alignmentJson);
-                jsonData.setHistory(history);
-                jsonDataService.saveJsonData(jsonData);
-
-                // JSON 응답 생성
-                Map<String, String> combinedJson = new HashMap<>();
-                combinedJson.put("alignment", jsonData.getAlignment());
-                combinedJson.put("historyName", validatedHistoryName);
-
-                String jsonResponse = new Gson().toJson(combinedJson);
-                return ResponseEntity.ok(jsonResponse);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Python script execution failed");
+            Optional<User> userOptional = userService.getUserById(userId);
+            if (!userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
+
+            User user = userOptional.get();
+
+            // historyName 중복 체크
+            String validatedHistoryName = historyService.validateHistoryName(historyName, userId);
+
+            History history = new History();
+            history.setUser(user);
+            history.setHistoryName(validatedHistoryName);
+            historyService.createHistory(history);
+
+            // JsonData 생성 및 저장
+            JsonData jsonData = new JsonData();
+            jsonData.setReferenceId(referenceId);
+            jsonData.setAlignment(alignmentJson);
+            jsonData.setHistory(history);
+            jsonDataService.saveJsonData(jsonData);
+
+            // JSON 응답 생성
+            Map<String, String> combinedJson = new HashMap<>();
+            combinedJson.put("alignment", jsonData.getAlignment());
+            combinedJson.put("historyName", validatedHistoryName);
+
+            String jsonResponse = new Gson().toJson(combinedJson);
+            return ResponseEntity.ok(jsonResponse);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fasta 파일 저장에 문제 발생하였습니다.");
         }
