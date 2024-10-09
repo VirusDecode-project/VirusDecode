@@ -161,6 +161,23 @@ class UserControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedResponse, response.getBody());
     }
+    @Test
+    void testGetUserInfo_UserNotFound() {
+        // Given
+        Long userId = 1L;
+
+        // 세션에 userId가 존재하는 경우
+        when(session.getAttribute("userId")).thenReturn(userId);
+        // 유저를 찾을 수 없는 경우 null 반환
+        when(userService.findUserByUserId(userId)).thenReturn(null);
+
+        // When
+        ResponseEntity<String> response = userController.getUserInfo(session);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("유저 이름을 찾을 수 없습니다.", response.getBody());
+    }
 
     @Test
     void testGetUserInfo_NotAuthenticated() {

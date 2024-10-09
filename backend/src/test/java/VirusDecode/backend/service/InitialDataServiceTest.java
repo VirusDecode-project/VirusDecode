@@ -132,6 +132,31 @@ public class InitialDataServiceTest {
         verify(historyService, never()).createHistory(any());
         verify(jsonDataService, never()).saveJsonData(any());
     }
+    @Test
+    public void testProcessAlignment_PythonScriptExecutionFailed() throws IOException {
+        // Given
+        VarientDto request = new VarientDto();
+        request.setHistoryName("history1");
+        request.setReferenceId("ref123");
+
+        Long userId = 1L;
+
+        when(fastaFileService.saveFastaContent(request)).thenReturn("mockFastaContent");
+        when(pythonScriptService.executePythonScript(eq("2"), eq("ref123"), eq("mockFastaContent")))
+                .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Python script execution failed"));
+
+        // When
+        ResponseEntity<String> response = initialDataService.processAlignment(request, userId);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Python script execution failed", response.getBody());
+        verify(pythonScriptService, times(1)).executePythonScript(eq("2"), eq("ref123"), eq("mockFastaContent"));
+        verify(userService, never()).getUserById(userId);
+        verify(historyService, never()).createHistory(any());
+        verify(jsonDataService, never()).saveJsonData(any());
+    }
+
 
     @Test
     public void testProcessAlignment_FastaIOException() throws IOException {

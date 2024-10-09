@@ -126,4 +126,52 @@ public class GuestLoginServiceTest {
         verify(historyService, times(2)).createHistory(any(History.class));
         verify(jsonDataService, times(2)).saveJsonData(any(JsonData.class));
     }
+
+
+    @Test
+    public void testLoginAsGuest_WithNullOriginalJsonData() {
+        // Given
+        String sessionId = "session123456";
+        Long guestUserId = 2L;
+        Long newUserId = 3L;
+        String uniqueLoginId = "Guest_sessio";
+        when(session.getId()).thenReturn(sessionId);
+
+        User mockGuestUser = new User();
+        mockGuestUser.setId(guestUserId);
+        when(userService.findUserByLoginId(uniqueLoginId)).thenReturn(null);
+
+        SignUpDto signUpDto = new SignUpDto();
+        signUpDto.setLoginId(uniqueLoginId);
+        signUpDto.setPassword("default_password");
+        signUpDto.setFirstName("Guest");
+        signUpDto.setLastName("Guest");
+
+        User mockNewUser = new User();
+        mockNewUser.setId(newUserId);
+        when(userService.createUser(any(SignUpDto.class), eq("GUEST"))).thenReturn(mockNewUser);
+
+        when(userService.getUserIdByLoginId("Guest")).thenReturn(guestUserId);
+        List<String> guestHistoryNames = List.of("history1");
+        when(historyService.getHistoryNamesByUserId(guestUserId)).thenReturn(guestHistoryNames);
+
+        History mockHistory = new History();
+        when(historyService.getHistory("history1", guestUserId)).thenReturn(mockHistory);
+
+        // Return `null` for `originalJsonData`
+        when(jsonDataService.getJsonData(mockHistory)).thenReturn(null);
+
+        // When
+        ResponseEntity<String> response = guestLoginService.loginAsGuest(session);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("New temporary user created and logged in with ID: " + uniqueLoginId, response.getBody());
+
+        // Verify that saveJsonData is never called because originalJsonData is `null`
+        verify(jsonDataService, never()).saveJsonData(any(JsonData.class));
+        // Verify that createHistory is called for the new user's history creation
+        verify(historyService, never()).createHistory(any(History.class));
+        verify(session, times(1)).setAttribute("userId", newUserId);
+    }
 }

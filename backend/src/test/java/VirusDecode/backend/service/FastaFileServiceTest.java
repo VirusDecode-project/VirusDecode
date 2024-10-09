@@ -37,6 +37,21 @@ class FastaFileServiceTest {
         // Assert: 빈 문자열을 기대
         assertEquals("", result);
     }
+    @Test
+    void testSaveFastaContentWithNullSequenceData() throws IOException {
+        // Arrange: sequences에 null 데이터 포함
+        VarientDto dto = new VarientDto();
+        Map<String, String> sequences = new HashMap<>();
+        sequences.put("sequence1", null); // sequenceData가 null인 경우
+        dto.setSequences(sequences);
+
+        // Act
+        String result = fastaFileService.saveFastaContent(dto);
+
+        // Assert: 빈 문자열을 기대
+        assertEquals("", result);
+    }
+
 
     @Test
     void testSaveFastaContentWithEmptySequencesAndFiles() throws IOException {

@@ -64,6 +64,33 @@ public class AnalysisServiceTest {
         verify(jsonDataService, times(1)).saveJsonData(mockJsonData);
         verify(pythonScriptService, times(1)).executePythonScript(eq("3"), anyString());
     }
+    @Test
+    public void testProcessLinearDesign_InvalidSequence() {
+        // Given
+        Long userId = 1L;
+        LinearDesignDto request = new LinearDesignDto();
+        request.setGene("gene1");
+        request.setVarientName("variant1");
+        request.setStart(1);
+        request.setEnd(10);
+        request.setHistoryName("history1");
+
+        History mockHistory = new History();
+        JsonData mockJsonData = new JsonData();
+        mockJsonData.setAlignment("{ \"alignment_index\": { \"gene1\": [0, 10] }, \"aligned_sequences\": { \"variant1\": \"-----------\" } }"); // 빈 서열
+
+        when(historyService.getHistory("history1", userId)).thenReturn(mockHistory);
+        when(jsonDataService.getJsonData(mockHistory)).thenReturn(mockJsonData);
+
+        // When
+        ResponseEntity<String> response = analysisService.processLinearDesign(request, userId);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("선택된 구간에 유효한 서열이 없습니다.", response.getBody());
+        verify(pythonScriptService, times(0)).executePythonScript(anyString(), anyString());
+        verify(jsonDataService, times(0)).saveJsonData(any(JsonData.class));
+    }
 
     @Test
     public void testProcessLinearDesign_NoHistory() {
@@ -127,4 +154,64 @@ public class AnalysisServiceTest {
         assertEquals("There is no history", response.getBody());
         verify(jsonDataService, never()).saveJsonData(any());
     }
+
+    @Test
+    void testProcessPdb_UnsuccessfulScriptResponse() {
+        // Arrange
+        PdbDto request = new PdbDto();
+        request.setGene("gene1");
+        request.setHistoryName("history1");
+
+        Long userId = 1L;
+        History history = new History();
+        history.setId(1L);
+
+        JsonData jsonData = new JsonData();
+        jsonData.setReferenceId("ref123");
+        jsonData.setAlignment("{ \"alignment_index\": {\"gene1\": [1, 5]}, \"aligned_sequences\": {\"ref123\": \"ACTG-\"} }");
+
+        when(historyService.getHistory("history1", userId)).thenReturn(history);
+        when(jsonDataService.getJsonData(history)).thenReturn(jsonData);
+        when(pythonScriptService.executePythonScript(eq("4"), anyString()))
+                .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Script error"));
+
+        // Act
+        ResponseEntity<String> response = analysisService.processPdb(request, userId);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Script error", response.getBody());
+        verify(jsonDataService, never()).saveJsonData(any());
+    }
+    @Test
+    void testProcessLinearDesign_UnsuccessfulScriptResponse() {
+        // Arrange
+        LinearDesignDto request = new LinearDesignDto();
+        request.setGene("gene1");
+        request.setVarientName("variant1");
+        request.setStart(1);
+        request.setEnd(5);
+        request.setHistoryName("history1");
+
+        Long userId = 1L;
+        History history = new History();
+        history.setId(1L);
+
+        JsonData jsonData = new JsonData();
+        jsonData.setAlignment("{ \"alignment_index\": {\"gene1\": [0, 5]}, \"aligned_sequences\": {\"variant1\": \"ACTGGGACTGGG--\"} }");
+
+        when(historyService.getHistory("history1", userId)).thenReturn(history);
+        when(jsonDataService.getJsonData(history)).thenReturn(jsonData);
+        when(pythonScriptService.executePythonScript(eq("3"), anyString()))
+                .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Script error"));
+
+        // Act
+        ResponseEntity<String> response = analysisService.processLinearDesign(request, userId);
+
+        // Assert
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Script error", response.getBody());
+        verify(jsonDataService, never()).saveJsonData(any());
+    }
+
 }

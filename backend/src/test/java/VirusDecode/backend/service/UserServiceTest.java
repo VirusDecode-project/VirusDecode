@@ -155,6 +155,19 @@ class UserServiceTest {
         assertEquals(1L, userId);
         verify(userRepository, times(1)).findByLoginId(loginId);
     }
+    @Test
+    void testGetUserIdByLoginId_Null() {
+        // Given
+        String loginId = "nonExistentUser";
+        when(userRepository.findByLoginId(loginId)).thenReturn(null);
+
+        // When
+        Long userId = userService.getUserIdByLoginId(loginId);
+
+        // Then
+        assertNull(userId);
+        verify(userRepository, times(1)).findByLoginId(loginId);
+    }
 
     @Test
     void testDeleteGuestUsers() {
@@ -179,4 +192,26 @@ class UserServiceTest {
         verify(historyService, times(1)).deleteHistory("History1", guestUser.getId());
         verify(userRepository, times(1)).deleteUserById(guestUser.getId());
     }
+
+    @Test
+    void testDeleteGuestUsers_UserNotOldEnough() {
+        // Given
+        User guestUser = new User();
+        guestUser.setId(1L);
+        guestUser.setLoginId("Guest_123");
+        guestUser.setRole("GUEST");
+        guestUser.setCreatedAt(LocalDateTime.now().minusHours(23)); // 23시간 전, 조건을 만족하지 않음
+
+        when(userRepository.findUsersByRole("GUEST")).thenReturn(List.of(guestUser));
+
+        // When
+        userService.deleteGuestUsers();
+
+        // Then
+        // jsonDataService 및 historyService가 호출되지 않는지 검증
+        verify(jsonDataService, never()).deleteJsonData(any());
+        verify(historyService, never()).deleteHistory(anyString(), anyLong());
+        verify(userRepository, never()).deleteUserById(guestUser.getId());
+    }
+
 }
