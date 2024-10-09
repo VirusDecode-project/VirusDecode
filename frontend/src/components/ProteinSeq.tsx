@@ -21,10 +21,9 @@ interface ProteinSeqProps {
   setPDBids: Dispatch<SetStateAction<string[]>>;
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
-  isLoading: boolean;
 }
 
-const ProteinSeq: React.FC<ProteinSeqProps> = ({ onRegionUpdate, selectedRegion, setSelectedRegion, alignmentData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, isLoading }) => {
+const ProteinSeq: React.FC<ProteinSeqProps> = ({ onRegionUpdate, selectedRegion, setSelectedRegion, alignmentData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid }) => {
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [displayedSequences, setDisplayedSequences] = useState<Sequence[]>([]);
   const [selectedSequence, setSelectedSequence] = useState<Sequence | null>(null);

@@ -27,6 +27,7 @@ interface SidebarProps {
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   handleEditClick: () => void;
+  isLoading: boolean;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -46,6 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setSelectedPDBid,
   setAlignmentData,
   handleEditClick,
+  isLoading,
 }) => {
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -80,6 +82,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleHistoryClick = async (index: number) => {
+    if (isLoading) {
+      return;
+    }
     const historyName = history[index];
     const requestData = { historyName: historyName };
 
@@ -147,6 +152,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   };
 
   const handleEllipsisClick = (e: MouseEvent<HTMLButtonElement>, index: number) => {
+    if (isLoading) {
+      return;
+    }
     e.stopPropagation(); // Prevents handleHistoryClick from being triggered
     const { top, left } = e.currentTarget.getBoundingClientRect(); // Get the position of the clicked button
     setMenuPosition({

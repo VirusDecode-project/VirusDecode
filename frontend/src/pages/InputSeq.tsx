@@ -22,8 +22,8 @@ interface InputSeqProps {
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   setHistory: Dispatch<SetStateAction<string[]>>;
-  isLoading: boolean;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
 }
 
 interface UploadedFile {
@@ -31,7 +31,7 @@ interface UploadedFile {
   file: File;
 }
 
-const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, isLoading, setIsLoading }) => {
+const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, setIsLoading, isLoading }) => {
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -65,7 +65,6 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   const [referenceSequenceId, setReferenceSequenceId] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [metadata, setMetadata] = useState("");
-  // let [isLoading, setIsLoading] = useState(false);
   const [responseReceived, setResponseReceived] = useState(false);
   const [doneReceived, setDoneReceived] = useState(true);
 
@@ -237,8 +236,9 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   return (
     <div>
       {isLoading ? (
-        <Loading text="Analyzing" />
+        <Loading text="Converting" />
       ) : (
+
         <div>
           <div className="container mt-4 custom-container">
             <Form>

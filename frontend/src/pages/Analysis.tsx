@@ -4,6 +4,7 @@ import '../styles/Analysis.css';
 import Alignment from '../components/tabs/AlignmentTab';
 import MRNAdesign from '../components/tabs/MRNAdesignTab';
 import Render3D from '../components/tabs/Render3DTab';
+import Loading from '../components/Loading';
 import { MRNAData, AlignmentData, PDBResponse } from '../components/types';
 import { useNavigate } from "react-router-dom";
 
@@ -28,9 +29,10 @@ interface AnalysisProps {
   setHistory: Dispatch<SetStateAction<string[]>>;
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  isLoading: boolean;
 }
 
-const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData, setIsLoading }) => {
+const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData, setIsLoading, isLoading }) => {
   const [modalRegion, setModalRegion] = useState('');
   const handleModalRegion = (region: string) => {
     setModalRegion(region);
@@ -123,6 +125,10 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
 
   return (
     <div>
+    {isLoading ? (
+      <Loading text="Analyzing" />
+    ) : (
+    <div>
       <div className={"analysis-container"}>
         <>
           <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-start">
@@ -149,6 +155,7 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
                 setPDBids={setPDBids}
                 setPDBInfo={setPDBInfo}
                 setSelectedPDBid={setSelectedPDBid}
+                setIsLoading={setIsLoading}
               />
             )}
             {tab === 1 && <MRNAdesign workingHistory={workingHistory} linearDesignData={linearDesignData}/>}
@@ -157,6 +164,7 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
         </>
       </div>
     </div>
+  )}</div>
   );
 }
 

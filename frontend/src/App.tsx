@@ -10,7 +10,8 @@ import Analysis from "./pages/Analysis";
 import Sidebar from "./components/Sidebar";
 import HeaderBar from "./components/HeaderBar";
 import CreateModal from "./components/CreateModal";
-import { MRNAData, AlignmentData, PDBResponse } from './components/types';
+import Loading from "./components/Loading";
+import { MRNAData, AlignmentData, PDBResponse, } from './components/types';
 
 function App() {
   let navigate = useNavigate();
@@ -33,7 +34,7 @@ function App() {
     alignment_index: {},
   });
   const [showEditModal, setShowEditModal] = useState(false);
-  
+
   const [workingHistory, setWorkingHistory] = useState(() => {
     const savedWorkingHistory = localStorage.getItem("workingHistory");
     return savedWorkingHistory ? savedWorkingHistory : "";
@@ -62,103 +63,107 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div>
+      <div className="App">
         <CreateModal
-        show={showEditModal}
-        onClose={() => setShowEditModal(false)}
-      />
-      <Sidebar
-        show={show}
-        handleClose={handleClose}
-        history={history}
-        setHistory={setHistory}
-        navigate={navigate}
-        setMRNAReceived={setMRNAReceived}
-        setPDBReceived={setPDBReceived}
-        setTab={setTab}
-        workingHistory={workingHistory}
-        setWorkingHistory={setWorkingHistory}
-        setLinearDesignData={setLinearDesignData}
-        setPDBids={setPDBids}
-        setPDBInfo={setPDBInfo}
-        setSelectedPDBid={setSelectedPDBid}
-        setAlignmentData={setAlignmentData}
-        handleEditClick={handleEditClick}
-      />
-
-      <div className={`content-container ${show ? "shrink" : ""}`}>
-        <HeaderBar
-          show={show}
-          isHome={isHome}
-          handleShow={handleShow}
-          handleEditClick={handleEditClick}
-          navigate={navigate}
-          userName={userName}
-          setUserName={setUserName}
+          show={showEditModal}
+          onClose={() => setShowEditModal(false)}
         />
-        <Routes>
-          <Route
-            path="/"
-            element={<Home
-              setUserName={setUserName}
+        <Sidebar
+          show={show}
+          handleClose={handleClose}
+          history={history}
+          setHistory={setHistory}
+          navigate={navigate}
+          setMRNAReceived={setMRNAReceived}
+          setPDBReceived={setPDBReceived}
+          setTab={setTab}
+          workingHistory={workingHistory}
+          setWorkingHistory={setWorkingHistory}
+          setLinearDesignData={setLinearDesignData}
+          setPDBids={setPDBids}
+          setPDBInfo={setPDBInfo}
+          setSelectedPDBid={setSelectedPDBid}
+          setAlignmentData={setAlignmentData}
+          handleEditClick={handleEditClick}
+          isLoading={isLoading}
+        />
+
+        <div className={`content-container ${show ? "shrink" : ""}`}>
+          <HeaderBar
+            show={show}
+            isHome={isHome}
+            handleShow={handleShow}
+            handleEditClick={handleEditClick}
+            navigate={navigate}
+            userName={userName}
+            setUserName={setUserName}
+          />
+          <Routes>
+            <Route
+              path="/"
+              element={<Home
+                setUserName={setUserName}
               />}
-          />
-          <Route
-            path="/login"
-            element={<Login
-              history={history}
-              setHistory={setHistory} 
-              setShow={setShow} 
-              setMRNAReceived={setMRNAReceived} 
-              setPDBReceived={setPDBReceived}
-              setUserName={setUserName}
-            />}
-          />
-          <Route
-            path="/signup"
-            element={<Signup/>}
-          />
-          <Route
-            path="/inputSeq"
-            element={<InputSeq
-              setTab={setTab}
-              setShow={setShow}
-              setWorkingHistory={setWorkingHistory}
-              workingHistory={workingHistory}
-              setMRNAReceived={setMRNAReceived}
-              setPDBReceived={setPDBReceived}
-              setAlignmentData={setAlignmentData}
-              setHistory={setHistory}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-            />}
-          />
-          <Route
-            path="/analysis"
-            element={<Analysis
-              tab={tab}
-              setTab={setTab}
-              mRNAReceived={mRNAReceived}
-              setMRNAReceived={setMRNAReceived}
-              PDBReceived={PDBReceived}
-              setPDBReceived={setPDBReceived}
-              workingHistory={workingHistory}
-              setWorkingHistory={setWorkingHistory}
-              linearDesignData={linearDesignData}
-              setLinearDesignData={setLinearDesignData}
-              PDBids={PDBids}
-              setPDBids={setPDBids}
-              PDBInfo={PDBInfo}
-              setPDBInfo={setPDBInfo}
-              selectedPDBid={selectedPDBid}
-              setSelectedPDBid={setSelectedPDBid}
-              alignmentData={alignmentData}
-              setHistory={setHistory}
-              setAlignmentData={setAlignmentData}
-              setIsLoading={setIsLoading}
-            />}
-          />
-        </Routes>
+            />
+            <Route
+              path="/login"
+              element={<Login
+                history={history}
+                setHistory={setHistory}
+                setShow={setShow}
+                setMRNAReceived={setMRNAReceived}
+                setPDBReceived={setPDBReceived}
+                setUserName={setUserName}
+              />}
+            />
+            <Route
+              path="/signup"
+              element={<Signup />}
+            />
+            <Route
+              path="/inputSeq"
+              element={<InputSeq
+                setTab={setTab}
+                setShow={setShow}
+                setWorkingHistory={setWorkingHistory}
+                workingHistory={workingHistory}
+                setMRNAReceived={setMRNAReceived}
+                setPDBReceived={setPDBReceived}
+                setAlignmentData={setAlignmentData}
+                setHistory={setHistory}
+                setIsLoading={setIsLoading}
+                isLoading={isLoading}
+              />}
+            />
+            <Route
+              path="/analysis"
+              element={<Analysis
+                tab={tab}
+                setTab={setTab}
+                mRNAReceived={mRNAReceived}
+                setMRNAReceived={setMRNAReceived}
+                PDBReceived={PDBReceived}
+                setPDBReceived={setPDBReceived}
+                workingHistory={workingHistory}
+                setWorkingHistory={setWorkingHistory}
+                linearDesignData={linearDesignData}
+                setLinearDesignData={setLinearDesignData}
+                PDBids={PDBids}
+                setPDBids={setPDBids}
+                PDBInfo={PDBInfo}
+                setPDBInfo={setPDBInfo}
+                selectedPDBid={selectedPDBid}
+                setSelectedPDBid={setSelectedPDBid}
+                alignmentData={alignmentData}
+                setHistory={setHistory}
+                setAlignmentData={setAlignmentData}
+                setIsLoading={setIsLoading}
+                isLoading={isLoading}
+              />}
+            />
+          </Routes>
+        </div>
       </div>
     </div>
   );

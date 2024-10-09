@@ -3,8 +3,8 @@ import '../../styles/Alignment.css';
 import Loading from '../Loading';
 import StackedBar from '../StackedBar';
 import ProteinSeq from '../ProteinSeq';
-import {AlignmentData} from '../types';
-import {MRNAData} from '../types';
+import { AlignmentData } from '../types';
+import { MRNAData } from '../types';
 
 interface ChartDataItem {
   label: string;
@@ -21,10 +21,11 @@ interface AlignmentProps {
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   workingHistory: string;
-  setLinearDesignData:Dispatch<SetStateAction<MRNAData | null>>;
+  setLinearDesignData: Dispatch<SetStateAction<MRNAData | null>>;
   setPDBids: Dispatch<SetStateAction<string[]>>;
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 let lastHue = 0;
@@ -42,11 +43,9 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid }) => {
+const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, setIsLoading }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [selectedRegion, setSelectedRegion] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  
   useEffect(() => {
     if (alignmentData) {
       const firstRegion = Object.keys(alignmentData.alignment_index).length > 0 ? Object.keys(alignmentData.alignment_index)[0] : '';
@@ -70,7 +69,7 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
   }, [alignmentData]);
 
 
-  
+
 
   if (!alignmentData.alignment_index[selectedRegion]) {
     return (
@@ -79,36 +78,29 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
       </div>
     );
   }
-  
+
 
   return (
     <div>
-      {isLoading ? (
-        <Loading text="Converting" />
-      ) : (
-        <div>
-          <div className="stacked-bar-chart">
-            <StackedBar data={chartData} onBarClick={setSelectedRegion} />
-          </div>
-          {alignmentData && (
-            <ProteinSeq
-              selectedRegion={selectedRegion}
-              setSelectedRegion={setSelectedRegion}
-              alignmentData={alignmentData}
-              setTab={setTab}
-              setIsLoading={setIsLoading}
-              onRegionUpdate={onRegionUpdate}
-              setMRNAReceived={setMRNAReceived}
-              setPDBReceived={setPDBReceived}
-              workingHistory={workingHistory}
-              setLinearDesignData={setLinearDesignData}
-              setPDBids={setPDBids}
-              setPDBInfo={setPDBInfo}
-              setSelectedPDBid={setSelectedPDBid}
-              isLoading={isLoading}
-            />
-          )}
-        </div>
+      <div className="stacked-bar-chart">
+        <StackedBar data={chartData} onBarClick={setSelectedRegion} />
+      </div>
+      {alignmentData && (
+        <ProteinSeq
+          selectedRegion={selectedRegion}
+          setSelectedRegion={setSelectedRegion}
+          alignmentData={alignmentData}
+          setTab={setTab}
+          setIsLoading={setIsLoading}
+          onRegionUpdate={onRegionUpdate}
+          setMRNAReceived={setMRNAReceived}
+          setPDBReceived={setPDBReceived}
+          workingHistory={workingHistory}
+          setLinearDesignData={setLinearDesignData}
+          setPDBids={setPDBids}
+          setPDBInfo={setPDBInfo}
+          setSelectedPDBid={setSelectedPDBid}
+        />
       )}
     </div>
   );
