@@ -1,0 +1,2 @@
+This is a simple text file used for testing purposes.
+It contains multiple lines of text, but it is not in FASTA format.

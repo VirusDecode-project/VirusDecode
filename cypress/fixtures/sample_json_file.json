@@ -1,0 +1,20 @@
+
+{
+  "sequences": [
+    {
+      "id": "NC_045512",
+      "name": "Severe acute respiratory syndrome coronavirus 2",
+      "length": 29903
+    },
+    {
+      "id": "NM_001301717",
+      "name": "Homo sapiens growth factor receptor-bound protein 10",
+      "length": 2340
+    },
+    {
+      "id": "U00096.3",
+      "name": "Escherichia coli complete genome",
+      "length": 4641652
+    }
+  ]
+}
