@@ -1,4 +1,5 @@
 import React, { useEffect, useState, Dispatch, SetStateAction, useRef } from 'react';
+import { Row, Col } from "react-bootstrap";
 import historyIcon from '../assets/history.png';
 import editIcon from '../assets/edit.png';
 import logo from '../assets/logo.png';
@@ -12,10 +13,11 @@ interface HeaderBarProps {
   handleEditClick: () => void;
   navigate: NavigateFunction;
   userName: string | null;
-  setUserName:Dispatch<SetStateAction<string | null>>;
+  setUserName: Dispatch<SetStateAction<string | null>>;
+  handleError: (message: string) => void;
 }
 
-const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate, userName, setUserName })=> {
+const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleEditClick, navigate, userName, setUserName, handleError }) => {
   const [loginId, setLoginId] = useState<string | null>(null);
   const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(false);
   const userInfoRef = useRef<HTMLDivElement | null>(null);
@@ -25,7 +27,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   };
 
   const toggleUserInfoOpen = () => {
-    if(userName != null){
+    if (userName != null) {
       setIsUserInfoOpen(!isUserInfoOpen);
     }
   }
@@ -33,31 +35,31 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   useEffect(() => {
     const fetchName = async () => {
       try {
-        const nameResponse = await fetch(`/api/auth/userinfo`, { 
+        const nameResponse = await fetch(`/api/auth/userinfo`, {
           method: "POST",
           credentials: 'include',
           headers: {
             "Content-Type": "application/json",
           },
         });
-    
+
         if (nameResponse.ok) {
           const responseData = await nameResponse.json();
           setUserName(responseData.userName);
           setLoginId(responseData.loginId);
-        }else{
+        } else {
           const errorMessage = await nameResponse.text();
           throw new Error(errorMessage);
         }
       } catch (error) {
-         setUserName(null);
-         setLoginId(null);
-       }
-     };
+        setUserName(null);
+        setLoginId(null);
+      }
+    };
     fetchName();
-  },[userName]);
+  }, [userName]);
 
-  const handleLogout = async(event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleLogout = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     try {
       const nameResponse = await fetch(`/api/auth/logout`, {
@@ -67,18 +69,19 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
           "Content-Type": "application/json",
         },
       });
-  
+
       if (nameResponse.ok) {
         setUserName(null)
         navigate("/");
         setIsUserInfoOpen(false);
-      }else{
+      } else {
         const errorMessage = await nameResponse.text();
         throw new Error(errorMessage);
       }
     } catch (error) {
-      if(error instanceof Error){
-        window.alert(error.message);
+      if (error instanceof Error) {
+        // window.alert(error.message);
+        handleError(error.message);
       }
     }
   };
@@ -148,15 +151,22 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
           alt="User Icon"
           onClick={toggleUserInfoOpen}
         />
-        {isUserInfoOpen &&  (
+        {isUserInfoOpen && (
           <div className="userInfo-menu">
             <div className="userInfo-display">
-                Name: {userName}
-                <br/>
-                ID: {loginId}
+              <Row>
+                <Col xs="auto" className="text-center">
+                  <div>Name:</div>
+                  <div>ID:</div>
+                </Col>
+                <Col xs="auto">
+                  <div>{userName}</div>
+                  <div>{loginId}</div>
+                </Col>
+              </Row>
             </div>
             <div className="divider"></div>
-            <button className="logoutBtn" onClick={handleLogout}>logout</button>
+            <button className="logoutBtn text-center" onClick={handleLogout}>logout</button>
           </div>
         )}
       </div>

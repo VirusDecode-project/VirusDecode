@@ -30,9 +30,10 @@ interface AnalysisProps {
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
+  handleError: (message: string) => void;
 }
 
-const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData, setIsLoading, isLoading }) => {
+const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAReceived, PDBReceived, setPDBReceived, workingHistory, setWorkingHistory, linearDesignData, setLinearDesignData, PDBids, setPDBids, PDBInfo, setPDBInfo, selectedPDBid, setSelectedPDBid, alignmentData, setHistory, setAlignmentData, setIsLoading, isLoading, handleError }) => {
   const [modalRegion, setModalRegion] = useState('');
   const handleModalRegion = (region: string) => {
     setModalRegion(region);
@@ -131,7 +132,8 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
     <div>
       <div className={"analysis-container"}>
         <>
-          <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-start">
+          <Nav variant="tabs" defaultActiveKey="link0" className="justify-content-start"
+          style={{flexWrap: 'nowrap' }}>
             <Nav.Item>
               <Nav.Link eventKey="link0" active={tab === 0} onClick={() => setTab(0)}>Alignment</Nav.Link>
             </Nav.Item>
@@ -156,10 +158,11 @@ const Analysis: React.FC<AnalysisProps> = ({ tab, setTab, mRNAReceived, setMRNAR
                 setPDBInfo={setPDBInfo}
                 setSelectedPDBid={setSelectedPDBid}
                 setIsLoading={setIsLoading}
+                handleError={handleError}
               />
             )}
             {tab === 1 && <MRNAdesign workingHistory={workingHistory} linearDesignData={linearDesignData}/>}
-            {tab === 2 && <Render3D region={modalRegion} PDBids={PDBids} PDBInfo={PDBInfo} selectedPDBid={selectedPDBid} setSelectedPDBid={setSelectedPDBid} />}
+            {tab === 2 && <Render3D region={modalRegion} PDBids={PDBids} PDBInfo={PDBInfo} selectedPDBid={selectedPDBid} setSelectedPDBid={setSelectedPDBid} handleError={handleError}/>}
           </div>
         </>
       </div>

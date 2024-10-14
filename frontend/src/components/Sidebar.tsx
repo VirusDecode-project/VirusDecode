@@ -28,6 +28,7 @@ interface SidebarProps {
   setAlignmentData: Dispatch<SetStateAction<AlignmentData>>;
   handleEditClick: () => void;
   isLoading: boolean;
+  handleError: (message: string) => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -48,6 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setAlignmentData,
   handleEditClick,
   isLoading,
+  handleError,
 }) => {
   const [showRenameModal, setShowRenameModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);

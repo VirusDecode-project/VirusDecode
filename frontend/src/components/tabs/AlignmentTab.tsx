@@ -26,6 +26,7 @@ interface AlignmentProps {
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
+  handleError: (message: string) => void;
 }
 
 let lastHue = 0;
@@ -43,7 +44,7 @@ const generatePastelColor = () => {
   return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 };
 
-const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, setIsLoading }) => {
+const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUpdate, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, setIsLoading, handleError }) => {
   const [chartData, setChartData] = useState<ChartDataItem[]>([]);
   const [selectedRegion, setSelectedRegion] = useState('');
   useEffect(() => {
@@ -100,6 +101,7 @@ const Alignment: React.FC<AlignmentProps> = ({ alignmentData, setTab, onRegionUp
           setPDBids={setPDBids}
           setPDBInfo={setPDBInfo}
           setSelectedPDBid={setSelectedPDBid}
+          handleError={handleError}
         />
       )}
     </div>
