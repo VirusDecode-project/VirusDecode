@@ -22,34 +22,3 @@ const MessageModal: React.FC<MessageModalProps> = ({ message, isOpen, onClose })
 };
 
 export default MessageModal;
-// function MessageModal({ message, isOpen, onClose }: { message: string; isOpen: boolean; onClose: () => void }) {
-//   return (
-//     <div className={isOpen ? "modal-overlay" : "hidden"}>
-//       <div className="modal-content">
-//         <p>{message}</p>
-//         <button onClick={onClose}>닫기</button>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default function Logout() {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-//   const [message, setMessage] = useState<string>("");
-
-//   const handlePopupMessage = () => {
-//     setIsModalOpen(true);
-//     setMessage("아직은 안되지롱!");
-//   };
-
-//   const handleCloseModal = () => {
-//     setIsModalOpen(false);
-//   };
-
-//   return (
-//     <div>
-//       <button onClick={handlePopupMessage}>로그아웃</button>
-//       <PopupMessage message={message} isOpen={isModalOpen} onClose={handleCloseModal} />
-//     </div>
-//   );
-// }
