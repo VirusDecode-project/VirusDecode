@@ -230,7 +230,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
             />
           </label>
         </div>
-        <div className='convert-modal-message'>Choose sequences of 25 amino acids in length.</div>
+        <div className='convert-modal-message'>Enter sequences of 25 amino acids in length.</div>
         {error && <div className="error-message">{error}</div>}
         <div className="modal-button-group">
           <button className="modal-close-button" onClick={onClose}>
