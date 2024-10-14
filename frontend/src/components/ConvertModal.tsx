@@ -178,7 +178,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       return;
     }
     if (end - start +1 > 25) {
-      setError(`Choose sequences of 25 amino acids in length.`);
+      setError(`You can set the interval length up to 25.`);
       return;
     }
     await handleConvertButton();
@@ -230,6 +230,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
             />
           </label>
         </div>
+        <div className='convert-modal-message'>Choose sequences of 25 amino acids in length.</div>
         {error && <div className="error-message">{error}</div>}
         <div className="modal-button-group">
           <button className="modal-close-button" onClick={onClose}>
