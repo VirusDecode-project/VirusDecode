@@ -154,17 +154,18 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
         {isUserInfoOpen && (
           <div className="userInfo-menu">
             <div className="userInfo-display">
-              <Row>
-                <Col xs="auto" className="text-center">
+              <div className="userInfo-row">
+                <div className="userInfo-label">
                   <div>Name:</div>
                   <div>ID:</div>
-                </Col>
-                <Col xs="auto">
+                </div>
+                <div className="userInfo-value">
                   <div>{userName}</div>
                   <div>{loginId}</div>
-                </Col>
-              </Row>
+                </div>
+              </div>
             </div>
+
             <div className="divider"></div>
             <button className="logoutBtn text-center" onClick={handleLogout}>logout</button>
           </div>
