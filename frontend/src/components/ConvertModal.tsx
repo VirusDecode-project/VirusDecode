@@ -177,7 +177,10 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setError(`End index must be between ${start} and ${maxEndIndex}.`);
       return;
     }
-
+    if (end - start >30) {
+      setError(`You can set the interval length up to 25.`);
+      return;
+    }
     await handleConvertButton();
     onClose();
   };
