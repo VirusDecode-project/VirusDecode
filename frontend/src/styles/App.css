@@ -184,6 +184,7 @@
   /* transition: background-color 0.3s; */
   border-radius: 15px;
   z-index: 1;
+  user-select: none;
 }
 .history-item:hover{
   background-color: lightgray;
