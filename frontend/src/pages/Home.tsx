@@ -4,9 +4,10 @@ import '../styles/Home.css';
 import LoginModal from '../components/LoginModal';
 interface HomeProps {
   setUserName: Dispatch<SetStateAction<string | null>>;
+  handleError: (message: string) => void;
 }
 
-const Home: React.FC<HomeProps> = ({ setUserName }) => {
+const Home: React.FC<HomeProps> = ({ setUserName, handleError }) => {
   let navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
@@ -44,6 +45,7 @@ const Home: React.FC<HomeProps> = ({ setUserName }) => {
           }
           }
           setUserName={setUserName}
+          handleError={handleError}
         />
       )}
     </div>

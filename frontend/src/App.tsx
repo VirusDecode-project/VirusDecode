@@ -11,6 +11,7 @@ import Sidebar from "./components/Sidebar";
 import HeaderBar from "./components/HeaderBar";
 import CreateModal from "./components/CreateModal";
 import Loading from "./components/Loading";
+import MessageModal from "./components/MessageModal";
 import { MRNAData, AlignmentData, PDBResponse, } from './components/types';
 
 function App() {
@@ -33,6 +34,20 @@ function App() {
     aligned_sequences: {},
     alignment_index: {},
   });
+
+  //test
+  const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const handleError = (message: string) => {
+    setErrorMessage(message); // 에러 메시지를 설정
+    setIsMessageModalOpen(true); // 모달을 열기
+  };
+  const handleCloseModal = () => {
+    setIsMessageModalOpen(false); // 모달을 닫기
+    setErrorMessage(""); // 에러 메시지 초기화
+  };
+
+
   const [showEditModal, setShowEditModal] = useState(false);
 
   const [workingHistory, setWorkingHistory] = useState(() => {
@@ -69,6 +84,11 @@ function App() {
           show={showEditModal}
           onClose={() => setShowEditModal(false)}
         />
+        <MessageModal
+          isOpen={isMessageModalOpen}
+          message={errorMessage}
+          onClose={handleCloseModal}
+        />
         <Sidebar
           show={show}
           handleClose={handleClose}
@@ -87,6 +107,7 @@ function App() {
           setAlignmentData={setAlignmentData}
           handleEditClick={handleEditClick}
           isLoading={isLoading}
+          handleError={handleError}
         />
 
         <div className={`content-container ${show ? "shrink" : ""}`}>
@@ -98,12 +119,14 @@ function App() {
             navigate={navigate}
             userName={userName}
             setUserName={setUserName}
+            handleError={handleError}
           />
           <Routes>
             <Route
               path="/"
               element={<Home
                 setUserName={setUserName}
+                handleError={handleError}
               />}
             />
             <Route
@@ -115,11 +138,14 @@ function App() {
                 setMRNAReceived={setMRNAReceived}
                 setPDBReceived={setPDBReceived}
                 setUserName={setUserName}
+                handleError={handleError}
               />}
             />
             <Route
               path="/signup"
-              element={<Signup />}
+              element={<Signup
+                handleError={handleError}
+              />}
             />
             <Route
               path="/inputSeq"
@@ -134,6 +160,7 @@ function App() {
                 setHistory={setHistory}
                 setIsLoading={setIsLoading}
                 isLoading={isLoading}
+                handleError={handleError}
               />}
             />
             <Route
@@ -160,6 +187,7 @@ function App() {
                 setAlignmentData={setAlignmentData}
                 setIsLoading={setIsLoading}
                 isLoading={isLoading}
+                handleError={handleError}
               />}
             />
           </Routes>

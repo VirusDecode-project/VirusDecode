@@ -8,11 +8,12 @@ interface Render3DProps {
   PDBInfo: string[];
   selectedPDBid: string;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
+  handleError: (message: string) => void;
 }
 
 
 
-const Render3D: React.FC<Render3DProps> = ({ region, PDBids, PDBInfo, selectedPDBid, setSelectedPDBid }) => {
+const Render3D: React.FC<Render3DProps> = ({ region, PDBids, PDBInfo, selectedPDBid, setSelectedPDBid, handleError }) => {
   const [representation, setRepresentation] = useState("default");
   const [error, setError] = useState("");
   const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
@@ -79,9 +80,10 @@ const Render3D: React.FC<Render3DProps> = ({ region, PDBids, PDBInfo, selectedPD
     const exists = await checkPDBFileExists(pdbUrl);
     if (exists) {
       setSelectedPDBid(id);
-      setError("");
+      // setError("");
     } else {
-      setError(`PDB file ${id}.pdb does not exist.`);
+      // setError(`${id}.pdb does not exist.`);
+      handleError(`PDB file ${id}.pdb does not exist.`);
     }
   };
 

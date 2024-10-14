@@ -24,6 +24,7 @@ interface InputSeqProps {
   setHistory: Dispatch<SetStateAction<string[]>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
+  handleError: (message: string) => void;
 }
 
 interface UploadedFile {
@@ -31,7 +32,7 @@ interface UploadedFile {
   file: File;
 }
 
-const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, setIsLoading, isLoading }) => {
+const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory, workingHistory, setMRNAReceived, setPDBReceived, setAlignmentData, setHistory, setIsLoading, isLoading, handleError }) => {
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -175,7 +176,8 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
     } catch (error) {
       if (error instanceof Error) {
         console.error("An error occurred during the request: ", error.message);
-        window.alert(error.message);
+        // window.alert(error.message);
+        handleError(error.message);
       }
     }
     finally {
@@ -285,8 +287,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
 
               <Form.Group controlId="formFile" className="mb-3">
                 <Form.Label>Upload File</Form.Label>
-                <Row className="align-items-center">
-                  <Col md={6}>
+                  <Col md={10}>
                     <div className="upload-box">
                       <input
                         type="file"
@@ -330,13 +331,11 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
                       </div>
                     ))}
                   </Col>
-                </Row>
               </Form.Group>
 
               <Form.Group className="mb-3">
                 <Form.Label>Paste Sequence</Form.Label>
-                <Row>
-                  <Col md={9} className="text-left">
+                  <Col md={10} className="text-left">
                     {sequences.map((seq) => (
                       <div key={seq.id} className="form-group">
                         <div className="sequence-header d-flex align-items-center justify-content-start">
@@ -382,7 +381,6 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
                       </div>
                     ))}
                   </Col>
-                </Row>
               </Form.Group>
 
               <button onClick={addSequence} className="add-sequence-button">

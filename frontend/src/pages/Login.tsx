@@ -9,9 +9,10 @@ interface LoginProps {
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   setUserName:Dispatch<SetStateAction<string | null>>;
+  handleError: (message: string) => void;
 }
 
-const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNAReceived, setPDBReceived, setUserName}) => {
+const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNAReceived, setPDBReceived, setUserName, handleError }) => {
   let navigate = useNavigate();
   const [loginId, setLoginId] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
@@ -84,8 +85,8 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
       }
     } catch (error) {
       if(error instanceof Error){
-        window.alert(error.message);
-
+        // window.alert(error.message);
+        handleError(error.message);
       }
       // console.error("로그인 요청 중 에러 발생:", error);
       // alert("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");

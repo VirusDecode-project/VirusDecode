@@ -4,7 +4,11 @@ import "../styles/Signup.css";
 import checkIcon from "../assets/check.png";
 import xIcon from "../assets/x.png";
 
-const Signup: React.FC = () => {
+interface SignupProps {
+  handleError: (message: string) => void;
+}
+
+const Signup: React.FC<SignupProps> = ({handleError}) => {
   let navigate = useNavigate();
   const [firstName, setFirstName] = useState<string | null>(null);
   const [lastName, setLastName] = useState<string | null>(null);
@@ -31,7 +35,8 @@ const Signup: React.FC = () => {
   const handleSignupSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!isFormValid) {
-      alert("모든 필드를 올바르게 입력해 주세요.");
+      // alert("모든 필드를 올바르게 입력해 주세요.");
+      handleError("모든 필드를 올바르게 입력해 주세요.");
       return;
     }
 
@@ -51,7 +56,8 @@ const Signup: React.FC = () => {
       });
 
       if(signUpResponse.ok) {
-        alert("회원가입이 완료되었습니다.");
+        // alert("회원가입이 완료되었습니다.");
+        handleError("회원가입이 완료되었습니다.");
         navigate("/login");
       }else{
         const errorMessage = await signUpResponse.text();
@@ -59,7 +65,8 @@ const Signup: React.FC = () => {
       }
     } catch (error) {
       if(error instanceof Error){
-        window.alert(error.message);
+        // window.alert(error.message);
+        handleError(error.message);
       }
     }
   };

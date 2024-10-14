@@ -18,11 +18,12 @@ interface ConvertModalProps {
   setPDBids: Dispatch<SetStateAction<string[]>>;
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
+  handleError: (message: string) => void;
 }
 
 
 
-const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid }) => {
+const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, handleError }) => {
   const [startIndex, setStartIndex] = useState('');
   const [endIndex, setEndIndex] = useState('');
   const [selectedGenome, setSelectedGenome] = useState('');
@@ -146,7 +147,8 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
     } catch (error) {
       if (error instanceof Error){
         console.error("An error occurred during the request: ", error.message);
-        window.alert(error.message);
+        // window.alert(error.message);
+        handleError(error.message);
       }
     } finally {
       setIsLoading(false);
@@ -175,7 +177,10 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setError(`End index must be between ${start} and ${maxEndIndex}.`);
       return;
     }
-
+    if (end - start >30) {
+      setError(`You can set the interval length up to 25.`);
+      return;
+    }
     await handleConvertButton();
     onClose();
   };
