@@ -24,6 +24,8 @@
 
 .App {
   text-align: center;
+  /* font-family: 'Noto Sans KR', 'Roboto', sans-serif; */
+  font-family: "IBM Plex Mono", monospace;
 }
 
 .custom-navbar {
@@ -101,7 +103,7 @@
 
 .userInfo-wrapper {
   margin-left: auto;
-  right: 10px;
+  margin-right: 2vw; /* 오른쪽에 여유 공간을 주기 위해 vw 사용 */
   position: relative; /* userInfo-menu를 userIcon 아래에 배치하기 위한 상대적 위치 */
   display: inline-block;
 }
@@ -109,20 +111,24 @@
 .userInfo-menu {
   position: absolute;
   top: 110%; /* userIcon 바로 아래에 배치 */
-  left: auto; /* 자동으로 오른쪽 맞추기 */
-  right: 0; /* 오른쪽 끝에 맞추기 */
-  background-color: white;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  z-index: 1;
-  width: 190px; /* 메뉴 너비 */
-  padding: 15px;
+  right: 0;
+  background-color: #fff; /* 밝은 흰색 배경 */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* 더 부드러운 그림자 */
+  border-radius: 10px; /* 더 부드러운 모서리 */
+  z-index: 1000; /* z-index를 더 높게 설정 */
+  width: 20vw; /* 반응형 너비 (화면 너비의 20%) */
+  max-width: 280px; /* 최대 너비 */
+  padding: 1.2rem; /* 적당한 여백을 주기 위해 padding 증가 */
+  /* font-family: 'Noto Sans', Arial, sans-serif; 더 세련된 폰트 */
+  font-size: 0.95rem; /* 글씨 크기 살짝 조정 */
+  transition: all 0.3s ease; /* 부드러운 트랜지션 효과 */
 }
+
 
 .divider {
   height: 1px; /* 구분선 두께 */
   background-color: #ccc; /* 구분선 색상 */
-  margin: 5px 0; /* 구분선 위아래 간격 */
+  /* margin: 5px 0; 구분선 위아래 간격 */
 }
 
 .userInfo-display {
@@ -130,7 +136,7 @@
   color: rgb(97, 97, 97);
   border: none;
   padding: 10px;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   font-size: 14px;
   width: 100%;
   text-align: left;
@@ -139,14 +145,17 @@
 
 .logoutBtn {
   background-color: white;
-  color: rgb(255, 0, 0);
+  color: rgb(255, 0, 0); /* 기본 텍스트 색상 */
   border: none;
-  padding: 10px;
   font-size: 14px;
   cursor: pointer;
   width: 100%;
-  text-align: left;
-  margin-top: 5px; /* 로그아웃 버튼과 유저 네임 사이 간격 */
+  margin-top: 5px;
+}
+
+/* 호버 효과 */
+.logoutBtn:hover {
+  background-color: rgba(200, 200, 200, 0.3);
 }
 
 .history-item {
