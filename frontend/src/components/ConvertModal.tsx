@@ -178,7 +178,7 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       return;
     }
     if (end - start +1 > 25) {
-      setError(`You can set the interval length up to 25.`);
+      setError(`Choose sequences of 25 amino acids in length.`);
       return;
     }
     await handleConvertButton();
