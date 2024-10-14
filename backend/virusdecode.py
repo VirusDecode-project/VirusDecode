@@ -204,9 +204,15 @@ class SequenceAnalysis:
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
 
-
         # Check if the command was executed successfully
-        if process.returncode == 0:
+        if process.returncode != 0:
+            sys.stderr.write(f"Command failed with return code {process.returncode}.\nError: {stderr.decode()}\n")
+            sys.exit(32)
+        else:
+            if not stdout.decode().strip():
+                sys.stderr.write("Error in running time by LinearDesign. It could be timeout.\n")
+                sys.exit(31)
+
             # Save the output result as a list of lines
             output_lines = stdout.decode().splitlines()
             mRNA_sequence = output_lines[-4].replace('mRNA sequence:', '').strip()
@@ -222,11 +228,6 @@ class SequenceAnalysis:
             self.linearDesign.append(free_energy)
             self.linearDesign.append(cai)
             self.amino_acid_sequence = amino_acid_sequence
-
-        else:
-            sys.stderr.write("Error while running LinearDesign")
-            sys.exit(32)
-            
 
     def set_protParam(self):
         # Create a protein analysis object

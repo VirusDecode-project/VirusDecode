@@ -60,7 +60,8 @@ public class PythonScriptService {
                     case 2 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전달된 인자가 부족합니다.");
                     case 11 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.");
                     case 21 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("MUSCLE 다중 서열 정리에 문제가 발생하였습니다.");
-                    case 32 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다.\nLinux 또는 Max 사용자가 맞으신가요?");
+                    case 31 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버의 메모리 부족 문제로 LinearDesign 실행 중 문제가 발생하였습니다. 더 짧은 구간을 선택해 주세요.");
+                    case 32 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다.\n서버는 Linux 또는 Mac에서 실행해야 하며, 도커를 사용하신 경우 아키텍쳐 문제일 수 있습니다.");
                     case 33 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("LinearDesign 디렉토리가 원하는 위치가 존재하지 않습니다.");
                     case 41 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("RCSB PDB 서버로부터 PDB ID 검색에 실패하였습니다.");
                     case 42 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("RCSB PDB 서버의 문제로 3D viewer 데이터 로드에 실패하였습니다.");
