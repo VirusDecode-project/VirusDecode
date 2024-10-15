@@ -334,12 +334,6 @@ if __name__ == "__main__":
         fasta_content = sys.argv[3]
         fasta_io = StringIO(fasta_content)
 
-        # for record in SeqIO.parse(fasta_io, "fasta"):
-        #     if not is_valid_sequence(record.seq):
-        #         sys.exit(22)
-        #     variant_sequences[record.id] = record.seq
-        
-        
         try:
             for record in SeqIO.parse(fasta_io, "fasta"):
                 if not is_valid_sequence(record.seq):
