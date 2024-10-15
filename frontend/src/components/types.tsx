@@ -55,3 +55,7 @@ export interface AlignmentData {
 export interface PDBResponse {
   [key: string]: string;
 }
+
+export interface Config {
+  MAX_INTERVAL_LENGTH: string;
+}
