@@ -1,6 +1,6 @@
 import React, { Dispatch, SetStateAction, useState, useEffect, ChangeEvent } from 'react';
 import '../styles/Modal.css';
-import {Sequence, AlignmentIndex, ModalData, MRNAData, PDBResponse} from './types';
+import { Sequence, AlignmentIndex, ModalData, MRNAData, PDBResponse, Config } from './types';
 
 interface ConvertModalProps {
   onRegionUpdate: (region: string) => void;
@@ -14,14 +14,13 @@ interface ConvertModalProps {
   setMRNAReceived: Dispatch<SetStateAction<boolean>>;
   setPDBReceived: Dispatch<SetStateAction<boolean>>;
   workingHistory: string;
-  setLinearDesignData:Dispatch<SetStateAction<MRNAData | null>>;
+  setLinearDesignData: Dispatch<SetStateAction<MRNAData | null>>;
   setPDBids: Dispatch<SetStateAction<string[]>>;
   setPDBInfo: Dispatch<SetStateAction<string[]>>;
   setSelectedPDBid: Dispatch<SetStateAction<string>>;
   handleError: (message: string) => void;
+  
 }
-
-
 
 const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onClose, sequences, alignmentIndex, modalData, setTab, setIsLoading, setMRNAReceived, setPDBReceived, workingHistory, setLinearDesignData, setPDBids, setPDBInfo, setSelectedPDBid, handleError }) => {
   const [startIndex, setStartIndex] = useState('');
@@ -29,6 +28,30 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
   const [selectedGenome, setSelectedGenome] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const [error, setError] = useState('');
+  const [config, setConfig] = useState<Config | null>(null);
+
+  useEffect(() => {
+    const fetchConfig = async () => {
+      try {
+        const serverResponse = await fetch(`/api/config/max-interval`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (serverResponse.ok) {
+          const data = await serverResponse.json();
+          setConfig(data); // 서버에서 받은 config 데이터를 설정
+        } else {
+          console.error("Failed to fetch config");
+        }
+      } catch (error) {
+        console.error("Error fetching config:", error);
+      }
+    };
+
+    fetchConfig();
+  }, []);
+
+  const maxIntervalLength = config ? parseInt(config.MAX_INTERVAL_LENGTH, 10) : 10000;
 
   useEffect(() => {
     if (modalData) {
@@ -84,10 +107,10 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
     };
     onRegionUpdate(mRnaData.gene);
     console.log("Data being sent to backend:", mRnaData);
-  
+
     try {
       setIsLoading(true);
-  
+
       // 1. mRNA 디자인 POST 요청
       const mRnaResponse = await fetch(`/api/analysis/linearDesign`, {
         method: 'POST',
@@ -97,21 +120,21 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
         },
         body: JSON.stringify(mRnaData),
       });
-  
+
       if (!mRnaResponse.ok) {
         const errorMessage = await mRnaResponse.text();
         throw new Error(errorMessage);
       }
-  
+
       const linearDesignResponse = await mRnaResponse.json();
 
       setMRNAReceived(true);
       setLinearDesignData(linearDesignResponse);
       setTab(1);
       setIsLoading(false);
-  
+
       // 2. PDB 디자인 POST 요청
-      const pdbData = { gene: selectedRegion, historyName: workingHistory};
+      const pdbData = { gene: selectedRegion, historyName: workingHistory };
       const pdbResponse = await fetch(`/api/analysis/pdb`, {
         method: 'POST',
         credentials: 'include',
@@ -120,32 +143,32 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
         },
         body: JSON.stringify(pdbData),
       });
-  
+
       if (!pdbResponse.ok) {
         const errorMessage = await pdbResponse.text();
         throw new Error(errorMessage);
       }
-  
+
       const responseData: PDBResponse = await pdbResponse.json();
 
-        const keys = Object.keys(responseData);
-        setPDBids(keys);
-        const values = Object.values(responseData);
-        setPDBInfo(values);
-        
-        if (keys.length > 0) {
-          setPDBReceived(true);
-          for (let i = 0; i < keys.length; i++){
-            const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
-            if (exist) {
-              setSelectedPDBid(keys[i]);
-              break;
-            }
+      const keys = Object.keys(responseData);
+      setPDBids(keys);
+      const values = Object.values(responseData);
+      setPDBInfo(values);
+
+      if (keys.length > 0) {
+        setPDBReceived(true);
+        for (let i = 0; i < keys.length; i++) {
+          const exist = await (checkPDBFileExists(`https://files.rcsb.org/download/${keys[i]}.pdb`))
+          if (exist) {
+            setSelectedPDBid(keys[i]);
+            break;
           }
         }
+      }
 
     } catch (error) {
-      if (error instanceof Error){
+      if (error instanceof Error) {
         console.error("An error occurred during the request: ", error.message);
         // window.alert(error.message);
         handleError(error.message);
@@ -154,9 +177,9 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setIsLoading(false);
     }
   };
-  
 
-  
+
+
 
   const handleNext = async () => {
     const start = parseInt(startIndex, 10);
@@ -177,8 +200,8 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
       setError(`End index must be between ${start} and ${maxEndIndex}.`);
       return;
     }
-    if (end - start +1 > 25) {
-      setError(`You can set the interval length up to 25.`);
+    if (end - start + 1 > maxIntervalLength) {
+      setError(`You can set the interval length up to ${maxIntervalLength}.`);
       return;
     }
     await handleConvertButton();
@@ -230,7 +253,11 @@ const ConvertModal: React.FC<ConvertModalProps> = ({ onRegionUpdate, isOpen, onC
             />
           </label>
         </div>
-        <div className='convert-modal-message'>Enter sequences of 25 amino acids in length.</div>
+        {maxIntervalLength <= 500 && (
+          <div className='convert-modal-message'>
+            Enter sequences of {maxIntervalLength} amino acids in length.
+          </div>
+        )}
         {error && <div className="error-message">{error}</div>}
         <div className="modal-button-group">
           <button className="modal-close-button" onClick={onClose}>

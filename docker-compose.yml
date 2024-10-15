@@ -11,6 +11,7 @@ services:
       - ./backend/.env
     volumes:
       - ./backend/mydb.db:/app/backend/mydb.db
+    platform: linux/amd64
 
   frontend:
     build:
