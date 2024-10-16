@@ -23,8 +23,11 @@ describe('SideBar Test', () => {
     cy.wait('@metadataRequest').then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
       cy.get('input[type="file"]').attachFile([fileName1]);   
-    cy.get('button.next-button').click();
-    cy.url().should('include', '/analysis');
+      cy.get('button.next-button').click();
+      cy.wait('@alignmentRequest').then((interception) => {
+        expect(interception.response.statusCode).to.eq(200);
+        cy.url().should('include', '/analysis');
+      });
     });
   }
   const openRenameModal = () => {
@@ -44,6 +47,7 @@ describe('SideBar Test', () => {
     // #1 게스트 로그인
     guestlogin();
     cy.intercept('POST', '/api/inputSeq/metadata').as('metadataRequest');
+    cy.intercept('POST', '/api/inputSeq/alignment').as('alignmentRequest');
   })
 
   it('get sample history list when guest login ', () => {
