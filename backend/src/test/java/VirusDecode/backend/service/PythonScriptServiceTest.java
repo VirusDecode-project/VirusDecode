@@ -107,6 +107,25 @@ class PythonScriptServiceTest {
         assertEquals("MUSCLE 다중 서열 정리에 문제가 발생하였습니다.", response.getBody());
     }
     @Test
+    void testExitCode22() throws Exception {
+        // Mock 설정
+        doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());
+        when(processBuilderMock.start()).thenReturn(processMock);
+        when(processMock.getInputStream()).thenReturn(inputStreamMock);
+        when(processMock.getErrorStream()).thenReturn(errorStreamMock);
+        when(processMock.waitFor()).thenReturn(22);
+
+        String fastaContent = "";
+        String referenceId = "NC_001803.1";
+
+        // Act: Python 스크립트 실행
+        ResponseEntity<String> response = pythonScriptServiceMock.executePythonScript("2", referenceId, fastaContent);
+
+        // Assert: 결과 검증
+        assertEquals(500, response.getStatusCodeValue());
+        assertEquals("입력하신 서열 정보가 올바르지 않습니다. A, T, C, 그리고 G만 허용됩니다.", response.getBody());
+    }
+    @Test
     void testExitCode31() throws Exception {
         // Mock 설정
         doReturn(processBuilderMock).when(pythonScriptServiceMock).createProcessBuilder(anyList());

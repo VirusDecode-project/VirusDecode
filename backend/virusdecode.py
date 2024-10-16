@@ -9,6 +9,7 @@ import sys
 import json
 from io import StringIO
 import requests
+import re
 Entrez.email = "your_email@example.com"
 
 
@@ -297,6 +298,10 @@ class SequenceAnalysis:
         self.set_protParam()
 
 
+# ATCG 문자만 허용하는 정규식 검사 함수
+def is_valid_sequence(sequence: str) -> bool:
+    return bool(re.fullmatch(r'[ATCGatcg]*', str(sequence)))
+
 if __name__ == "__main__":
     # check if the required arguments are provided
     if len(sys.argv) < 2:
@@ -328,8 +333,16 @@ if __name__ == "__main__":
         variant_sequences = {}
         fasta_content = sys.argv[3]
         fasta_io = StringIO(fasta_content)
-        for record in SeqIO.parse(fasta_io, "fasta"):
-            variant_sequences[record.id] = record.seq
+
+        try:
+            for record in SeqIO.parse(fasta_io, "fasta"):
+                if not is_valid_sequence(record.seq):
+                    sys.stderr.write(f"Invalid sequence for ${record.id}.\nOnly A, T, C, and G are allowed.")
+                    sys.exit(22)
+                variant_sequences[record.id] = record.seq
+        except Exception as e:
+            sys.stderr.write(f"fasta format error in SeqIO.parse.\n{str(e)}")
+            sys.exit(22)
 
         # run alignment
         alignment = SequenceAlignment(variant_sequences, reference_id)

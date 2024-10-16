@@ -29,6 +29,10 @@ ENV LANG=ko_KR.UTF-8 \
     LANGUAGE=ko_KR:ko \
     LC_ALL=ko_KR.UTF-8
 
+# Set the system timezone to Asia/Seoul by linking the timezone file
+RUN ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime && \
+    echo "Asia/Seoul" > /etc/timezone
+
 # Install Python packages for bioinformatics (if needed by the backend)
 RUN pip3 install biopython==1.83 requests==2.32.3
 

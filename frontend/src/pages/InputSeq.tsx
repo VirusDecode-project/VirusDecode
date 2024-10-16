@@ -68,6 +68,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   const [metadata, setMetadata] = useState("");
   const [responseReceived, setResponseReceived] = useState(false);
   const [doneReceived, setDoneReceived] = useState(true);
+  const [fileInputKey, setFileInputKey] = useState<number>(0); 
 
   const handleDoneSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // 폼의 기본 제출 동작 방지
@@ -186,10 +187,29 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
   };
 
 
+  // 파일 업로드 핸들러
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    const newFiles = files.map((file) => ({ name: file.name, file }));
+    const validExtensions = ['.fasta', '.fa'];
+
+    const invalidFilesList = files.filter(file => {
+      const fileExtension = file.name.slice(file.name.lastIndexOf('.'));
+      return !validExtensions.includes(fileExtension);
+    });
+
+    const validFiles = files.filter(file => {
+      const fileExtension = file.name.slice(file.name.lastIndexOf('.'));
+      return validExtensions.includes(fileExtension);
+    });
+
+    if (invalidFilesList.length > 0) {
+      handleError("FASTA 파일 형식만 지원됩니다.")
+      setFileInputKey(prevKey => prevKey + 1);
+    }
+
+    const newFiles = validFiles.map((file) => ({ name: file.name, file }));
     setUploadedFiles([...uploadedFiles, ...newFiles]);
+
     setEditingFileIndex(null);
   };
 
@@ -294,6 +314,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
                         className="file-input"
                         accept=".fasta"
                         multiple
+                        key={fileInputKey}
                         onChange={handleFileUpload}
                       />
                       <div className="upload-text">

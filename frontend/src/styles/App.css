@@ -116,12 +116,12 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* 더 부드러운 그림자 */
   border-radius: 10px; /* 더 부드러운 모서리 */
   z-index: 1000; /* z-index를 더 높게 설정 */
-  width: 20vw; /* 반응형 너비 (화면 너비의 20%) */
   max-width: 280px; /* 최대 너비 */
   padding: 1.2rem; /* 적당한 여백을 주기 위해 padding 증가 */
   /* font-family: 'Noto Sans', Arial, sans-serif; 더 세련된 폰트 */
   font-size: 0.95rem; /* 글씨 크기 살짝 조정 */
   transition: all 0.3s ease; /* 부드러운 트랜지션 효과 */
+  text-overflow: ellipsis; /* 숨긴 부분을 ...으로 표시 */
 }
 
 
@@ -141,7 +141,27 @@
   width: 100%;
   text-align: left;
   cursor: default;
+  white-space: nowrap; /* 글씨가 한 줄로 표시되도록 설정 */
+  overflow: hidden; /* 넘치는 부분을 숨김 */
+  text-overflow: ellipsis; /* 넘치는 부분을 ...으로 표시 */
 }
+
+.userInfo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo-label, .userInfo-value {
+  flex: 1;
+}
+
+.userInfo-label {
+  text-align: right;
+  margin-right: 10px; /* 레이블과 값 간 간격 */
+  width: 50px;
+}
+
 
 .logoutBtn {
   background-color: white;
@@ -164,6 +184,7 @@
   /* transition: background-color 0.3s; */
   border-radius: 15px;
   z-index: 1;
+  user-select: none;
 }
 .history-item:hover{
   background-color: lightgray;
