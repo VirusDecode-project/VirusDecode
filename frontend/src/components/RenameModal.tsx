@@ -4,9 +4,10 @@ interface RenameModalProps {
   show: boolean;
   onClose: () => void;
   onRename: (newName: string) => void;
+  handleError: (message: string) => void;
 }
 
-const RenameModal: React.FC<RenameModalProps> = ({ show, onClose, onRename }) => {
+const RenameModal: React.FC<RenameModalProps> = ({ show, onClose, onRename, handleError }) => {
   const [newName, setNewName] = useState('');
   const modalRef = useRef<HTMLDivElement>(null); // 모달 컨텐츠를 참조할 ref
 
@@ -16,7 +17,7 @@ const RenameModal: React.FC<RenameModalProps> = ({ show, onClose, onRename }) =>
       setNewName('');  // 입력창 초기화
       onClose();  // 모달 닫기
     } else {
-      alert("Please enter correct name.");  // 빈 입력 방지
+      handleError("Please enter correct name.");
     }
   };
 
@@ -51,6 +52,7 @@ const RenameModal: React.FC<RenameModalProps> = ({ show, onClose, onRename }) =>
         <input
           type="text"
           value={newName}
+          name="newName"
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Enter new name"
         />

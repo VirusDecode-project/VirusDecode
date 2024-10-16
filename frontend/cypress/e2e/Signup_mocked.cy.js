@@ -1,3 +1,4 @@
+// 계정 생성 및 저장: 회원 가입 완료 #2
 // 회원 정보 입력: 아이디 중복 검사 #3
 // 회원 정보 입력: 비밀번호 재입력 일치 검사 #4
 // 회원 정보 입력: 회원 정보 공란 검사 #5
@@ -36,7 +37,7 @@ describe('Signup Page Test', () => {
     // #2 올바른 회원 정보 입력 시
     cy.get('input[name="firstName"]').type('testFirstName');
     cy.get('input[name="lastName"]').type('testLastName');
-    cy.get('input[name="loginId"]').type('testId');
+    cy.get('input[name="id"]').type('testId');
     cy.get('input[name="password"]').type('testPw');
     cy.get('input[name="cPassword"]').type('testPw');
 
@@ -57,7 +58,7 @@ describe('Signup Page Test', () => {
     // #3 기존에 가입한 ID와 중복되는 ID 입력 시 
     cy.get('input[name="firstName"]').type('testFirstName');
     cy.get('input[name="lastName"]').type('testLastName');
-    cy.get('input[name="loginId"]').type('test_duplicated');
+    cy.get('input[name="id"]').type('test_duplicated');
     cy.get('input[name="password"]').type('testPw');
     cy.get('input[name="cPassword"]').type('testPw');
 
@@ -72,7 +73,7 @@ describe('Signup Page Test', () => {
     // #4 'Password'와 'Confirm Password'를 다르게 입력 시
     cy.get('input[name="firstName"]').type('testFirstName');
     cy.get('input[name="lastName"]').type('testLastName');
-    cy.get('input[name="loginId"]').type('testId');
+    cy.get('input[name="id"]').type('testId');
     cy.get('input[name="password"]').type('testPw');
     cy.get('input[name="cPassword"]').type('differentTestPw');
 
@@ -97,7 +98,7 @@ describe('Signup Page Test', () => {
 
     // 이름을 입력하지 않은 경우
     cy.visit('http://localhost:3000/signup');
-    cy.get('input[name="loginId"]').type('testId');
+    cy.get('input[name="id"]').type('testId');
     cy.get('input[name="password"]').type('testPw');
     cy.get('input[name="cPassword"]').type('testPw');
     cy.get('.SignupBtn').click();
@@ -122,7 +123,7 @@ describe('Signup Page Test', () => {
     cy.visit('http://localhost:3000/signup');
     cy.get('input[name="firstName"]').type('testFirstName');
     cy.get('input[name="lastName"]').type('testLastName');
-    cy.get('input[name="loginId"]').type('testId');
+    cy.get('input[name="id"]').type('testId');
     cy.get('input[name="cPassword"]').type('testPw');
     cy.get('.SignupBtn').click();
     cy.get('.message-modal-content') 
@@ -134,7 +135,7 @@ describe('Signup Page Test', () => {
     cy.visit('http://localhost:3000/signup');
     cy.get('input[name="firstName"]').type('testFirstName');
     cy.get('input[name="lastName"]').type('testLastName');
-    cy.get('input[name="loginId"]').type('testId');
+    cy.get('input[name="id"]').type('testId');
     cy.get('input[name="password"]').type('testPw');
     cy.get('.SignupBtn').click();
     cy.get('.message-modal-content') 
