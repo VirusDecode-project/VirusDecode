@@ -21,6 +21,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
   const [loginId, setLoginId] = useState<string | null>(null);
   const [isUserInfoOpen, setIsUserInfoOpen] = useState<boolean>(false);
   const userInfoRef = useRef<HTMLDivElement | null>(null);
+  const iconRef = useRef<HTMLImageElement | null>(null);
 
   const handleRestart = () => {
     navigate('/');
@@ -88,9 +89,9 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (userInfoRef.current && !userInfoRef.current.contains(event.target as Node)) {
-        setIsUserInfoOpen(false);
-      }
+      if (userInfoRef.current && !userInfoRef.current.contains(event.target as Node) &&
+          iconRef.current && !iconRef.current.contains(event.target as Node)) 
+      {setIsUserInfoOpen(false);}
     };
 
     if (isUserInfoOpen) {
@@ -150,6 +151,7 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
           style={{ cursor: "pointer" }}
           alt="User Icon"
           onClick={toggleUserInfoOpen}
+          ref={iconRef}
         />
         {isUserInfoOpen && (
           <div className="userInfo-menu">
