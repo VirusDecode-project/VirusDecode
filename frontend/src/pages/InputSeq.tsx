@@ -203,7 +203,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
     });
 
     if (invalidFilesList.length > 0) {
-      handleError("Only fasta file format is supported.")
+      handleError("FASTA 파일 형식만 지원됩니다.")
       setFileInputKey(prevKey => prevKey + 1);
     }
 
