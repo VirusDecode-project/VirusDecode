@@ -322,6 +322,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         show={showRenameModal}
         onClose={() => setShowRenameModal(false)}
         onRename={handleRename}
+        handleError={handleError}
       />
       <DeleteModal
         show={showDeleteModal}
