@@ -12,8 +12,11 @@ describe('Analysis component_tab', () => {
     cy.wait('@metadataRequest').then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
       cy.get('input[type="file"]').attachFile([fileName1]);   
-    cy.get('button.next-button').click();
-    cy.url().should('include', '/analysis');
+      cy.get('button.next-button').click();
+      cy.wait('@alignmentRequest').then((interception) => {
+        expect(interception.response.statusCode).to.eq(200);
+        cy.url().should('include', '/analysis');
+      });
     });
   }
 
@@ -27,6 +30,7 @@ describe('Analysis component_tab', () => {
 
   beforeEach(() => {
     cy.intercept('POST', '/api/inputSeq/metadata').as('metadataRequest');
+    cy.intercept('POST', '/api/inputSeq/alignment').as('alignmentRequest');
     cy.intercept('POST', '/api/analysis/linearDesign').as('linearDesignRequest');
     cy.intercept('POST', '/api/analysis/pdb').as('PDBrequest');
     loginAndSetup();
