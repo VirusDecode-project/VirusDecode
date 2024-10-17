@@ -1,6 +1,6 @@
 describe('Analysis component_tab', () => {
   const referenceSeqId = 'NC_045512';
-  const fileName1 = 'MT576556.1.spike.fasta';
+  const fileName1 = 'SARS_CoV_2/MT576556.1.spike.fasta';
   const loginAndSetup = () => {
     cy.visit('http://localhost:3000/');
     cy.get('.decode-button').click();
