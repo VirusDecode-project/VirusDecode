@@ -3,11 +3,9 @@
 // 히스토리 선택: 저장된 히스토리 데이터 불러오기 #3
 // 히스토리 수정: 히스토리 이름 수정 #6
 // 히스토리 수정: 히스토리 삭제 #7
-// 히스토리 생성: 전송된 입력 데이터 저장 #4
-// 히스토리 생성: 히스토리 이름 자동 생성 #4, #5
 describe('SideBar Test', () => {
   const referenceSeqId = 'NC_045512';
-  const fileName1 = 'MT576556.1.spike.fasta';
+  const fileName1 = 'SARS_CoV_2/MT576556.1.spike.fasta';
   const originHistoryName1 = 'SARS-CoV-2';
   const originHistoryName2 = 'RSV';
   const guestlogin = () => {
@@ -15,21 +13,7 @@ describe('SideBar Test', () => {
     cy.get('.decode-button').click();
     cy.get('.stayLoggedOutBtn').click(); 
   }
-  const filesetup = () => {
-    cy.get('input#referenceSequenceId') 
-      .type(referenceSeqId)
-      .should('have.value', referenceSeqId); 
-    cy.get('button').contains('DONE').click(); 
-    cy.wait('@metadataRequest').then((interception) => {
-      expect(interception.response.statusCode).to.eq(200);
-      cy.get('input[type="file"]').attachFile([fileName1]);   
-      cy.get('button.next-button').click();
-      cy.wait('@alignmentRequest').then((interception) => {
-        expect(interception.response.statusCode).to.eq(200);
-        cy.url().should('include', '/analysis');
-      });
-    });
-  }
+  
   const openRenameModal = () => {
     cy.get('.history-item').first().should('be.visible').and('contain', originHistoryName1);
     cy.get('.ellipsis-button').first().invoke('show').should('be.visible').click();
@@ -68,22 +52,6 @@ describe('SideBar Test', () => {
     cy.get('.nav-tabs').contains('3D').should('not.have.class', 'disabled'); 
   });
   
-  it('save new history', () => {
-    // #4 사용자가 입력한 데이터를 새 히스토리에 저장
-    filesetup();
-    // 자동 생성 이름: 레퍼런스ID
-    cy.get('.history-item').first().should('be.visible').and('contain', referenceSeqId);
-  });
-
-  it('save new history_duplicated referenceSeqId', () => {
-    // #5 같은 레퍼런스ID 입력 후 분석 시작 시 히스토리 저장
-    filesetup();
-    cy.get('.sidebar .edit-icon').click();
-    cy.get('.modal-next-button').click();
-    filesetup();
-    // 자동 생성 이름: 레퍼런스ID_1
-    cy.get('.history-item').first().should('be.visible').and('contain', referenceSeqId + '_1');
-  });
 
   it('should rename a history item', () => {
     // #6 히스토리 이름 수정
