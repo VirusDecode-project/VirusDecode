@@ -8,7 +8,7 @@ interface MRNAdesignProps {
   linearDesignData: MRNAData | null;
 }
 
-const MRNAdesign: React.FC<MRNAdesignProps> = ({workingHistory, linearDesignData}) => {
+const MRNAdesign: React.FC<MRNAdesignProps> = ({ workingHistory, linearDesignData }) => {
   // const [linearDesignData, setLinearDesignData] = useState<Data | null>(null);
   const [showFullAminoAcidSequence, setShowFullAminoAcidSequence] = useState(false);
   const [showFullSequence, setShowFullSequence] = useState(false);
@@ -214,10 +214,9 @@ const MRNAdesign: React.FC<MRNAdesignProps> = ({workingHistory, linearDesignData
                 )
               ) : (
                 <tr>
-                  <td colSpan={2}>Loading...</td>
+                  <td colSpan={2}></td>
                 </tr>
               )}
-
             </tbody>
           </table>
         </div>
