@@ -40,12 +40,6 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ],
-    "env": {
-      "cypress/globals": true
-    },
-    "plugins": [
-      "cypress"
     ]
   },
   "browserslist": {
