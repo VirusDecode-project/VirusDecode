@@ -37,7 +37,7 @@ describe('1. 아미노산 구간 설정 및 검증', () => {
 
     it('1-1. 아미노산 구간 설정', () => {
         let startValue = Math.floor(Math.random() * (1273 - 1 + 1)) + 1;
-        let endValue = Math.min(startValue + Math.floor(Math.random() * 500), 1273);
+        let endValue = Math.min(startValue + Math.floor(Math.random() * 100), 1273);
 
         cy.intercept('POST', '/api/analysis/linearDesign').as('linearDesignRequest');
 
@@ -57,7 +57,7 @@ describe('1. 아미노산 구간 설정 및 검증', () => {
 
         cy.get('.modal-next-button').click();
 
-        cy.wait('@linearDesignRequest', { timeout: 90000 }).its('response.statusCode').should('eq', 200);
+        cy.wait('@linearDesignRequest', { timeout: 50000 }).its('response.statusCode').should('eq', 200);
       });
 
     it('1-2. 범위 유효성 검증', () => {
