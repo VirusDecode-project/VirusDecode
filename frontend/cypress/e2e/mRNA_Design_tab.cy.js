@@ -32,10 +32,10 @@ describe("1. mRNA 시각화 및 정보 제공", () => {
         );
       cy.get("button.next-button").click();
 
-      let startValue = Math.floor(Math.random() * (1273 - 1 + 1)) + 1;
+      let startValue = Math.floor(Math.random() * (1276 - 1 + 1)) + 1;
       let endValue = Math.min(
         startValue + Math.floor(Math.random() * 100),
-        1273
+        1276
       );
 
       cy.intercept("POST", "/api/analysis/linearDesign").as(
@@ -104,10 +104,10 @@ describe("2. 히스토리 저장", () => {
         );
       cy.get("button.next-button").click();
 
-      let startValue = Math.floor(Math.random() * (1273 - 1 + 1)) + 1;
+      let startValue = Math.floor(Math.random() * (1276 - 1 + 1)) + 1;
       let endValue = Math.min(
         startValue + Math.floor(Math.random() * 100),
-        1273
+        1276
       );
 
       cy.intercept("POST", "/api/analysis/linearDesign").as(

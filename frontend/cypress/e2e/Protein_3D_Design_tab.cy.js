@@ -33,10 +33,10 @@ describe("1. PDB 관련 정보 제공", () => {
         );
       cy.get("button.next-button").click();
 
-      let startValue = Math.floor(Math.random() * (1273 - 1 + 1)) + 1;
+      let startValue = Math.floor(Math.random() * (1276 - 1 + 1)) + 1;
       let endValue = Math.min(
         startValue + Math.floor(Math.random() * 100),
-        1273
+        1276
       );
 
       cy.intercept("POST", "/api/analysis/linearDesign").as(
@@ -117,10 +117,10 @@ describe("2. 3D 이미지 생성 및 시각화", () => {
           );
         cy.get("button.next-button").click();
 
-        let startValue = Math.floor(Math.random() * (1273 - 1 + 1)) + 1;
+        let startValue = Math.floor(Math.random() * (1276 - 1 + 1)) + 1;
         let endValue = Math.min(
           startValue + Math.floor(Math.random() * 100),
-          1273
+          1276
         );
 
         cy.intercept("POST", "/api/analysis/linearDesign").as(
@@ -221,10 +221,10 @@ describe("3. 히스토리 저장", () => {
         );
       cy.get("button.next-button").click();
 
-      let startValue = Math.floor(Math.random() * (1273 - 1 + 1)) + 1;
+      let startValue = Math.floor(Math.random() * (1276 - 1 + 1)) + 1;
       let endValue = Math.min(
         startValue + Math.floor(Math.random() * 100),
-        1273
+        1276
       );
 
       cy.intercept("POST", "/api/analysis/linearDesign").as(

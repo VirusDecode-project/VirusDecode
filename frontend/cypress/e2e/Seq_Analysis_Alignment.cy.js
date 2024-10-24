@@ -1,3 +1,4 @@
+
 // 서열 분석 페이지 및 서열 정렬 탭
 describe("1. 서열 정렬(alignment)", () => {
   beforeEach(() => {
