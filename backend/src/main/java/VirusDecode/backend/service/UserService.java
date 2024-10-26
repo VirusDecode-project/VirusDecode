@@ -5,6 +5,7 @@ import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+@Log4j2
 @Service
 public class UserService {
     private final JsonDataService jsonDataService;
@@ -81,8 +83,10 @@ public class UserService {
     @Transactional
     public void deleteGuestUsers() {
         List<User> guestUsers = userRepository.findUsersByRole("GUEST");
+        int guest_cnt = 0;
         for (User user : guestUsers) {
             if (user.getCreatedAt().isBefore(LocalDateTime.now().minus(24, ChronoUnit.HOURS))) {
+                guest_cnt++;
                 Long userId = user.getId();
                 List<String> historyList = historyService.getHistoryNamesByUserId(userId);
                 for(String historyName : historyList){
@@ -92,6 +96,10 @@ public class UserService {
                 }
                 userRepository.deleteUserById(user.getId());
             }
+        }
+
+        if (guest_cnt > 0) {
+            log.info("Deleted {} GUEST users who were created more than 24 hours ago.", guest_cnt);
         }
     }
 }
