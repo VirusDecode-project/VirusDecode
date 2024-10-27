@@ -148,7 +148,7 @@ describe('2. 분석 서열 입력', () => {
             .type('안녕하세요');
 
         cy.get('button.next-button').click();
-        cy.wait('@alignmentRequest', { timeout: 20000 }).then((interception) => {
+        cy.wait('@alignmentRequest').then((interception) => {
             expect(interception.response.statusCode).to.eq(500);
 
             cy.get('.message-modal-content')
@@ -212,7 +212,7 @@ describe('3. 유전체 분석 테스트', () => {
 
 
             cy.get('button.next-button').click();
-            cy.wait('@alignmentRequest', { timeout: 20000 }).then((interception) => {
+            cy.wait('@alignmentRequest').then((interception) => {
                 expect(interception.response.statusCode).to.eq(200);
 
                 // sequence-chunk 안의 sequence 클래스가 1 + 업로드한 FASTA 파일 개수(1개)인지 확인

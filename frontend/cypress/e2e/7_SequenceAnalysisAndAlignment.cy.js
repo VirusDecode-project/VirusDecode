@@ -13,7 +13,7 @@ describe("1. 서열 정렬(alignment)", () => {
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
 
-    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+    cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
       cy.get(".sequence-boxes").find(".sequence-box").should("exist");
     });
@@ -32,7 +32,7 @@ describe("2. 불일치 구간(돌연변이) 색상 표시", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
-    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+    cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
       cy.get(".sequence-boxes").find(".sequence-box.gap.different").should("exist");
     });
@@ -51,7 +51,7 @@ describe("3. 유전체 바", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
-    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+    cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
       // 변경 전 기본 옵션 값 확인
       cy.get('#region-select').should('have.value', 'ORF1ab');
@@ -82,7 +82,7 @@ describe("4. 도움말 아이콘", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
-    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+    cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
       // 도움말 버튼 클릭
       cy.get(".help-icon").click();
@@ -111,7 +111,7 @@ describe("5. mRNA 변환", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
-    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+    cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
           // Sequence Box 갯수 가져와서 랜덤하게 하나 클릭
       cy.get('.sequence-boxes').its('length').then((len) => {
@@ -143,7 +143,7 @@ describe("6. 히스토리 저장", () => {
       cy.get(".history-list .history-item").first().click();
   
       // 정렬된 데이터가 있는지 확인 (예: sequence-box 확인)
-      cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+      cy.wait("@alignmentRequest").then((interception) => {
         expect(interception.response.statusCode).to.eq(200);
   
         // 시퀀스 박스가 있는지 확인
