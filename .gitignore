@@ -9,3 +9,9 @@
 
 # SQLite
 *.db
+
+# VS Code
+.vscode/
+
+# Permission files
+*.pem

@@ -1,0 +1,17 @@
+# Node.js modules and logs
+**/node_modules
+**/npm-debug.log
+
+# Build output folders
+build
+
+# Version control and system files
+.git
+.gitignore
+.gitattributes
+.DS_Store
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.iml
