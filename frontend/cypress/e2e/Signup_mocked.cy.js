@@ -1,6 +1,12 @@
 describe('1. 회원 정보 입력', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000/signup');
+    // 회원가입 페이지로 이동
+    cy.visit('http://localhost:3000/');
+    cy.get('.decode-button').click();
+    cy.get('.login-modal').should('be.visible');
+    cy.get('.signupBtn_modal').click();
+    cy.url().should('include', '/signup');
+    // mock
     cy.mockSignup();
   });
 
@@ -95,8 +101,16 @@ describe('1. 회원 정보 입력', () => {
 
 describe('2. 계정 생성 및 저장', () => {
   it('2-1. 회원 가입 완료', () => {
-    cy.visit('http://localhost:3000/signup');
+    // 회원가입 페이지로 이동
+    cy.visit('http://localhost:3000/');
+    cy.get('.decode-button').click();
+    cy.get('.login-modal').should('be.visible');
+    cy.get('.signupBtn_modal').click();
+    cy.url().should('include', '/signup');
+    // mock
     cy.mockSignup();
+
+    // 올바른 정보 입력
     cy.get('input[name="firstName"]').type('testFirstName');
     cy.get('input[name="lastName"]').type('testLastName');
     cy.get('input[name="id"]').type('testId');
@@ -106,13 +120,15 @@ describe('2. 계정 생성 및 저장', () => {
     // 패스워드 일치 시 성공 아이콘 확인
     cy.get('.icon.success').should('be.visible');
   
-    // 폼 제출 시 회원가입 성공 후 로그인 페이지로 이동
+    // 폼 제출 시 회원가입 성공
     cy.get('.SignupBtn').click();
     cy.wait('@signupRequest');
     cy.get('.message-modal-content')
     .should('be.visible')
     .and('contain', '회원가입이 완료되었습니다.');
     cy.get('.message-modal-content').contains('Close').click();
+
+    // 로그인 페이지로 이동
     cy.url().should('include', '/login');
   });
   

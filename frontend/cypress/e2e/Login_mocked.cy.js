@@ -1,6 +1,12 @@
 describe('1. 로그인', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000/login');
+    // 로그인 페이지로 이동
+    cy.visit('http://localhost:3000/');
+    cy.get('.decode-button').click();
+    cy.get('.login-modal').should('be.visible');
+    cy.get('.loginBtn_modal').click();
+    cy.url().should('include', '/login');
+    // mock
     cy.mockLogin();
   });
   
