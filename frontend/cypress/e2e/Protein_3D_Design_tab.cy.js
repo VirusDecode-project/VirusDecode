@@ -12,13 +12,13 @@ describe("1. PDB 관련 정보 제공", () => {
     cy.intercept("POST", "/api/analysis/linearDesign").as("linearDesignRequest");
     cy.intercept("POST", "/api/analysis/pdb").as("PDBrequest");
     cy.LinearDesignConvert();
-    cy.wait('@linearDesignRequest', {timeout: 20000}).then((interception) => {
+    cy.wait('@linearDesignRequest').then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
 
       // PDB ID 입력 및 정보 요청
 
       // PDB 정보가 정상적으로 로드되는지 확인
-      cy.wait("@PDBrequest", {timeout: 20000}).then((interception) => {
+      cy.wait("@PDBrequest").then((interception) => {
         expect(interception.response.statusCode).to.eq(200); // 요청 성공 여부 확인
         cy.get(".nav-tabs").contains("3D viewer").click();
         // PDB 관련 데이터 확인
@@ -50,13 +50,13 @@ describe("2. 3D 이미지 생성 및 시각화", () => {
     });
 
     it("2-1. 선택한 PDB ID를 RCSB로부터 PDB 데이터 가져오기", () => {
-      cy.wait('@linearDesignRequest', {timeout: 20000}).then((interception) => {
+      cy.wait('@linearDesignRequest').then((interception) => {
         expect(interception.response.statusCode).to.eq(200);
 
         // PDB ID 입력 및 정보 요청
 
         // PDB 정보가 정상적으로 로드되는지 확인
-        cy.wait("@PDBrequest", {timeout: 20000}).then((interception) => {
+        cy.wait("@PDBrequest").then((interception) => {
           expect(interception.response.statusCode).to.eq(200); // 요청 성공 여부 확인
           cy.get(".nav-tabs").contains("3D viewer").click();
           // PDB 관련 데이터 확인
@@ -71,13 +71,13 @@ describe("2. 3D 이미지 생성 및 시각화", () => {
     });
 
     it("2-2. PDB 단백질 3D 구조 시각화", () => {
-      cy.wait('@linearDesignRequest', {timeout: 20000}).then((interception) => {
+      cy.wait('@linearDesignRequest').then((interception) => {
         expect(interception.response.statusCode).to.eq(200);
       
         // PDB ID 입력 및 정보 요청
 
         // PDB 정보가 정상적으로 로드되는지 확인
-        cy.wait("@PDBrequest", {timeout: 20000}).then((interception) => {
+        cy.wait("@PDBrequest").then((interception) => {
           expect(interception.response.statusCode).to.eq(200); // 요청 성공 여부 확인
           cy.get(".nav-tabs").contains("3D viewer").click();
           // PDB 관련 데이터 확인
@@ -105,11 +105,11 @@ describe("3. 히스토리 저장", () => {
     cy.intercept("POST", "/api/analysis/pdb").as("PDBrequest");
     cy.intercept("POST", "/api/analysis/linearDesign").as("linearDesignRequest");
     cy.LinearDesignConvert();
-    cy.wait('@linearDesignRequest', {timeout: 20000}).then((interception) => {
+    cy.wait('@linearDesignRequest').then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
 
       // PDB 정보가 정상적으로 로드되는지 확인
-      cy.wait("@PDBrequest", {timeout: 20000}).then((interception) => {
+      cy.wait("@PDBrequest").then((interception) => {
         expect(interception.response.statusCode).to.eq(200); // 요청 성공 여부 확인
         cy.get(".nav-tabs").contains("3D viewer").click();
 

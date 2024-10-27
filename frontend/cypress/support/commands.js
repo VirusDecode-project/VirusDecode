@@ -57,7 +57,7 @@ Cypress.Commands.add('inputSeqSetup', () => {
     // 올바른 NCBI 레퍼런스 시퀀스 ID 입력 후 'Done' 버튼 클릭
     cy.get('input[id="referenceSequenceId"]').type(referenceId.SARS_CoV_2_ID);
     cy.get("button.done-button").click();
-    cy.wait("@metadataRequest", {timeout: 20000}).then((interception) => {
+    cy.wait("@metadataRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
 
       // "Sequence ID", "Name", "Description", "Length"가 있는지 확인
@@ -83,7 +83,7 @@ Cypress.Commands.add('LinearDesignConvert', () => {
     startValue + Math.floor(Math.random() * 100),
     1276
   );
-  cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+  cy.wait("@alignmentRequest").then((interception) => {
     expect(interception.response.statusCode).to.eq(200);
     cy.get(".sequence-boxes").eq(0).click();
 
