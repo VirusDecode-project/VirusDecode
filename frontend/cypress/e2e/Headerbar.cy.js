@@ -59,15 +59,3 @@ describe('4. 편집 아이콘', () => {
     cy.url().should('include', '/InputSeq');
   });
 });
-
-// it('logs out and redirects to home after clicking logout button (logged in)', () => {
-//   // #3 로그아웃 버튼 클릭 시 로그아웃 처리 및 홈으로 이동
-//   cy.get('.user-icon').click({ multiple: true });
-//   cy.wait('@userinfoRequest').then((interception) => {
-//     expect(interception.response.statusCode).to.eq(200);
-//     cy.get('.userInfo-menu').should('be.visible');
-//     cy.get('.logoutBtn').click();
-//     cy.get('.userInfo-menu').should('not.exist');
-//     cy.url().should('include', '/');
-//   });
-// });
