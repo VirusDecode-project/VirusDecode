@@ -14,7 +14,7 @@ import java.util.List;
 @Log4j2
 @Service
 public class PythonScriptService {
-    private static final String pythonScriptPath = Paths.get("").toAbsolutePath().resolve("../bioinformatics/virusdecode.py").normalize().toString();
+    private static final String pythonScriptPath = Paths.get("").toAbsolutePath().resolve("../bioinformatics/main.py").normalize().toString();
 
     // ProcessBuilder를 생성하는 메서드를 따로 분리하여 테스트에서 모의 가능하도록 설계
     protected ProcessBuilder createProcessBuilder(List<String> command) {
