@@ -201,7 +201,7 @@ class SequenceAnalysis:
         except FileNotFoundError as e:
             sys.stderr.write(f"Not exist LinearDesign directory.\n{str(e)}")
             sys.exit(33)
-        command = f"echo {amino_acid_sequence} | ./lineardesign --lambda 3"
+        command = f"echo {self.amino_acid_sequence} | ./lineardesign --lambda 3"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
 
@@ -215,20 +215,23 @@ class SequenceAnalysis:
                 sys.exit(31)
 
             # Save the output result as a list of lines
-            output_lines = stdout.decode().splitlines()
-            mRNA_sequence = output_lines[-4].replace('mRNA sequence:', '').strip()
-            mRNA_structure = output_lines[-3].replace('mRNA structure:', '').strip()
-            parts = output_lines[-2].split(';')
-            free_energy = parts[0].replace('mRNA folding free energy:', '').strip()
-            cai = parts[1].replace('mRNA CAI:', '').strip()
+            output_lines = [line for line in stdout.decode().splitlines() if not line.startswith("j=")]
+            if(len(output_lines) >= 3):
+                mRNA_sequence = output_lines[0].replace('mRNA sequence:', '').strip()
+                mRNA_structure = output_lines[1].replace('mRNA structure:', '').strip()
+                parts = output_lines[2].split(';')
+                free_energy = parts[0].replace('mRNA folding free energy:', '').strip()
+                cai = parts[1].replace('mRNA CAI:', '').strip()
 
-            # Set the linear design data
-            self.linearDesign.append(amino_acid_sequence)
-            self.linearDesign.append(mRNA_sequence)
-            self.linearDesign.append(mRNA_structure)
-            self.linearDesign.append(free_energy)
-            self.linearDesign.append(cai)
-            self.amino_acid_sequence = amino_acid_sequence
+                # Set the linear design data
+                self.linearDesign.append(self.amino_acid_sequence)
+                self.linearDesign.append(mRNA_sequence)
+                self.linearDesign.append(mRNA_structure)
+                self.linearDesign.append(free_energy)
+                self.linearDesign.append(cai)
+            else:
+                sys.stderr.write("Error in running time by LinearDesign. It could be timeout.\n")
+                sys.exit(31)
 
     def set_protParam(self):
         # Create a protein analysis object

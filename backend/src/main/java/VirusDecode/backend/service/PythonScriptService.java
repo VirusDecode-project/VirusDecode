@@ -1,5 +1,6 @@
 package VirusDecode.backend.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Log4j2
 @Service
 public class PythonScriptService {
     private static final String pythonScriptPath = Paths.get("").toAbsolutePath().resolve("virusdecode.py").normalize().toString();
-    private static final Logger logger = LoggerFactory.getLogger(PythonScriptService.class);
 
     // ProcessBuilder를 생성하는 메서드를 따로 분리하여 테스트에서 모의 가능하도록 설계
     protected ProcessBuilder createProcessBuilder(List<String> command) {
@@ -51,9 +52,8 @@ public class PythonScriptService {
             int exitCode = process.waitFor();
             // 파이썬 오류 코드 처리
             if (exitCode != 0) {
-                logger.error("Python script 종료 코드: {}", exitCode);
                 if (!errorOutput.isEmpty()) {
-                    logger.error("Python script error output: \n{}", errorOutput);
+                    log.error("종료 코드: {}\n에러 메시지: {}\n", exitCode, errorOutput);
                 }
                 return switch (exitCode) {
                     case 1 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("필요한 파이썬 환경이 제대로 설치되지 않았습니다.\nVirusDecode Github를 참고하세요.");
@@ -69,12 +69,9 @@ public class PythonScriptService {
                     default -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error executing Python script: " + errorOutput);
                 };
             }
-//            if (!output.isEmpty()) {
-//                logger.info("Python script output: \n{}", output);
-//            }
             return ResponseEntity.ok(output.toString());
         } catch (Exception e) {
-            logger.error("Python Script 실행 과정에서 알 수 없는 오류가 발생했습니다: {}", e.getMessage());
+            log.error("알 수 없는 오류가 발생했습니다: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unknown error occurred during Python Script execution.");
         }
     }
