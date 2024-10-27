@@ -57,7 +57,7 @@ Cypress.Commands.add('inputSeqSetup', () => {
     // 올바른 NCBI 레퍼런스 시퀀스 ID 입력 후 'Done' 버튼 클릭
     cy.get('input[id="referenceSequenceId"]').type(referenceId.SARS_CoV_2_ID);
     cy.get("button.done-button").click();
-    cy.wait("@metadataRequest").then((interception) => {
+    cy.wait("@metadataRequest", {timeout: 20000}).then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
 
       // "Sequence ID", "Name", "Description", "Length"가 있는지 확인
@@ -83,20 +83,22 @@ Cypress.Commands.add('LinearDesignConvert', () => {
     startValue + Math.floor(Math.random() * 100),
     1276
   );
+  cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+    expect(interception.response.statusCode).to.eq(200);
+    cy.get(".sequence-boxes").eq(0).click();
 
-  cy.get(".sequence-boxes").eq(0).click();
+    cy.contains(".modal-content label", "Select Coding Sequence:")
+      .find("select")
+      .select("S");
 
-  cy.contains(".modal-content label", "Select Coding Sequence:")
-    .find("select")
-    .select("S");
+    cy.contains(".modal-content label", "Start Amino Acid Position:")
+      .find('input[type="number"]')
+      .type(startValue.toString());
 
-  cy.contains(".modal-content label", "Start Amino Acid Position:")
-    .find('input[type="number"]')
-    .type(startValue.toString());
+    cy.contains(".modal-content label", "End Amino Acid Position:")
+      .find('input[type="number"]')
+      .type(endValue.toString());
 
-  cy.contains(".modal-content label", "End Amino Acid Position:")
-    .find('input[type="number"]')
-    .type(endValue.toString());
-
-  cy.get(".modal-next-button").click();
+    cy.get(".modal-next-button").click();
+  });
 });
