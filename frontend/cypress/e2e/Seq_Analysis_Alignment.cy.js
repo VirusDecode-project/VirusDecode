@@ -32,8 +32,10 @@ describe("2. 불일치 구간(돌연변이) 색상 표시", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
-
-    cy.get(".sequence-boxes").find(".sequence-box.gap.different").should("exist");
+    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+      cy.get(".sequence-boxes").find(".sequence-box.gap.different").should("exist");
+    });
   });
 });
 
@@ -49,21 +51,23 @@ describe("3. 유전체 바", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
+    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+      // 변경 전 기본 옵션 값 확인
+      cy.get('#region-select').should('have.value', 'ORF1ab');
 
-    // 변경 전 기본 옵션 값 확인
-    cy.get('#region-select').should('have.value', 'ORF1ab');
+      // 유전체바에서 새로운 옵션을 선택 (예: 'S')
+      cy.get('.stacked-bar-label').contains('S').click();
 
-    // 유전체바에서 새로운 옵션을 선택 (예: 'S')
-    cy.get('.stacked-bar-label').contains('S').click();
+      // 선택된 값이 'S'로 변경되었는지 확인
+      cy.get('#region-select').should('have.value', 'S');
 
-    // 선택된 값이 'S'로 변경되었는지 확인
-    cy.get('#region-select').should('have.value', 'S');
-
-    // 유전체바에서 새로운 옵션을 선택 (예: 'ORF1ab')
-    cy.get('.stacked-bar-label').contains('ORF1ab').click();
-    cy.get('#region-select').should('have.value', 'ORF1ab');
+      // 유전체바에서 새로운 옵션을 선택 (예: 'ORF1ab')
+      cy.get('.stacked-bar-label').contains('ORF1ab').click();
+      cy.get('#region-select').should('have.value', 'ORF1ab');
     });
   });
+});
 
 describe("4. 도움말 아이콘", () => {
   // Help 버튼 클릭 시 모달 창이 뜨는지 확인
@@ -78,17 +82,19 @@ describe("4. 도움말 아이콘", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
+    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+      // 도움말 버튼 클릭
+      cy.get(".help-icon").click();
 
-    // 도움말 버튼 클릭
-    cy.get(".help-icon").click();
+      // 모달 창이 열리는지 확인
+      cy.get(".help-modal").should("be.visible");
 
-    // 모달 창이 열리는지 확인
-    cy.get(".help-modal").should("be.visible");
-
-    // 모달 창 제목이 'mRNA Conversion Instructions'인지 확인
-    cy.get(".help-modal")
-      .contains("mRNA Conversion Instructions")
-      .should("be.visible");
+      // 모달 창 제목이 'mRNA Conversion Instructions'인지 확인
+      cy.get(".help-modal")
+        .contains("mRNA Conversion Instructions")
+        .should("be.visible");
+    });
   });
 });
 
@@ -105,16 +111,17 @@ describe("5. mRNA 변환", () => {
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
     cy.inputSeqSetup();
-
-    // Sequence Box 갯수 가져와서 랜덤하게 하나 클릭
-    cy.get('.sequence-boxes').its('length').then((len) => {
-      const randomIndex = Math.floor(Math.random() * len);
-      cy.get('.sequence-boxes').eq(randomIndex).click();
-    });
-
-    // 모달 창이 열리는지 확인
+    cy.wait("@alignmentRequest", { timeout: 20000 }).then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+          // Sequence Box 갯수 가져와서 랜덤하게 하나 클릭
+      cy.get('.sequence-boxes').its('length').then((len) => {
+        const randomIndex = Math.floor(Math.random() * len);
+        cy.get('.sequence-boxes').eq(randomIndex).click();
+        // 모달 창이 열리는지 확인
     cy.get(".modal-content").should("be.visible");
-});
+      });
+    });    
+  });
 });
 
 
@@ -141,10 +148,9 @@ describe("6. 히스토리 저장", () => {
   
         // 시퀀스 박스가 있는지 확인
         cy.get(".sequence-boxes").find(".sequence-box").should("exist");
-      });
-  
-      // 불일치 구간이 있는지 확인
-      cy.get(".sequence-boxes").find(".sequence-box.gap.different").should("exist");
+        // 불일치 구간이 있는지 확인
+        cy.get(".sequence-boxes").find(".sequence-box.gap.different").should("exist");
+      });      
     });
   });
   
