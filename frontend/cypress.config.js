@@ -6,6 +6,7 @@ export default defineConfig({
       // implement node event listeners here
     },
     video: false,
+    defaultCommandTimeout: 20000,  // 20초 타임아웃 설정
   },
   projectId: "virusdecode",
 });
