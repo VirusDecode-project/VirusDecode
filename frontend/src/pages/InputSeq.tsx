@@ -269,7 +269,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
                 <Form.Group controlId="referenceSequenceId" className="flex-grow-1">
                   <Form.Control
                     type="text"
-                    placeholder="Enter sequence ID"
+                    placeholder="e.g. NC_045512"
                     value={referenceSequenceId}
                     onChange={(e) => setReferenceSequenceId(e.target.value)}
                   />
@@ -391,7 +391,7 @@ const InputSeq: React.FC<InputSeqProps> = ({ setTab, setShow, setWorkingHistory,
                         </div>
                         {seq.visible && (
                           <textarea
-                            placeholder="TAGCTAGCCGATCG....."
+                            placeholder="ATGTTTGTTTTTCTTGTTTTATTGCCACTAGTCTCTAGTCAGTGTGTTAATCTTACAACC....."
                             value={seq.value}
                             onChange={(e) =>
                               handleSequenceChange(seq.id, e.target.value)
