@@ -1,0 +1,48 @@
+name: CI/CD Docker Compose Deploy
+
+on:
+  push:
+    branches:
+      - deploy  # deploy 브랜치에 푸시될 때 트리거
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Modify dependencies for deployment
+        # SQLite 의존성을 MySQL로 대체
+        run: |
+          sed -i 's|runtimeOnly \'org.xerial:sqlite-jdbc:3.43.0.0\'|runtimeOnly \'mysql:mysql-connector-java:8.0.33\'|' backend/build.gradle
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker images with Docker Compose
+        run: docker compose -f docker-compose.yml build
+
+      - name: Push Docker images with Docker Compose
+        run: docker compose -f docker-compose.yml push
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+
+    steps:
+      - name: SSH to EC2 and deploy with Docker Compose
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker compose down
+            docker image prune -f
+            docker compose pull
+            docker compose up -d
