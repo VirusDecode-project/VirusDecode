@@ -35,7 +35,7 @@ describe("1. mRNA 시각화 및 정보 제공", () => {
   });
 });
 
-describe.only("2. 히스토리 저장", () => {
+describe("2. 히스토리 저장", () => {
   it("2-1. 생성된 mRNA 데이터 기록 저장", () => {
     cy.signupAndLoginIfDuplicate(
       "testFName",
