@@ -1,19 +1,39 @@
 # VirusDecode
-VirusDecode is an open-source project that integrates various bioinformatics tools to streamline virus sequence analysis and support rapid mRNA vaccine development. Built with a Java Spring backend, React frontend, and Python scripts, it addresses the inefficiencies of traditional genome analysis, enabling quick responses to viral mutations and fostering collaboration in the scientific community.
+**VirusDecode** is an open-source project designed to streamline virus sequence analysis by integrating various bioinformatics tools, supporting rapid mRNA vaccine development. With a Java Spring backend, a React frontend, and Biopython for bioinformatics, VirusDecode addresses traditional inefficiencies in genome analysis, enabling quick responses to viral mutations and fostering scientific collaboration.
 
-# Client Access #
-For users interested in utilizing the VirusDecode platform, a server has been set up for your convenience. You can access it at the following link:
+Please note that two additional open-source tools, MUSCLE for sequence alignment and LinearDesign for mRNA structure prediction, are required but not included in this repository. To set up these tools, follow the provided installation guidelines.
 
-[virusdecode.com](https://virusdecode.com)
 
-This server allows you to explore the features of VirusDecode without needing to set up a local development environment.
+The project structure is organized as follows:
+```bash
+.
+├── frontend
+├── backend
+└── bioinformatics
+    └── analysis
+        ├── metadata.py
+        ├── alignment.py   # Uses MUSCLE
+        ├── mRNA_design.py # Uses LinearDesign
+        └── viewer_3d.py
+```
+The bioinformatics directory contains the core components of the bioinformatics solution, with each script utilizing tools like MUSCLE and LinearDesign via predefined paths. These tools are accessed through the analysis scripts, which interface with the web API to perform sequence analysis and return results to users.
 
+# For Clients #
+For clients who interested in using the VirusDecode platform, a server is available at the following link:
+
+[https://virusdecode.com](https://virusdecode.com)
+
+
+# For Developers #
+The following sections are intended for developers who wish to set up the VirusDecode project locally. This guide provides instructions for running the web project and includes steps for using Docker Compose.
 
 ## 1. Development Environment
-  - Linux (Ubuntu 22.04 LTS)
+  - OS: Linux (Ubuntu 22.04 LTS)
+  - Backend: Java Spring (JDK 21)
+  - Frontend: React (Node.js v18.20.4, npm v10.7.0)
+  - Database: SQLite (For simplicity in the development environment; the production server uses MySQL)
 
 ## 2. Installation
-
 To set up the development environment for VirusDecode, follow these steps:
 
 1. **Python Environment**
@@ -75,11 +95,10 @@ To run the VirusDecode application:
       ``` bash
       .
       ├── LinearDesign
-      │   ...
       └── VirusDecode
-          ├── backend
-          │   └── virusdecode.py
           ├── frontend
+          ├── backend
+          ├── bioinformatics
           │   ...
           
       ```
@@ -116,8 +135,6 @@ To run the VirusDecode application:
    - Use the web interface to upload and analyze virus sequences. Follow the on-screen instructions for different types of analysis.
 
 
-<br/>
-<br/>
 
 ## Docker Setup for Easy Usage
 Follow these steps to get started with Docker for VirusDecode:
