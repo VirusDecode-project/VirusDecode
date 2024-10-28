@@ -42,38 +42,12 @@ public class GuestLoginService {
         signupDto.setLastName("Guest");
 
         User newUser = userService.createUser(signupDto, "GUEST");
-
-        Long guestUserId = userService.getUserIdByLoginId("Guest");
-        List<String> guestHistoryNames = historyService.getHistoryNamesByUserId(guestUserId);
-
-        if (guestHistoryNames.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history for Guest user");
-        }
-
-        copyGuestHistoriesToNewUser(guestHistoryNames, guestUserId, newUser);
+        userService.copySampleHistoriesToNewUser(newUser);
 
         session.setAttribute("userId", newUser.getId());
         return ResponseEntity.ok("New temporary user created and logged in with ID: " + uniqueLoginId);
+
     }
 
-    private void copyGuestHistoriesToNewUser(List<String> guestHistoryNames, Long guestUserId, User newUser) {
-        for (String historyName : guestHistoryNames) {
-            History history = historyService.getHistory(historyName, guestUserId);
-            JsonData originalJsonData = jsonDataService.getJsonData(history);
-            if (originalJsonData != null) {
-                History newHistory = new History();
-                newHistory.setHistoryName(historyName);
-                newHistory.setUser(newUser);
-                historyService.createHistory(newHistory);
 
-                JsonData newJsonData = new JsonData();
-                newJsonData.setReferenceId(originalJsonData.getReferenceId());
-                newJsonData.setAlignment(originalJsonData.getAlignment());
-                newJsonData.setLinearDesign(originalJsonData.getLinearDesign());
-                newJsonData.setPdb(originalJsonData.getPdb());
-                newJsonData.setHistory(newHistory);
-                jsonDataService.saveJsonData(newJsonData);
-            }
-        }
-    }
 }

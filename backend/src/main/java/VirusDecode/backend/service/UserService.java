@@ -2,6 +2,7 @@ package VirusDecode.backend.service;
 
 import VirusDecode.backend.dto.SignUpDto;
 import VirusDecode.backend.entity.History;
+import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -100,6 +101,30 @@ public class UserService {
 
         if (guest_cnt > 0) {
             log.info("Deleted {} GUEST users who were created more than 24 hours ago.", guest_cnt);
+        }
+    }
+
+    public void copySampleHistoriesToNewUser(User newUser) {
+        Long guestUserId = getUserIdByLoginId("Guest");
+        List<String> guestHistoryNames = historyService.getHistoryNamesByUserId(guestUserId);
+
+        for (String historyName : guestHistoryNames) {
+            History history = historyService.getHistory(historyName, guestUserId);
+            JsonData originalJsonData = jsonDataService.getJsonData(history);
+            if (originalJsonData != null) {
+                History newHistory = new History();
+                newHistory.setHistoryName(historyName);
+                newHistory.setUser(newUser);
+                historyService.createHistory(newHistory);
+
+                JsonData newJsonData = new JsonData();
+                newJsonData.setReferenceId(originalJsonData.getReferenceId());
+                newJsonData.setAlignment(originalJsonData.getAlignment());
+                newJsonData.setLinearDesign(originalJsonData.getLinearDesign());
+                newJsonData.setPdb(originalJsonData.getPdb());
+                newJsonData.setHistory(newHistory);
+                jsonDataService.saveJsonData(newJsonData);
+            }
         }
     }
 }
