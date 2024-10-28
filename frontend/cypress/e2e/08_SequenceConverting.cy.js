@@ -45,7 +45,7 @@ describe("1. 아미노산 구간 설정 및 검증", () => {
     });
   });
 
-  it.only("1-2-1. 범위 유효성 검증 - 최대 길이 초과", () => {
+  it("1-2-1. 범위 유효성 검증 - 최대 길이 초과", () => {
     let startValue = Math.floor(Math.random() * MAX_TEST_SEQUENCE_LENGTH) + 1;
     let endValue = MAX_TEST_SEQUENCE_LENGTH + 10;
 
