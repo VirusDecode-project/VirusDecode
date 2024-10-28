@@ -285,6 +285,34 @@ class UserServiceTest {
         verify(jsonDataService, never()).saveJsonData(any(JsonData.class));
     }
 
+    @Test
+    void testCopySampleHistoriesToNewUser_HistoryIsNull() {
+        // Given
+        String guestLoginId = "Guest";
+        Long guestUserId = 1L;
+        User guestUser = new User();
+        guestUser.setId(guestUserId);
+        guestUser.setLoginId(guestLoginId);
+
+        // New user for whom histories will be copied
+        User newUser = new User();
+        newUser.setId(2L);
+
+        // Set up mock return values
+        when(userRepository.findByLoginId(guestLoginId)).thenReturn(guestUser);
+        when(historyService.getHistoryNamesByUserId(guestUserId)).thenReturn(List.of("SampleHistory"));
+
+        // Here, guestHistory will be null
+        when(historyService.getHistory("SampleHistory", guestUserId)).thenReturn(null); // Simulate null condition
+
+        // When
+        userService.copySampleHistoriesToNewUser(newUser);
+
+        // Then
+        verify(jsonDataService, never()).getJsonData(any()); // getJsonData should not be called
+        verify(historyService, never()).createHistory(any(History.class));
+        verify(jsonDataService, never()).saveJsonData(any(JsonData.class));
+    }
 
 
 }
