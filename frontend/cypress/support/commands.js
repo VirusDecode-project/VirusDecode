@@ -12,24 +12,24 @@ Cypress.Commands.add('signupAndLoginIfDuplicate', (firstName, lastName, id, pass
   cy.get('input[name="cPassword"]').type(cPassword);
 
   cy.intercept('POST', '/api/auth/signup').as('signupRequest');
-  cy.get('.SignupBtn').click(); 
+  cy.get('.SignupBtn').click();
   cy.wait('@signupRequest').then((interception) => {
-    const { response } = interception; 
+    const { response } = interception;
     if (response.statusCode === 200) {
       cy.get('.message-modal-content')
         .should('be.visible')
         .and('contain', '회원가입이 완료되었습니다.');
       cy.get('.message-modal-content').contains('Close').click();
       cy.url().should('include', '/login');
-      cy.login(id, password); 
+      cy.login(id, password);
 
     } else if (response.statusCode === 400 && response.body.includes("이미 존재하는 ID 입니다.")) {
       cy.get('.message-modal-content')
         .should('be.visible')
         .and('contain', '이미 존재하는 ID 입니다.');
       cy.get('.message-modal-content').contains('Close').click();
-      cy.get('.gotoLoginBtn').click(); 
-      cy.login(id, password); 
+      cy.get('.gotoLoginBtn').click();
+      cy.login(id, password);
 
     } else {
       console.error(`Error response: ${JSON.stringify(response.body)}`);
@@ -48,14 +48,44 @@ Cypress.Commands.add('login', (loginId, password) => {
 Cypress.Commands.add('guestlogin', () => {
   cy.visit('http://localhost:3000/');
   cy.get('.decode-button').click();
-  cy.get('.stayLoggedOutBtn').click(); 
+  cy.get('.stayLoggedOutBtn').click();
+});
+
+Cypress.Commands.add('inputSeqSetupFile', () => {
+  // NCBI로부터 ID 유효성 검사 및 메타데이터 가져오기
+  cy.fixture("environment").then((environment) => {
+    // 올바른 NCBI 레퍼런스 시퀀스 ID 입력 후 'Done' 버튼 클릭
+    cy.get('input[id="referenceSequenceId"]').type(environment.SARS_CoV_2_ID);
+    cy.get("button.done-button").click();
+    cy.wait("@metadataRequest").then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+
+      // "Sequence ID", "Name", "Description", "Length"가 있는지 확인
+      cy.contains("Sequence ID").should("be.visible");
+      cy.contains("Name").should("be.visible");
+      cy.contains("Description").should("be.visible");
+      cy.contains("Length").should("be.visible");
+    });
+    const filePath1 = 'SARS_CoV_2/MW642250.1.spike.fasta';
+    const filePath2 = 'SARS_CoV_2/OL672836.1.spike.fasta';
+
+    // 파일을 input[type="file"] 요소에 업로드
+    cy.get('input[type="file"]').attachFile(filePath1);
+    cy.get('input[type="file"]').attachFile(filePath2);
+
+    // 파일이 제대로 업로드 되었는지 확인 (예: 업로드 후 확인 메시지나 파일 이름이 표시되는지)
+    cy.contains('MW642250.1.spike.fasta').should('be.visible');
+    cy.contains('OL672836.1.spike.fasta').should('be.visible');
+
+    cy.get("button.next-button").click();
+  });
 });
 
 Cypress.Commands.add('inputSeqSetup', () => {
   // NCBI로부터 ID 유효성 검사 및 메타데이터 가져오기
-  cy.fixture("referenceId").then((referenceId) => {
+  cy.fixture("environment").then((environment) => {
     // 올바른 NCBI 레퍼런스 시퀀스 ID 입력 후 'Done' 버튼 클릭
-    cy.get('input[id="referenceSequenceId"]').type(referenceId.SARS_CoV_2_ID);
+    cy.get('input[id="referenceSequenceId"]').type(environment.SARS_CoV_2_ID);
     cy.get("button.done-button").click();
     cy.wait("@metadataRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
@@ -77,28 +107,27 @@ Cypress.Commands.add('inputSeqSetup', () => {
 });
 
 Cypress.Commands.add('LinearDesignConvert', () => {
-  cy.inputSeqSetup();
-  let startValue = Math.floor(Math.random() * (1276 - 1 + 1)) + 1;
-  let endValue = Math.min(
-    startValue + Math.floor(Math.random() * 100),
-    1276
-  );
-  cy.wait("@alignmentRequest").then((interception) => {
-    expect(interception.response.statusCode).to.eq(200);
-    cy.get(".sequence-boxes").eq(0).click();
+  cy.fixture("environment").then((environment) => {
+    cy.inputSeqSetup();
+    let startValue = Math.floor(Math.random() * environment.MAX_TEST_SEQUENCE_LENGTH) + 1;
+    let endValue = Math.min(startValue + Math.floor(Math.random() * environment.SEQUENCE_INTERVAL), environment.MAX_TEST_SEQUENCE_LENGTH);
+    cy.wait("@alignmentRequest").then((interception) => {
+      expect(interception.response.statusCode).to.eq(200);
+      cy.get(".sequence-boxes").eq(0).click();
 
-    cy.contains(".modal-content label", "Select Coding Sequence:")
-      .find("select")
-      .select("S");
+      cy.contains(".modal-content label", "Select Coding Sequence:")
+        .find("select")
+        .select("S");
 
-    cy.contains(".modal-content label", "Start Amino Acid Position:")
-      .find('input[type="number"]')
-      .type(startValue.toString());
+      cy.contains(".modal-content label", "Start Amino Acid Position:")
+        .find('input[type="number"]')
+        .type(startValue.toString());
 
-    cy.contains(".modal-content label", "End Amino Acid Position:")
-      .find('input[type="number"]')
-      .type(endValue.toString());
+      cy.contains(".modal-content label", "End Amino Acid Position:")
+        .find('input[type="number"]')
+        .type(endValue.toString());
 
-    cy.get(".modal-next-button").click();
+      cy.get(".modal-next-button").click();
+    });
   });
 });
