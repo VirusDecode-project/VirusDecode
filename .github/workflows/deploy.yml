@@ -16,7 +16,7 @@ jobs:
       - name: Modify dependencies for deployment
         # SQLite 의존성을 MySQL로 대체
         run: |
-          sed -i 's|runtimeOnly \'org.xerial:sqlite-jdbc:3.43.0.0\'|runtimeOnly \'mysql:mysql-connector-java:8.0.33\'|' backend/build.gradle
+          sed -i "s|runtimeOnly 'org.xerial:sqlite-jdbc:3.43.0.0'|runtimeOnly 'mysql:mysql-connector-java:8.0.33'|" backend/build.gradle
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
