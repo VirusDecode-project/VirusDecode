@@ -129,6 +129,25 @@ class HistoryControllerTest {
     }
 
     @Test
+    void testDeleteHistory_NoHistory() {
+        Long userId = 1L;
+        String historyName = "testHistory";
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName(historyName);
+
+        History mockHistory = new History();
+        mockHistory.setId(1L);
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(historyService.getHistory(historyName, userId)).thenReturn(null);
+
+        ResponseEntity<String> response = historyController.deleteHistory(request, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("There is no history", response.getBody());
+    }
+
+    @Test
     void testGetHistory_Success() {
         Long userId = 1L;
         String historyName = "testHistory";
@@ -182,6 +201,24 @@ class HistoryControllerTest {
         when(session.getAttribute("userId")).thenReturn(userId);
         when(historyService.getHistory(historyName, userId)).thenReturn(mockHistory);
         when(jsonDataService.getJsonData(mockHistory)).thenReturn(null);
+
+        ResponseEntity<String> response = historyController.getHistory(request, session);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertEquals("There is no history", response.getBody());
+    }
+
+    @Test
+    void testGetHistory_NoHistoryFound2() {
+        Long userId = 1L;
+        String historyName = "testHistory";
+        HistoryDto request = new HistoryDto();
+        request.setHistoryName(historyName);
+
+        History mockHistory = new History();
+
+        when(session.getAttribute("userId")).thenReturn(userId);
+        when(historyService.getHistory(historyName, userId)).thenReturn(null);
 
         ResponseEntity<String> response = historyController.getHistory(request, session);
 

@@ -55,6 +55,9 @@ public class HistoryController {
         }
 
         History history = historyService.getHistory(historyName, userId);
+        if(history == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
+        }
         jsonDataService.deleteJsonData(history);
         historyService.deleteHistory(historyName, userId);
 
@@ -70,6 +73,10 @@ public class HistoryController {
         }
 
         History history = historyService.getHistory(historyName, userId);
+        if(history == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
+        }
+
         JsonData jsonData = jsonDataService.getJsonData(history);
         if (jsonData == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
