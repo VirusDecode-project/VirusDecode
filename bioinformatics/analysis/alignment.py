@@ -99,9 +99,13 @@ class Alignment:
         alignment = list(SeqIO.parse(self.aligned_memory_file, "fasta"))  # 수정된 부분: aligned_memory_file로부터 메모리 내 데이터를 읽어옴
 
         # Sort alignment
-#         desired_order = [self.reference_sequence.id] + [record.id for record in self.variant_sequences]
         desired_order = [self.reference_sequence.id] + list(self.variant_sequences.keys())
         self.alignment_dict = {record.id: record for record in alignment}
+        length_of_first_seq = len(self.alignment_dict[self.reference_sequence.id].seq)
+        for id in desired_order:
+            if id not in self.alignment_dict:
+                self.alignment_dict[id] = SeqRecord(Seq("-" * length_of_first_seq), id=id)
+                
         self.aligned_sequences = [self.alignment_dict[id] for id in desired_order]
 
         # Update protein length
