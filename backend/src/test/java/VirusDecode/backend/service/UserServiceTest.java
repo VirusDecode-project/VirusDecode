@@ -2,6 +2,7 @@ package VirusDecode.backend.service;
 
 import VirusDecode.backend.dto.SignUpDto;
 import VirusDecode.backend.entity.History;
+import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.entity.User;
 import VirusDecode.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -213,5 +214,77 @@ class UserServiceTest {
         verify(historyService, never()).deleteHistory(anyString(), anyLong());
         verify(userRepository, never()).deleteUserById(guestUser.getId());
     }
+
+    @Test
+    void testCopySampleHistoriesToNewUser() {
+        // Given
+        String guestLoginId = "Guest";
+        Long guestUserId = 1L;
+        User guestUser = new User();
+        guestUser.setId(guestUserId);
+        guestUser.setLoginId(guestLoginId);
+
+        // New user for whom histories will be copied
+        User newUser = new User();
+        newUser.setId(2L);
+
+        // Set up mock return values
+        when(userRepository.findByLoginId(guestLoginId)).thenReturn(guestUser); // User 객체 반환
+        when(historyService.getHistoryNamesByUserId(guestUserId)).thenReturn(List.of("SampleHistory"));
+
+        History guestHistory = new History();
+        guestHistory.setHistoryName("SampleHistory");
+        guestHistory.setUser(guestUser);
+
+        JsonData guestJsonData = new JsonData();
+        guestJsonData.setReferenceId("Ref123");
+        guestJsonData.setAlignment("AlignmentData");
+        guestJsonData.setLinearDesign("LinearDesignData");
+        guestJsonData.setPdb("PdbData");
+
+        when(historyService.getHistory("SampleHistory", guestUserId)).thenReturn(guestHistory);
+        when(jsonDataService.getJsonData(guestHistory)).thenReturn(guestJsonData);
+
+        // When
+        userService.copySampleHistoriesToNewUser(newUser);
+
+        // Then
+        verify(historyService, times(1)).createHistory(any(History.class));
+        verify(jsonDataService, times(1)).saveJsonData(any(JsonData.class));
+    }
+    @Test
+    void testCopySampleHistoriesToNewUser_OriginalJsonDataIsNull() {
+        // Given
+        String guestLoginId = "Guest";
+        Long guestUserId = 1L;
+        User guestUser = new User();
+        guestUser.setId(guestUserId);
+        guestUser.setLoginId(guestLoginId);
+
+        // New user for whom histories will be copied
+        User newUser = new User();
+        newUser.setId(2L);
+
+        // Set up mock return values
+        when(userRepository.findByLoginId(guestLoginId)).thenReturn(guestUser);
+        when(historyService.getHistoryNamesByUserId(guestUserId)).thenReturn(List.of("SampleHistory"));
+
+        History guestHistory = new History();
+        guestHistory.setHistoryName("SampleHistory");
+        guestHistory.setUser(guestUser);
+
+        // Here, originalJsonData will be null
+        when(historyService.getHistory("SampleHistory", guestUserId)).thenReturn(guestHistory);
+        when(jsonDataService.getJsonData(guestHistory)).thenReturn(null); // Simulate null condition
+
+        // When
+        userService.copySampleHistoriesToNewUser(newUser);
+
+        // Then
+        verify(historyService, never()).createHistory(any(History.class));
+        verify(jsonDataService, never()).saveJsonData(any(JsonData.class));
+    }
+
+
 
 }
