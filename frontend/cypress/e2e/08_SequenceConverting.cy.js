@@ -45,7 +45,7 @@ describe("1. 아미노산 구간 설정 및 검증", () => {
     });
   });
 
-  it("1-2-1. 범위 유효성 검증 - 최대 길이 초과", () => {
+  it.only("1-2-1. 범위 유효성 검증 - 최대 길이 초과", () => {
     let startValue = Math.floor(Math.random() * MAX_TEST_SEQUENCE_LENGTH) + 1;
     let endValue = MAX_TEST_SEQUENCE_LENGTH + 10;
 
@@ -91,7 +91,7 @@ describe("1. 아미노산 구간 설정 및 검증", () => {
     cy.contains("Start index must be between 1 and 1276.").should("be.visible");
   });
 
-  it.only("1-2-3. 범위 유효성 검증 - Null 입력", () => {
+  it("1-2-3. 범위 유효성 검증 - Null 입력", () => {
     cy.get(".sequence-boxes").eq(0).click();
 
     cy.contains(".modal-content label", "Select Coding Sequence:")
