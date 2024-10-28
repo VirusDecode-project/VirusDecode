@@ -55,7 +55,6 @@ public class PythonScriptService {
                 }
                 return switch (exitCode) {
                     case 1 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("필요한 파이썬 환경이 제대로 설치되지 않았습니다.\nVirusDecode Github를 참고하세요.");
-                    case 2 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("전달된 인자가 부족합니다.");
                     case 11 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("NCBI에 요청한 nucleotide ID가 존재하지 않습니다.");
                     case 21 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("MUSCLE 다중 서열 정리에 문제가 발생하였습니다.");
                     case 22 -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("입력하신 서열 정보가 올바르지 않습니다. A, T, C, 그리고 G만 허용됩니다.");

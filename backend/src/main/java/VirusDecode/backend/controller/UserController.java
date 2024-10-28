@@ -50,6 +50,7 @@ public class UserController {
         }
 
         User newUser = userService.createUser(signupDto, "USER");
+        userService.copySampleHistoriesToNewUser(newUser);
         return ResponseEntity.ok("User created successfully with ID: " + newUser.getId());
     }
 

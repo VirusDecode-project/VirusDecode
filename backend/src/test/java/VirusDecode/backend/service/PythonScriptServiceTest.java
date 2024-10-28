@@ -61,15 +61,15 @@ class PythonScriptServiceTest {
     }
 
 
-    @Test
-    void testEmptyArgument() throws Exception {
-        // Act
-        ResponseEntity<String> response = pythonScriptService.executePythonScript("1");
-
-        // Assert: Verify the error message for exit code 11
-        assertEquals(500, response.getStatusCodeValue());
-        assertEquals("전달된 인자가 부족합니다.", response.getBody());
-    }
+//    @Test
+//    void testEmptyArgument() throws Exception {
+//        // Act
+//        ResponseEntity<String> response = pythonScriptService.executePythonScript("1");
+//
+//        // Assert: Verify the error message for exit code 11
+//        assertEquals(500, response.getStatusCodeValue());
+//        assertEquals("전달된 인자가 부족합니다.", response.getBody());
+//    }
 
     @Test
     void testExitCode1() throws Exception {
