@@ -110,20 +110,22 @@ public class UserService {
 
         for (String historyName : guestHistoryNames) {
             History history = historyService.getHistory(historyName, guestUserId);
-            JsonData originalJsonData = jsonDataService.getJsonData(history);
-            if (originalJsonData != null) {
-                History newHistory = new History();
-                newHistory.setHistoryName(historyName);
-                newHistory.setUser(newUser);
-                historyService.createHistory(newHistory);
+            if (history != null) {
+                JsonData originalJsonData = jsonDataService.getJsonData(history);
+                if (originalJsonData != null) {
+                    History newHistory = new History();
+                    newHistory.setHistoryName(historyName);
+                    newHistory.setUser(newUser);
+                    historyService.createHistory(newHistory);
 
-                JsonData newJsonData = new JsonData();
-                newJsonData.setReferenceId(originalJsonData.getReferenceId());
-                newJsonData.setAlignment(originalJsonData.getAlignment());
-                newJsonData.setLinearDesign(originalJsonData.getLinearDesign());
-                newJsonData.setPdb(originalJsonData.getPdb());
-                newJsonData.setHistory(newHistory);
-                jsonDataService.saveJsonData(newJsonData);
+                    JsonData newJsonData = new JsonData();
+                    newJsonData.setReferenceId(originalJsonData.getReferenceId());
+                    newJsonData.setAlignment(originalJsonData.getAlignment());
+                    newJsonData.setLinearDesign(originalJsonData.getLinearDesign());
+                    newJsonData.setPdb(originalJsonData.getPdb());
+                    newJsonData.setHistory(newHistory);
+                    jsonDataService.saveJsonData(newJsonData);
+                }
             }
         }
     }
