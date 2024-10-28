@@ -27,9 +27,13 @@ jobs:
       - name: Build Docker images with Docker Compose
         run: docker compose -f docker-compose.yml build
 
-      - name: Push Docker images with Docker Compose
-        run: docker compose -f docker-compose.yml push
-
+      - name: Tag images with Docker Hub username and push
+        run: |
+          docker tag virusdecode-backend:latest ${{ secrets.DOCKER_USERNAME }}/virusdecode-backend:latest
+          docker tag virusdecode-frontend:latest ${{ secrets.DOCKER_USERNAME }}/virusdecode-frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/virusdecode-backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/virusdecode-frontend:latest
+          
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
