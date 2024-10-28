@@ -47,6 +47,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             docker compose down
-            docker image prune -f
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/virusdecode-backend:latest
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/virusdecode-frontend:latest
             docker compose pull
             docker compose up -d
