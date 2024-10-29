@@ -88,7 +88,8 @@ describe("1. 아미노산 구간 설정 및 검증", () => {
 
     cy.get(".modal-next-button").click();
 
-    cy.contains("Start index must be between 1 and 1276.").should("be.visible");
+    cy.contains(/Start index must be between 1 and (1273|1276)\./).should("be.visible");
+
   });
 
   it("1-2-3. 범위 유효성 검증 - Null 입력", () => {

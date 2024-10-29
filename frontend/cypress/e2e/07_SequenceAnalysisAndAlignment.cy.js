@@ -16,7 +16,7 @@ describe("1. 서열 정렬(alignment)", () => {
     cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
 
-      cy.get('.stacked-bar-label', ).contains('S').click();
+      cy.get('.stacked-bar-label',).contains('S').click();
       cy.fixture('environment').then((environment) => {
         cy.get('.sequence-label').eq(0).should('contain', environment.SARS_CoV_2_ID);
         cy.get('.sequence-label').eq(1).should('contain', environment.VARIANT_1);
@@ -208,19 +208,45 @@ describe("6. 히스토리 저장", () => {
     );
     cy.intercept("POST", "/api/inputSeq/metadata").as("metadataRequest");
     cy.intercept("POST", "/api/inputSeq/alignment").as("alignmentRequest");
+    cy.intercept("POST", "/api/history/get").as("historyRequest");
     cy.inputSeqSetup();
-
-    // 히스토리 아이템 첫 번째 요소 클릭
-    cy.get(".history-list .history-item").first().click();
 
     // 정렬된 데이터가 있는지 확인 (예: sequence-box 확인)
     cy.wait("@alignmentRequest").then((interception) => {
       expect(interception.response.statusCode).to.eq(200);
 
-      // 시퀀스 박스가 있는지 확인
-      cy.get(".sequence-boxes").find(".sequence-box").should("exist");
-      // 불일치 구간이 있는지 확인
-      cy.get(".sequence-boxes").find(".sequence-box.gap.different").should("exist");
+      let displayedAminoAcidSeq = "";
+      for (let j = 0; j < 50; j++) {
+        cy.get('.sequence-chunk').eq(0)
+          .find('.sequence-boxes').eq(0)
+          .find('.sequence-line')
+          .find('.sequence-box').eq(j)
+          .invoke("text")
+          .then((text) => {
+            displayedAminoAcidSeq += text.trim();
+          });
+
+      }
+      cy.log("Displayed Amino: ", displayedAminoAcidSeq);
+      cy.get(".history-list .history-item").eq(1).click();
+      cy.wait("@historyRequest").then((interception) => {
+        expect(interception.response.statusCode).to.eq(200);
+        cy.get(".history-list .history-item").eq(0).click();
+        cy.wait("@historyRequest").then((interception) => {
+          expect(interception.response.statusCode).to.eq(200);
+          for (let j = 0; j < displayedAminoAcidSeq.length; j++) {
+            cy.get('.sequence-chunk').eq(0)
+              .find('.sequence-boxes').eq(0)
+              .find('.sequence-line')
+              .find('.sequence-box').eq(j)
+              .should('contain', displayedAminoAcidSeq[j]);
+          }
+        });
+      });
+
+
+
+
     });
   });
 });
