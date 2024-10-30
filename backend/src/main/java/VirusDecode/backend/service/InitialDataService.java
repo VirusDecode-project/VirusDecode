@@ -4,7 +4,9 @@ import VirusDecode.backend.dto.initialData.ReferenceDto;
 import VirusDecode.backend.dto.initialData.fasta.VarientDto;
 import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.JsonData;
+import VirusDecode.backend.entity.NcbiData;
 import VirusDecode.backend.entity.User;
+import VirusDecode.backend.repository.NcbiRepository;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,19 +24,39 @@ public class InitialDataService {
     private final JsonDataService jsonDataService;
     private final UserService userService;
     private final HistoryService historyService;
+    private final NcbiRepository ncbiRepository;
 
     @Autowired
-    public InitialDataService(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService, UserService userService, HistoryService historyService) {
+    public InitialDataService(PythonScriptService pythonScriptService, FastaFileService fastaFileService, JsonDataService jsonDataService, UserService userService, HistoryService historyService, NcbiRepository ncbiRepository) {
         this.pythonScriptService = pythonScriptService;
         this.fastaFileService = fastaFileService;
         this.jsonDataService = jsonDataService;
         this.userService = userService;
         this.historyService = historyService;
+        this.ncbiRepository = ncbiRepository;
     }
 
     public ResponseEntity<String> processMetadata(ReferenceDto request) {
         String sequenceId = request.getSequenceId();
-        return pythonScriptService.executePythonScript("1", sequenceId);
+
+        Optional<NcbiData> existingData = ncbiRepository.findById(sequenceId);
+        if (existingData.isPresent()) {
+            return ResponseEntity.ok(existingData.get().getMetadata());
+        }
+
+        ResponseEntity<String> response = pythonScriptService.executePythonScript("1", sequenceId);
+
+        String outputString = response.getBody();
+
+        // NcbiData 엔티티 생성 및 데이터 저장
+        NcbiData ncbiData = new NcbiData();
+        ncbiData.setReferenceId(sequenceId);
+        ncbiData.setMetadata(outputString);
+
+        // repository를 통해 데이터 저장
+        ncbiRepository.save(ncbiData);
+
+        return ResponseEntity.ok(outputString);
     }
 
     public ResponseEntity<String> processAlignment(VarientDto request, Long userId) {
