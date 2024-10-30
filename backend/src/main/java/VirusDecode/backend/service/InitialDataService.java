@@ -46,17 +46,15 @@ public class InitialDataService {
 
         ResponseEntity<String> response = pythonScriptService.executePythonScript("1", sequenceId);
 
-        String outputString = response.getBody();
+        if (response.getStatusCode() == HttpStatus.OK) {
+            String outputString = response.getBody();
+            NcbiData ncbiData = new NcbiData();
+            ncbiData.setReferenceId(sequenceId);
+            ncbiData.setMetadata(outputString);
+            ncbiRepository.save(ncbiData);
+        }
 
-        // NcbiData 엔티티 생성 및 데이터 저장
-        NcbiData ncbiData = new NcbiData();
-        ncbiData.setReferenceId(sequenceId);
-        ncbiData.setMetadata(outputString);
-
-        // repository를 통해 데이터 저장
-        ncbiRepository.save(ncbiData);
-
-        return ResponseEntity.ok(outputString);
+        return response;
     }
 
     public ResponseEntity<String> processAlignment(VarientDto request, Long userId) {
