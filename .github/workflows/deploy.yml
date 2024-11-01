@@ -46,8 +46,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker compose down
+            docker-compose down
             docker rmi ${{ secrets.DOCKER_USERNAME }}/virusdecode-backend:latest
             docker rmi ${{ secrets.DOCKER_USERNAME }}/virusdecode-frontend:latest
-            docker compose pull
-            docker compose up -d
+            docker-compose pull
+            docker-compose up -d
