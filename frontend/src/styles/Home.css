@@ -18,6 +18,7 @@
   font-size: 18px;
   font-weight: 600;
   margin: 0 auto;
+  margin-left: 18px;
 }
 
 .decode-button:hover {
