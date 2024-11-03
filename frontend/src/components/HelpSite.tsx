@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import '../styles/HelpSite.css';
+import guideImg1 from '../assets/guideImg1.png';
+import guideImg2 from '../assets/guideImg2.png';
+import guideImg3 from '../assets/guideImg3.png';
+import guideImg4 from '../assets/guideImg4.png';
 
 interface Page {
     id: number;
@@ -7,22 +11,10 @@ interface Page {
 }
 
 const pages: Page[] = [
-    {
-        id: 1,
-        image: require('../assets/guideImg1.jpg'),
-    },
-    {
-        id: 2,
-        image: require('../assets/guideImg2.jpg'),
-    },
-    {
-        id: 3,
-        image: require('../assets/guideImg3.jpg'),
-    },
-    {
-        id: 4,
-        image: require('../assets/guideImg4.jpg'),
-    },
+    { id: 1, image: guideImg1 },
+    { id: 2, image: guideImg2 },
+    { id: 3, image: guideImg3 },
+    { id: 4, image: guideImg4 },
 ];
 
 interface HelpSiteProps {
@@ -32,7 +24,14 @@ interface HelpSiteProps {
 
 const HelpSite: React.FC<HelpSiteProps> = ({ isOpen, onClose }) => {
     const [currentPage, setCurrentPage] = useState<number>(0);
-
+    // 이미지 미리 로드
+    useEffect(() => {
+        pages.forEach(page => {
+            const img = new Image();
+            img.src = page.image;
+        });
+    }, []);
+    
     const goToNextPage = () => {
         setCurrentPage((prevPage) => (prevPage + 1) % pages.length);
     };
