@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/Home.css';
 import LoginModal from '../components/LoginModal';
+import HelpSite from '../components/HelpSite';
 interface HomeProps {
   setUserName: Dispatch<SetStateAction<string | null>>;
   handleError: (message: string) => void;
@@ -10,6 +11,7 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ setUserName, handleError }) => {
   let navigate = useNavigate();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   const handleDecodeBtn = async (event: React.MouseEvent<HTMLButtonElement>) => {
     const nameResponse = await fetch(`/api/auth/userinfo`, {
@@ -34,9 +36,15 @@ const Home: React.FC<HomeProps> = ({ setUserName, handleError }) => {
           Decode the virus’s genetic code, analyze its mutations, and determine the vaccine sequence.
         </p>
       </div>
+      <div className="button-container">
       <button className="decode-button" onClick={handleDecodeBtn}>
         Try Decoding
       </button>
+      <button className="help-button" onClick={() => setIsHelpModalOpen(true)}>
+        ?
+      </button>
+      </div>
+      <HelpSite isOpen={isHelpModalOpen} onClose={() => setIsHelpModalOpen(false)} />
       {isLoginModalOpen && (
         <LoginModal
           isOpen={isLoginModalOpen}

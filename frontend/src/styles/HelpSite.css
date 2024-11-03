@@ -1,0 +1,96 @@
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 30px;
+    width: 80%; 
+    max-width: 1200px; /* 모달 창 크기 조절 */
+    height: auto; 
+    max-height: 90vh; 
+    border-radius: 12px;
+    position: relative;
+    text-align: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-button:hover {
+    color: #333;
+}
+
+/* 페이지 이미지 */
+.page-content img {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+
+.navigation-buttons {
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    margin-top: 5px;
+    gap: 10px; 
+}
+
+.navigation-buttons button {
+    padding: 10px 10px;
+    border: none;
+    background-color: white;
+    color: #0fb9af;
+    font-size: 30px;
+    cursor: pointer;
+    outline: none;
+}
+
+.navigation-buttons button:hover {
+    color: #00a99d;
+    transform: scale(1.1);
+}
+
+.navigation-buttons span {
+    font-weight: bold;
+    color: #333;
+}
+
+
+.help-button {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    color: #929292; 
+    background-color: white;
+    font-size: 14px;
+    border: 1.5px solid #929292; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 12px;
+}
+
+
