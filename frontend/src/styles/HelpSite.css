@@ -1,4 +1,3 @@
-
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -15,14 +14,32 @@
 .modal-content {
     background-color: white;
     padding: 30px;
-    width: 80%; 
-    max-width: 1200px; /* 모달 창 크기 조절 */
-    height: auto; 
-    max-height: 90vh; 
+    width: auto;
+    height: auto;
+    max-height: 95vh;
+    overflow-x: hidden;
+    overflow-y: auto;
     border-radius: 12px;
     position: relative;
     text-align: center;
     animation: fadeIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content img {
+    max-height: 75vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-aspect-ratio: 4/3) {
+    .modal-content img {
+        max-height: none; /* 세로 제한 해제 */
+        max-width: 90vw; /* 가로 최대 너비 적용 */
+    }
 }
 
 .close-button {
@@ -41,15 +58,6 @@
 .close-button:hover {
     color: #333;
 }
-
-/* 페이지 이미지 */
-.page-content img {
-    width: 100%;
-    height: auto;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
 
 .navigation-buttons {
     display: flex; 
@@ -94,3 +102,9 @@
 }
 
 
+.help-button:hover {
+    background-color: #f0f0f0; 
+    color: #555555; 
+    border-color: #555555; 
+    transform: translateY(-3px); 
+}
