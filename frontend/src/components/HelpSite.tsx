@@ -24,6 +24,14 @@ interface HelpSiteProps {
 
 const HelpSite: React.FC<HelpSiteProps> = ({ isOpen, onClose }) => {
     const [currentPage, setCurrentPage] = useState<number>(0);
+
+    // 도옴말 창 다시 열 떄 첫 페이지로 초기화
+    useEffect(() => {
+        if (isOpen) {
+            setCurrentPage(0);
+        }
+    }, [isOpen]);
+
     // 이미지 미리 로드
     useEffect(() => {
         pages.forEach(page => {
