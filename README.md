@@ -169,3 +169,10 @@ Follow these steps to get started with Docker for VirusDecode:
       ```bash
       docker compose down
       ```
+## User Guide
+![guideImg1](https://github.com/user-attachments/assets/09463626-df15-419c-b52a-c581827761c2)
+![guideImg2](https://github.com/user-attachments/assets/9dd9a96d-9f9b-45af-a6db-81c406bc3484)
+![guideImg3](https://github.com/user-attachments/assets/bfea20d1-1b44-43d5-b2e3-250f62553a72)
+![guideImg4](https://github.com/user-attachments/assets/b9abe89c-a27e-41ee-bbb1-2cf2c9722201)
+
+
