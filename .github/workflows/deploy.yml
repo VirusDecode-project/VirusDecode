@@ -21,7 +21,8 @@ jobs:
       - name: Update WebConfig.java for allowedOrigins
         # WebConfig.java에서 allowedOrigins 수정
         run: |
-          sed -i 's|\.allowedOrigins(\s*"http://localhost:3000"|\.allowedOrigins(\n                                "https://virusdecode.com",\n                                "https://www.virusdecode.com"|' backend/src/main/java/VirusDecode/backend/config/WebConfig.java
+          sed -i 's|\.allowedOrigins(\s*"http://localhost:3000"|\.allowedOrigins(\n    "http://localhost:3000",\n    "https://virusdecode.com",\n    "https://www.virusdecode.com"|' backend/src/main/java/VirusDecode/backend/config/WebConfig.java
+
 
 
 
