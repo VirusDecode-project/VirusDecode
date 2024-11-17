@@ -21,7 +21,7 @@ jobs:
       - name: Update WebConfig.java for allowedOrigins
         # WebConfig.java에서 allowedOrigins 수정
         run: |
-          sed -i "s|\"http://localhost:3000\"|\"http://localhost:3000\",\n                                \"https://virusdecode.com\",\n                                \"https://www.virusdecode.com\"|" backend/src/main/java/VirusDecode/backend/config/WebConfig.java
+          sed -i "s|\"http://localhost:3000\"|\"http://localhost:3000\", \"https://virusdecode.com\", \"https://www.virusdecode.com\"|" backend/src/main/java/VirusDecode/backend/config/WebConfig.java
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
