@@ -19,11 +19,7 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
-                            "http://localhost:3000",
-                        "http://www.virusdecode.com",
-                        "http://virusdecode.com",
-                        "https://virusdecode.com",
-                        "https://www.virusdecode.com")
+                        "http://localhost:3000")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
