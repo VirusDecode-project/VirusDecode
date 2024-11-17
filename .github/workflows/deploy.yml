@@ -18,6 +18,11 @@ jobs:
         run: |
           sed -i "s|runtimeOnly 'org.xerial:sqlite-jdbc:3.43.0.0'|runtimeOnly 'mysql:mysql-connector-java:8.0.33'|" backend/build.gradle
 
+      - name: Update WebConfig.java for allowedOrigins
+        # WebConfig.java에서 allowedOrigins 수정
+        run: |
+          sed -i "s|\"http://localhost:3000\"|\"http://localhost:3000\",\n                                \"https://virusdecode.com\",\n                                \"https://www.virusdecode.com\"|" backend/src/main/java/VirusDecode/backend/config/WebConfig.java
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
