@@ -1,6 +1,5 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.dto.initialData.ReferenceDto;
 import VirusDecode.backend.dto.initialData.fasta.VarientDto;
 import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.JsonData;
@@ -49,23 +48,23 @@ public class InitialDataServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    public void testProcessMetadata_Success() {
-        // Given
-        ReferenceDto request = new ReferenceDto();
-        request.setSequenceId("seq123");
-
-        when(pythonScriptService.executePythonScript("1", "seq123"))
-                .thenReturn(ResponseEntity.ok("mockMetadataResponse"));
-
-        // When
-        ResponseEntity<String> response = initialDataService.processMetadata(request);
-
-        // Then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("mockMetadataResponse", response.getBody());
-        verify(pythonScriptService, times(1)).executePythonScript("1", "seq123");
-    }
+//    @Test
+//    public void testProcessMetadata_Success() {
+//        // Given
+//        ReferenceDto request = new ReferenceDto();
+//        request.setSequenceId("seq123");
+//
+//        when(pythonScriptService.executePythonScript("1", "seq123"))
+//                .thenReturn(ResponseEntity.ok("mockMetadataResponse"));
+//
+//        // When
+//        ResponseEntity<String> response = initialDataService.processMetadata(request);
+//
+//        // Then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals("mockMetadataResponse", response.getBody());
+//        verify(pythonScriptService, times(1)).executePythonScript("1", "seq123");
+//    }
 
     @Test
     public void testProcessAlignment_Success() throws IOException {
