@@ -1,10 +1,11 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.HistoryDto;
-import VirusDecode.backend.entity.History;
-import VirusDecode.backend.entity.JsonData;
-import VirusDecode.backend.service.HistoryService;
-import VirusDecode.backend.service.JsonDataService;
+import VirusDecode.backend.history.dto.HistoryDto;
+import VirusDecode.backend.history.controller.HistoryController;
+import VirusDecode.backend.history.entity.History;
+import VirusDecode.backend.analysis.entity.JsonData;
+import VirusDecode.backend.history.service.HistoryService;
+import VirusDecode.backend.analysis.service.JsonDataService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;

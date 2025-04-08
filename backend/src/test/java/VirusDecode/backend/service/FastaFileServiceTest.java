@@ -1,7 +1,8 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.dto.initialData.fasta.FastaFileDto;
-import VirusDecode.backend.dto.initialData.fasta.VarientDto;
+import VirusDecode.backend.analysis.service.FastaFileService;
+import VirusDecode.backend.analysis.dto.initialData.fasta.FastaFileDto;
+import VirusDecode.backend.analysis.dto.initialData.fasta.VarientDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

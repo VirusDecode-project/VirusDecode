@@ -1,8 +1,9 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.initialData.ReferenceDto;
-import VirusDecode.backend.dto.initialData.fasta.VarientDto;
-import VirusDecode.backend.service.InitialDataService;
+import VirusDecode.backend.analysis.controller.InitialDataController;
+import VirusDecode.backend.analysis.dto.initialData.ReferenceDto;
+import VirusDecode.backend.analysis.dto.initialData.fasta.VarientDto;
+import VirusDecode.backend.analysis.service.InitialDataService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

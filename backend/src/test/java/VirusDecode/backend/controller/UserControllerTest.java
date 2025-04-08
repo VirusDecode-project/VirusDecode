@@ -1,11 +1,12 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.SignUpDto;
-import VirusDecode.backend.dto.UserInfoDto;
-import VirusDecode.backend.dto.UserLoginDto;
-import VirusDecode.backend.entity.User;
-import VirusDecode.backend.service.GuestLoginService;
-import VirusDecode.backend.service.UserService;
+import VirusDecode.backend.User.controller.UserController;
+import VirusDecode.backend.User.dto.SignUpDto;
+import VirusDecode.backend.User.dto.UserInfoDto;
+import VirusDecode.backend.User.dto.UserLoginDto;
+import VirusDecode.backend.User.entity.User;
+import VirusDecode.backend.User.service.GuestLoginService;
+import VirusDecode.backend.User.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

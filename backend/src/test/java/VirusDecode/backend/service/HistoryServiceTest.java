@@ -1,7 +1,8 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.entity.History;
-import VirusDecode.backend.repository.HistoryRepository;
+import VirusDecode.backend.history.entity.History;
+import VirusDecode.backend.history.repository.HistoryRepository;
+import VirusDecode.backend.history.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
