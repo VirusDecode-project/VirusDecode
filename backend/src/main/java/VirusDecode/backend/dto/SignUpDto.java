@@ -10,4 +10,14 @@ public class SignUpDto {
     private String lastName;
     private String loginId;
     private String password;
+
+    public SignUpDto() {
+    }
+
+    public SignUpDto(String firstName, String lastName, String loginId, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.loginId = loginId;
+        this.password = password;
+    }
 }

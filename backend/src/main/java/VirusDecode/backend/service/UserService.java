@@ -1,6 +1,7 @@
 package VirusDecode.backend.service;
 
 import VirusDecode.backend.dto.SignUpDto;
+import VirusDecode.backend.dto.UserInfoDto;
 import VirusDecode.backend.entity.History;
 import VirusDecode.backend.entity.JsonData;
 import VirusDecode.backend.entity.User;
@@ -33,6 +34,26 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public UserInfoDto login(String loginId, String password){
+        try{
+            User user = findUserByLoginId(loginId);
+            if (checkPassword(user, password)) {
+                return new UserInfoDto(user.getLoginId(), user.getFirstName());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public UserInfoDto fetchUserInfo(Long userId){
+        try{
+            User user = findUserByUserId(userId);
+            return new UserInfoDto(user.getLoginId(), user.getFirstName());
+        }catch (Exception e){
+            return null;
+        }
+    }
 
     public User findUserByLoginId(String loginId) {
         return userRepository.findByLoginId(loginId);
@@ -44,14 +65,10 @@ public class UserService {
 
     @Transactional
     public User createUser(SignUpDto signUpDto, String role) {
-        User newUser = new User();
-        newUser.setFirstName(signUpDto.getFirstName());
-        newUser.setLastName(signUpDto.getLastName());
-        newUser.setLoginId(signUpDto.getLoginId());
-        newUser.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        newUser.setRole(role);
-
-        return userRepository.save(newUser);
+        User newUser = new User(signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), role);
+        userRepository.save(newUser);
+        copySampleHistoriesToNewUser(newUser);
+        return newUser;
     }
 
     public boolean checkPassword(User user, String password) {
