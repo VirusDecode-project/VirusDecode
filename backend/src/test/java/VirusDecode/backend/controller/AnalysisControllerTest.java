@@ -1,8 +1,9 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.analysis.LinearDesignDto;
-import VirusDecode.backend.dto.analysis.PdbDto;
-import VirusDecode.backend.service.AnalysisService;
+import VirusDecode.backend.analysis.controller.AnalysisController;
+import VirusDecode.backend.analysis.dto.analysis.LinearDesignDto;
+import VirusDecode.backend.analysis.dto.analysis.PdbDto;
+import VirusDecode.backend.analysis.service.AnalysisService;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

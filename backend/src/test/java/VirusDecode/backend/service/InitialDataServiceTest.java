@@ -1,10 +1,15 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.dto.initialData.ReferenceDto;
-import VirusDecode.backend.dto.initialData.fasta.VarientDto;
-import VirusDecode.backend.entity.History;
-import VirusDecode.backend.entity.JsonData;
-import VirusDecode.backend.entity.User;
+import VirusDecode.backend.User.service.UserService;
+import VirusDecode.backend.analysis.service.FastaFileService;
+import VirusDecode.backend.analysis.service.InitialDataService;
+import VirusDecode.backend.analysis.service.JsonDataService;
+import VirusDecode.backend.analysis.service.PythonScriptService;
+import VirusDecode.backend.analysis.dto.initialData.fasta.VarientDto;
+import VirusDecode.backend.history.entity.History;
+import VirusDecode.backend.analysis.entity.JsonData;
+import VirusDecode.backend.User.entity.User;
+import VirusDecode.backend.history.service.HistoryService;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +54,6 @@ public class InitialDataServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    
 
     @Test
     public void testProcessAlignment_Success() throws IOException {

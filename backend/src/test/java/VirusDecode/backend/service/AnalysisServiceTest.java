@@ -1,9 +1,13 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.dto.analysis.LinearDesignDto;
-import VirusDecode.backend.dto.analysis.PdbDto;
-import VirusDecode.backend.entity.History;
-import VirusDecode.backend.entity.JsonData;
+import VirusDecode.backend.analysis.service.AnalysisService;
+import VirusDecode.backend.analysis.service.JsonDataService;
+import VirusDecode.backend.analysis.service.PythonScriptService;
+import VirusDecode.backend.analysis.dto.analysis.LinearDesignDto;
+import VirusDecode.backend.analysis.dto.analysis.PdbDto;
+import VirusDecode.backend.history.entity.History;
+import VirusDecode.backend.analysis.entity.JsonData;
+import VirusDecode.backend.history.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

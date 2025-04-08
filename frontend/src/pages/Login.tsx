@@ -33,31 +33,9 @@ const Login: React.FC<LoginProps> = ({history, setHistory, setShow, setMRNARecei
       });
 
       if (loginResponse.ok) {
-        const fetchName = async () => {
-          try {
-            const nameResponse = await fetch(`/api/auth/userinfo`, { 
-              method: "POST",
-              credentials: 'include',
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-        
-            if (nameResponse.ok) {
-              const responseData = await nameResponse.text();
-              setUserName(responseData);
-            }else{
-              const errorMessage = await nameResponse.text();
-              throw new Error(errorMessage);
-            }
-          } catch (error) {
-            // if(error instanceof Error){
-                // window.alert(error.message);
-              // }
-              setUserName(null);
-            }
-          };
-          fetchName();
+        const responseData = await loginResponse.json();
+        setUserName(responseData.userName);
+
         const fetchHistory = async () => {
           try {
             const historyResponse = await fetch(`/api/history/list`, {

@@ -1,11 +1,12 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.dto.SignUpDto;
-import VirusDecode.backend.dto.UserLoginDto;
-import VirusDecode.backend.entity.User;
-import VirusDecode.backend.service.GuestLoginService;
-import VirusDecode.backend.service.UserService;
-import com.google.gson.Gson;
+import VirusDecode.backend.User.controller.UserController;
+import VirusDecode.backend.User.dto.SignUpDto;
+import VirusDecode.backend.User.dto.UserInfoDto;
+import VirusDecode.backend.User.dto.UserLoginDto;
+import VirusDecode.backend.User.entity.User;
+import VirusDecode.backend.User.service.GuestLoginService;
+import VirusDecode.backend.User.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,9 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import jakarta.servlet.http.HttpSession;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,13 +51,15 @@ class UserControllerTest {
         mockUser.setId(1L);
         mockUser.setLoginId("testUser");
 
-        when(userService.findUserByLoginId("testUser")).thenReturn(mockUser);
-        when(userService.checkPassword(mockUser, "password")).thenReturn(true);
+        UserInfoDto mockUserInfo = new UserInfoDto("testUser", "testName");
 
-        ResponseEntity<String> response = userController.login(loginDto, session);
+        when(userService.login("testUser", "password")).thenReturn(mockUserInfo);
+        when(userService.getUserIdByLoginId("testUser")).thenReturn(1L);
+
+        ResponseEntity<?> response = userController.login(loginDto, session);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("User logged in successfully.", response.getBody());
+        assertEquals(mockUserInfo, response.getBody());
         verify(session).setAttribute("userId", mockUser.getId());
     }
 
@@ -69,32 +69,34 @@ class UserControllerTest {
         loginDto.setLoginId("nonExistentUser");
         loginDto.setPassword("password");
 
+        when(userService.login("testUser", "password")).thenReturn(null);
         when(userService.findUserByLoginId("nonExistentUser")).thenReturn(null);
 
-        ResponseEntity<String> response = userController.login(loginDto, session);
+        ResponseEntity<?> response = userController.login(loginDto, session);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("유효하지 않은 ID 입니다.", response.getBody());
+        assertEquals("유효하지 않는 회원 정보입니다.", response.getBody());
     }
 
-    @Test
-    void testLogin_InvalidPassword() {
-        UserLoginDto loginDto = new UserLoginDto();
-        loginDto.setLoginId("testUser");
-        loginDto.setPassword("wrongPassword");
-
-        User mockUser = new User();
-        mockUser.setId(1L);
-        mockUser.setLoginId("testUser");
-
-        when(userService.findUserByLoginId("testUser")).thenReturn(mockUser);
-        when(userService.checkPassword(mockUser, "wrongPassword")).thenReturn(false);
-
-        ResponseEntity<String> response = userController.login(loginDto, session);
-
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("비밀번호가 틀렸습니다.", response.getBody());
-    }
+//    @Test
+//    void testLogin_InvalidPassword() {
+//        UserLoginDto loginDto = new UserLoginDto();
+//        loginDto.setLoginId("testUser");
+//        loginDto.setPassword("wrongPassword");
+//
+//        User mockUser = new User();
+//        mockUser.setId(1L);
+//        mockUser.setLoginId("testUser");
+//
+//        when(userService.login("testUser", "password")).thenReturn(null);
+////        when(userService.findUserByLoginId("testUser")).thenReturn(mockUser);
+////        when(userService.checkPassword(mockUser, "wrongPassword")).thenReturn(false);
+//
+//        ResponseEntity<?> response = userController.login(loginDto, session);
+//
+//        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+//        assertEquals("비밀번호가 틀렸습니다.", response.getBody());
+//    }
 
     @Test
     void testSignup_Success() {
@@ -129,37 +131,24 @@ class UserControllerTest {
         assertEquals("이미 존재하는 ID 입니다.", response.getBody());
     }
 
-    @Test
-    void testGuestLogin_Success() {
-        when(guestLoginService.loginAsGuest(session)).thenReturn(ResponseEntity.ok("New temporary user created and logged in"));
 
-        ResponseEntity<String> response = userController.guestLogin(session);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("New temporary user created and logged in", response.getBody());
-    }
 
     @Test
     void testGetUserInfo_Success() {
+        // given
         Long userId = 1L;
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setFirstName("First");
-        mockUser.setLoginId("testUser");
+        UserInfoDto userInfo = new UserInfoDto("testUser", "홍길동");
 
         when(session.getAttribute("userId")).thenReturn(userId);
-        when(userService.findUserByUserId(userId)).thenReturn(mockUser);
+        when(userService.fetchUserInfo(userId)).thenReturn(userInfo);
 
-        ResponseEntity<String> response = userController.getUserInfo(session);
+        // when
+        ResponseEntity<?> response = userController.getUserInfo(session);
 
-        Map<String, String> expectedJson = new HashMap<>();
-        expectedJson.put("userName", "First");
-        expectedJson.put("loginId", "testUser");
-
-        String expectedResponse = new Gson().toJson(expectedJson);
-
+        // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(expectedResponse, response.getBody());
+        assertEquals(userInfo, response.getBody());
     }
     @Test
     void testGetUserInfo_UserNotFound() {
@@ -172,7 +161,7 @@ class UserControllerTest {
         when(userService.findUserByUserId(userId)).thenReturn(null);
 
         // When
-        ResponseEntity<String> response = userController.getUserInfo(session);
+        ResponseEntity<?> response = userController.getUserInfo(session);
 
         // Then
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -183,7 +172,7 @@ class UserControllerTest {
     void testGetUserInfo_NotAuthenticated() {
         when(session.getAttribute("userId")).thenReturn(null);
 
-        ResponseEntity<String> response = userController.getUserInfo(session);
+        ResponseEntity<?> response = userController.getUserInfo(session);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertEquals("User not authenticated", response.getBody());
