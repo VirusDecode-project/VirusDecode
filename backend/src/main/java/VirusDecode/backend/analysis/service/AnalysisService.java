@@ -1,32 +1,36 @@
 package VirusDecode.backend.analysis.service;
 
+import VirusDecode.backend.common.biopython.BioPythonDto;
+import VirusDecode.backend.analysis.repository.AnalysisRepository;
+import VirusDecode.backend.common.biopython.BioPythonService;
 import VirusDecode.backend.history.entity.History;
 import VirusDecode.backend.history.service.HistoryService;
+import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
-import VirusDecode.backend.analysis.dto.analysis.LinearDesignDto;
-import VirusDecode.backend.analysis.dto.analysis.PdbDto;
-import VirusDecode.backend.analysis.entity.JsonData;
+import VirusDecode.backend.analysis.dto.LinearDesignDto;
+import VirusDecode.backend.analysis.dto.PdbDto;
+import VirusDecode.backend.analysis.entity.Analysis;
 
+@Log4j2
 @Service
 public class AnalysisService {
-    private final JsonDataService jsonDataService;
-    private final PythonScriptService pythonScriptService;
+    private final BioPythonService bioPythonService;
     private final HistoryService historyService;
+    private final AnalysisRepository analysisRepository;
 
     @Autowired
-    public AnalysisService(JsonDataService jsonDataService, PythonScriptService pythonScriptService, HistoryService historyService) {
-        this.jsonDataService = jsonDataService;
-        this.pythonScriptService = pythonScriptService;
+    public AnalysisService(BioPythonService bioPythonService, HistoryService historyService, AnalysisRepository analysisRepository) {
+        this.bioPythonService = bioPythonService;
         this.historyService = historyService;
+        this.analysisRepository = analysisRepository;
     }
 
-    public ResponseEntity<String> processLinearDesign(LinearDesignDto request, Long userId) {
+    public String processLinearDesign(LinearDesignDto request, Long userId) {
         String gene = request.getGene();
         String varientName = request.getVarientName();
         int start = request.getStart();
@@ -34,52 +38,56 @@ public class AnalysisService {
         String historyName = request.getHistoryName();
 
         History history = historyService.getHistory(historyName, userId);
-        JsonData jsonData = jsonDataService.getJsonData(history);
-        if (jsonData == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
+        Analysis analysis = getAnalysisData(history);
+        if (analysis == null) {
+            log.error("There is no history");
+            return null;
         }
 
-        String alignmentJson = jsonData.getAlignment();
+        String alignmentJson = analysis.getAlignment();
         String aminoAcidSequence = extractAminoAcidSequence(alignmentJson, gene, varientName, start, end);
 
         if (aminoAcidSequence.length() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("선택된 구간에 유효한 서열이 없습니다.");
+            log.error("선택된 구간에 유효한 서열이 없습니다.");
+            return null;
         }
 
-        ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("3", aminoAcidSequence);
-        if (scriptResponse.getStatusCode().is2xxSuccessful()) {
-            String linearDesignJson = scriptResponse.getBody();
-            jsonData.setLinearDesign(linearDesignJson);
-            jsonDataService.saveJsonData(jsonData);
+        BioPythonDto response = bioPythonService.executePythonScript("3", aminoAcidSequence);
+        if(response.isSuccess()){
+            String linearDesignJson = response.getOutput();
+            analysis.setLinearDesign(linearDesignJson);
+            saveAnalysisData(analysis);
+            return linearDesignJson;
         }
 
-        return scriptResponse;
+        return null;
     }
 
 
-    public ResponseEntity<String> processPdb(PdbDto request, Long userId) {
+    public String processPdb(PdbDto request, Long userId) {
         String gene = request.getGene();
         String historyName = request.getHistoryName();
 
         History history = historyService.getHistory(historyName, userId);
-        JsonData jsonData = jsonDataService.getJsonData(history);
-        if (jsonData == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
+        Analysis analysis = getAnalysisData(history);
+        if (analysis == null) {
+            log.error("There is no history");
+            return null;
         }
 
-        String referenceId = jsonData.getReferenceId();
-        String alignmentJson = jsonData.getAlignment();
+        String referenceId = analysis.getReferenceId();
+        String alignmentJson = analysis.getAlignment();
 
         String sequence = extractSequence(referenceId, alignmentJson, gene);
 
-        ResponseEntity<String> scriptResponse = pythonScriptService.executePythonScript("4", sequence);
-        if (scriptResponse.getStatusCode().is2xxSuccessful()) {
-            String pdbJson = scriptResponse.getBody();
-            jsonData.setPdb(pdbJson);
-            jsonDataService.saveJsonData(jsonData);
+        BioPythonDto scriptResponse = bioPythonService.executePythonScript("4", sequence);
+        if(scriptResponse.isSuccess()){
+            String pdbJson = scriptResponse.getOutput();
+            analysis.setPdb(pdbJson);
+            saveAnalysisData(analysis);
+            return pdbJson;
         }
-
-        return scriptResponse;
+        return null;
     }
 
     
@@ -109,5 +117,22 @@ public class AnalysisService {
         String sequence = alignedSequences.get(referenceId).getAsString();
 
         return sequence.substring(startIdx, endIdx).replace("-", "");
+    }
+
+
+
+    @Transactional
+    public Analysis saveAnalysisData(Analysis analysis) {
+        return analysisRepository.save(analysis);
+    }
+
+    public Analysis getAnalysisData(History history) {
+        Long historyId = history.getId();
+        return analysisRepository.findByHistoryId(historyId);
+    }
+    @Transactional
+    public void deleteAnalysisData(History history){
+        Long historyId = history.getId();
+        analysisRepository.deleteByHistoryId(historyId);
     }
 }
