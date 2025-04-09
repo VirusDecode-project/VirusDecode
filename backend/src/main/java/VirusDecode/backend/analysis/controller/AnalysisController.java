@@ -1,7 +1,7 @@
 package VirusDecode.backend.analysis.controller;
 
-import VirusDecode.backend.analysis.dto.analysis.LinearDesignDto;
-import VirusDecode.backend.analysis.dto.analysis.PdbDto;
+import VirusDecode.backend.analysis.dto.LinearDesignDto;
+import VirusDecode.backend.analysis.dto.PdbDto;
 import VirusDecode.backend.analysis.service.AnalysisService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,11 @@ public class AnalysisController {
         if (userId == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
-
-        return analysisService.processLinearDesign(request, userId);
+        String linearDesignJson = analysisService.processLinearDesign(request, userId);
+        if(linearDesignJson==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("데이터 분석 실패");
+        }
+        return ResponseEntity.ok(linearDesignJson);
     }
 
     @PostMapping("/pdb")
@@ -36,6 +39,10 @@ public class AnalysisController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
 
-        return analysisService.processPdb(request, userId);
+        String pdbJson = analysisService.processPdb(request, userId);
+        if(pdbJson==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("데이터 분석 실패");
+        }
+        return ResponseEntity.ok(pdbJson);
     }
 }

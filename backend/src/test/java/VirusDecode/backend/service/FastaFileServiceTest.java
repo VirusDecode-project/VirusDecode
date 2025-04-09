@@ -1,8 +1,8 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.analysis.service.FastaFileService;
-import VirusDecode.backend.analysis.dto.initialData.fasta.FastaFileDto;
-import VirusDecode.backend.analysis.dto.initialData.fasta.VarientDto;
+import VirusDecode.backend.bioinput.service.FastaFileService;
+import VirusDecode.backend.bioinput.entity.FastaFile;
+import VirusDecode.backend.bioinput.dto.VarientSequenceDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithNullSequencesAndFiles() throws IOException {
         // Arrange: sequences와 files가 null인 경우
-        VarientDto dto = new VarientDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
         dto.setSequences(null);
         dto.setFiles(null);
 
@@ -41,7 +41,7 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithNullSequenceData() throws IOException {
         // Arrange: sequences에 null 데이터 포함
-        VarientDto dto = new VarientDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
         Map<String, String> sequences = new HashMap<>();
         sequences.put("sequence1", null); // sequenceData가 null인 경우
         dto.setSequences(sequences);
@@ -57,7 +57,7 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithEmptySequencesAndFiles() throws IOException {
         // Arrange: sequences와 files가 빈 경우
-        VarientDto dto = new VarientDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
         dto.setSequences(new HashMap<>());
         dto.setFiles(new ArrayList<>());
 
@@ -71,7 +71,7 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithSequencesContainingEmptySequenceData() throws IOException {
         // Arrange: 빈 시퀀스 데이터 포함
-        VarientDto dto = new VarientDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
         Map<String, String> sequences = new LinkedHashMap<>();
         sequences.put("sequence1", " ");
         dto.setSequences(sequences);
@@ -86,7 +86,7 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithSequencesContainingValidData() throws IOException {
         // Arrange: 올바른 시퀀스 데이터
-        VarientDto dto = new VarientDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
         Map<String, String> sequences = new LinkedHashMap<>();
         sequences.put("sequence1", "ATCG");
         sequences.put("sequence 2", "GCTA");  // 시퀀스 이름에 공백 포함
@@ -103,12 +103,12 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithFiles() throws IOException {
         // Arrange: 파일 데이터 포함
-        VarientDto dto = new VarientDto();
-        FastaFileDto fileDTO = new FastaFileDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
+        FastaFile fileDTO = new FastaFile();
         fileDTO.setName("file1");
         fileDTO.setContent(">FileSequence\nACTGACTG");
 
-        List<FastaFileDto> files = new ArrayList<>();
+        List<FastaFile> files = new ArrayList<>();
         files.add(fileDTO);
         dto.setFiles(files);
 
@@ -123,17 +123,17 @@ class FastaFileServiceTest {
     @Test
     void testSaveFastaContentWithSequencesAndFiles() throws IOException {
         // Arrange: 시퀀스와 파일 데이터가 모두 있는 경우
-        VarientDto dto = new VarientDto();
+        VarientSequenceDto dto = new VarientSequenceDto();
 
         Map<String, String> sequences = new LinkedHashMap<>();
         sequences.put("sequence1", "ATCG");
         dto.setSequences(sequences);
 
-        FastaFileDto fileDTO = new FastaFileDto();
+        FastaFile fileDTO = new FastaFile();
         fileDTO.setName("file1");
         fileDTO.setContent(">FileSequence\nACTGACTG");
 
-        List<FastaFileDto> files = new ArrayList<>();
+        List<FastaFile> files = new ArrayList<>();
         files.add(fileDTO);
         dto.setFiles(files);
 

@@ -1,11 +1,11 @@
 package VirusDecode.backend.controller;
 
+import VirusDecode.backend.analysis.service.AnalysisService;
 import VirusDecode.backend.history.dto.HistoryDto;
 import VirusDecode.backend.history.controller.HistoryController;
 import VirusDecode.backend.history.entity.History;
-import VirusDecode.backend.analysis.entity.JsonData;
+import VirusDecode.backend.analysis.entity.Analysis;
 import VirusDecode.backend.history.service.HistoryService;
-import VirusDecode.backend.analysis.service.JsonDataService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 class HistoryControllerTest {
 
     @Mock
-    private JsonDataService jsonDataService;
+    private AnalysisService analysisService;
 
     @Mock
     private HistoryService historyService;
@@ -112,7 +112,7 @@ class HistoryControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("History deleted successfully", response.getBody());
-        verify(jsonDataService, times(1)).deleteJsonData(mockHistory);
+        verify(analysisService, times(1)).deleteAnalysisData(mockHistory);
         verify(historyService, times(1)).deleteHistory(historyName, userId);
     }
 
@@ -156,14 +156,14 @@ class HistoryControllerTest {
         request.setHistoryName(historyName);
 
         History mockHistory = new History();
-        JsonData mockJsonData = new JsonData();
-        mockJsonData.setAlignment("alignmentData");
-        mockJsonData.setLinearDesign("linearDesignData");
-        mockJsonData.setPdb("pdbData");
+        Analysis mockAnalysis = new Analysis();
+        mockAnalysis.setAlignment("alignmentData");
+        mockAnalysis.setLinearDesign("linearDesignData");
+        mockAnalysis.setPdb("pdbData");
 
         when(session.getAttribute("userId")).thenReturn(userId);
         when(historyService.getHistory(historyName, userId)).thenReturn(mockHistory);
-        when(jsonDataService.getJsonData(mockHistory)).thenReturn(mockJsonData);
+        when(analysisService.getAnalysisData(mockHistory)).thenReturn(mockAnalysis);
 
         ResponseEntity<String> response = historyController.getHistory(request, session);
 
@@ -201,7 +201,7 @@ class HistoryControllerTest {
 
         when(session.getAttribute("userId")).thenReturn(userId);
         when(historyService.getHistory(historyName, userId)).thenReturn(mockHistory);
-        when(jsonDataService.getJsonData(mockHistory)).thenReturn(null);
+        when(analysisService.getAnalysisData(mockHistory)).thenReturn(null);
 
         ResponseEntity<String> response = historyController.getHistory(request, session);
 

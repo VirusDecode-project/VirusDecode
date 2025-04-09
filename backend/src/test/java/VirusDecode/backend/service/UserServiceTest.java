@@ -1,12 +1,12 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.User.dto.SignUpDto;
-import VirusDecode.backend.User.service.UserService;
-import VirusDecode.backend.analysis.service.JsonDataService;
+import VirusDecode.backend.analysis.service.AnalysisService;
+import VirusDecode.backend.user.dto.SignUpDto;
+import VirusDecode.backend.user.service.UserService;
 import VirusDecode.backend.history.entity.History;
-import VirusDecode.backend.analysis.entity.JsonData;
-import VirusDecode.backend.User.entity.User;
-import VirusDecode.backend.User.repository.UserRepository;
+import VirusDecode.backend.analysis.entity.Analysis;
+import VirusDecode.backend.user.entity.User;
+import VirusDecode.backend.user.repository.UserRepository;
 import VirusDecode.backend.history.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 class UserServiceTest {
 
     @Mock
-    private JsonDataService jsonDataService;
+    private AnalysisService analysisService;
 
     @Mock
     private HistoryService historyService;
@@ -192,7 +192,7 @@ class UserServiceTest {
         userService.deleteGuestUsers();
 
         // Then
-        verify(jsonDataService, times(1)).deleteJsonData(mockHistory);
+        verify(analysisService, times(1)).deleteAnalysisData(mockHistory);
         verify(historyService, times(1)).deleteHistory("History1", guestUser.getId());
         verify(userRepository, times(1)).deleteUserById(guestUser.getId());
     }
@@ -213,7 +213,7 @@ class UserServiceTest {
 
         // Then
         // jsonDataService 및 historyService가 호출되지 않는지 검증
-        verify(jsonDataService, never()).deleteJsonData(any());
+        verify(analysisService, never()).deleteAnalysisData(any());
         verify(historyService, never()).deleteHistory(anyString(), anyLong());
         verify(userRepository, never()).deleteUserById(guestUser.getId());
     }
@@ -239,21 +239,21 @@ class UserServiceTest {
         guestHistory.setHistoryName("SampleHistory");
         guestHistory.setUser(guestUser);
 
-        JsonData guestJsonData = new JsonData();
-        guestJsonData.setReferenceId("Ref123");
-        guestJsonData.setAlignment("AlignmentData");
-        guestJsonData.setLinearDesign("LinearDesignData");
-        guestJsonData.setPdb("PdbData");
+        Analysis guestAnalysis = new Analysis();
+        guestAnalysis.setReferenceId("Ref123");
+        guestAnalysis.setAlignment("AlignmentData");
+        guestAnalysis.setLinearDesign("LinearDesignData");
+        guestAnalysis.setPdb("PdbData");
 
         when(historyService.getHistory("SampleHistory", guestUserId)).thenReturn(guestHistory);
-        when(jsonDataService.getJsonData(guestHistory)).thenReturn(guestJsonData);
+        when(analysisService.getAnalysisData(guestHistory)).thenReturn(guestAnalysis);
 
         // When
         userService.copySampleHistoriesToNewUser(newUser);
 
         // Then
         verify(historyService, times(1)).createHistory(any(History.class));
-        verify(jsonDataService, times(1)).saveJsonData(any(JsonData.class));
+        verify(analysisService, times(1)).saveAnalysisData(any(Analysis.class));
     }
     @Test
     void testCopySampleHistoriesToNewUser_OriginalJsonDataIsNull() {
@@ -278,14 +278,14 @@ class UserServiceTest {
 
         // Here, originalJsonData will be null
         when(historyService.getHistory("SampleHistory", guestUserId)).thenReturn(guestHistory);
-        when(jsonDataService.getJsonData(guestHistory)).thenReturn(null); // Simulate null condition
+        when(analysisService.getAnalysisData(guestHistory)).thenReturn(null); // Simulate null condition
 
         // When
         userService.copySampleHistoriesToNewUser(newUser);
 
         // Then
         verify(historyService, never()).createHistory(any(History.class));
-        verify(jsonDataService, never()).saveJsonData(any(JsonData.class));
+        verify(analysisService, never()).saveAnalysisData(any(Analysis.class));
     }
 
     @Test
@@ -312,9 +312,9 @@ class UserServiceTest {
         userService.copySampleHistoriesToNewUser(newUser);
 
         // Then
-        verify(jsonDataService, never()).getJsonData(any()); // getJsonData should not be called
+        verify(analysisService, never()).getAnalysisData(any()); // getJsonData should not be called
         verify(historyService, never()).createHistory(any(History.class));
-        verify(jsonDataService, never()).saveJsonData(any(JsonData.class));
+        verify(analysisService, never()).saveAnalysisData(any(Analysis.class));
     }
 
 
