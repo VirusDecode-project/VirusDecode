@@ -1,6 +1,6 @@
 package VirusDecode.backend.controller;
 
-import VirusDecode.backend.config.ConfigController;
+import VirusDecode.backend.common.config.ConfigController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
