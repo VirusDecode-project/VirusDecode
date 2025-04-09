@@ -1,7 +1,7 @@
 package VirusDecode.backend.history.entity;
 
-import VirusDecode.backend.analysis.entity.JsonData;
-import VirusDecode.backend.User.entity.User;
+import VirusDecode.backend.analysis.entity.Analysis;
+import VirusDecode.backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +29,7 @@ public class History {
     private User user;
 
     @OneToMany(mappedBy = "history", cascade = CascadeType.ALL)
-    private List<JsonData> jsonDataList = new ArrayList<>();
+    private List<Analysis> analysisList = new ArrayList<>();
 
     @CreationTimestamp
     @Column(updatable = false)
@@ -37,5 +37,15 @@ public class History {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+
+    public History() {
+    }
+
+
+    public History(User user, String historyName) {
+        this.user = user;
+        this.historyName = historyName;
+    }
 
 }

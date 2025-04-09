@@ -2,9 +2,9 @@ package VirusDecode.backend.history.controller;
 
 import VirusDecode.backend.history.dto.HistoryDto;
 import VirusDecode.backend.history.entity.History;
-import VirusDecode.backend.analysis.entity.JsonData;
+import VirusDecode.backend.analysis.entity.Analysis;
 import VirusDecode.backend.history.service.HistoryService;
-import VirusDecode.backend.analysis.service.JsonDataService;
+import VirusDecode.backend.analysis.service.AnalysisService;
 import com.google.gson.Gson;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,12 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/history")
 public class HistoryController {
-    private final JsonDataService jsonDataService;
+    private final AnalysisService analysisService;
     private final HistoryService historyService;
 
     @Autowired
-    public HistoryController(JsonDataService jsonDataService, HistoryService historyService) {
-        this.jsonDataService = jsonDataService;
+    public HistoryController(AnalysisService analysisService, HistoryService historyService) {
+        this.analysisService = analysisService;
         this.historyService = historyService;
     }
 
@@ -58,7 +58,7 @@ public class HistoryController {
         if(history == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
         }
-        jsonDataService.deleteJsonData(history);
+        analysisService.deleteAnalysisData(history);
         historyService.deleteHistory(historyName, userId);
 
         return ResponseEntity.ok("History deleted successfully");
@@ -77,16 +77,16 @@ public class HistoryController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
         }
 
-        JsonData jsonData = jsonDataService.getJsonData(history);
-        if (jsonData == null){
+        Analysis analysis = analysisService.getAnalysisData(history);
+        if (analysis == null){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("There is no history");
         }
 
         // JSON 데이터 통합
         Map<String, String> combinedJson = new HashMap<>();
-        combinedJson.put("alignment", jsonData.getAlignment());
-        combinedJson.put("linearDesign", jsonData.getLinearDesign());
-        combinedJson.put("pdb", jsonData.getPdb());
+        combinedJson.put("alignment", analysis.getAlignment());
+        combinedJson.put("linearDesign", analysis.getLinearDesign());
+        combinedJson.put("pdb", analysis.getPdb());
 
         // JSON 문자열로 변환
         String jsonResponse = new Gson().toJson(combinedJson);
