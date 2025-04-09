@@ -11,7 +11,7 @@ import org.mockito.MockitoAnnotations;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 
-class BioInputControllerTest {
+class MetaDataControllerTest {
 
     @Mock
     private BioInputService bioInputService;

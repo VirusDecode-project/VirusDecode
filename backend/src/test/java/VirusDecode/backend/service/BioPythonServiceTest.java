@@ -1,32 +1,29 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.analysis.dto.BioPythonDto;
-import VirusDecode.backend.analysis.service.PythonScriptService;
+import VirusDecode.backend.common.biopython.BioPythonDto;
+import VirusDecode.backend.common.biopython.BioPythonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
-class PythonScriptServiceTest {
+class BioPythonServiceTest {
     private ProcessBuilder processBuilderMock;
     private Process processMock;
-    private PythonScriptService pythonScriptService;
+    private BioPythonService bioPythonService;
     private InputStream inputStreamMock;
     private InputStream errorStreamMock;
-    private PythonScriptService pythonScriptServiceMock;
+    private BioPythonService bioPythonServiceMock;
     @BeforeEach
     void setUp() {
         processBuilderMock = mock(ProcessBuilder.class);
         processMock = mock(Process.class);
-        pythonScriptService = new PythonScriptService();
-        pythonScriptServiceMock = Mockito.spy(new PythonScriptService());
+        bioPythonService = new BioPythonService();
+        bioPythonServiceMock = Mockito.spy(new BioPythonService());
         inputStreamMock = new ByteArrayInputStream("".getBytes());
         errorStreamMock = new ByteArrayInputStream("".getBytes());
     }
@@ -34,7 +31,7 @@ class PythonScriptServiceTest {
     @Test
     void 메타데이터_성공1() throws Exception {
         // Act
-        BioPythonDto response = pythonScriptService.executePythonScript("1", "NC_045512");
+        BioPythonDto response = bioPythonService.executePythonScript("1", "NC_045512");
 
         // Assert
         assertEquals(true, response.isSuccess());
@@ -46,7 +43,7 @@ class PythonScriptServiceTest {
         String referenceId = "NC_001803.1";
 
         // Act
-        BioPythonDto response = pythonScriptService.executePythonScript("2", referenceId, fastaContent);
+        BioPythonDto response = bioPythonService.executePythonScript("2", referenceId, fastaContent);
 
         // Assert
         assertEquals(true, response.isSuccess());
@@ -55,7 +52,7 @@ class PythonScriptServiceTest {
     @Test
     void testNotAvailableNucleotide() throws Exception {
         // Act
-        BioPythonDto response = pythonScriptService.executePythonScript("1", "noExist");
+        BioPythonDto response = bioPythonService.executePythonScript("1", "noExist");
 
         // Assert: Verify the error message for exit code 1
         assertEquals(false, response.isSuccess());

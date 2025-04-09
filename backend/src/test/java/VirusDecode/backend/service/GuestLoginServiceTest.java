@@ -1,10 +1,10 @@
 package VirusDecode.backend.service;
 
-import VirusDecode.backend.User.controller.UserController;
-import VirusDecode.backend.User.dto.UserInfoDto;
-import VirusDecode.backend.User.service.GuestLoginService;
-import VirusDecode.backend.User.service.UserService;
-import VirusDecode.backend.analysis.service.JsonDataService;
+import VirusDecode.backend.analysis.service.AnalysisService;
+import VirusDecode.backend.user.controller.UserController;
+import VirusDecode.backend.user.dto.UserInfoDto;
+import VirusDecode.backend.user.service.GuestLoginService;
+import VirusDecode.backend.user.service.UserService;
 import VirusDecode.backend.history.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class GuestLoginServiceTest {
     private HistoryService historyService;
 
     @Mock
-    private JsonDataService jsonDataService;
+    private AnalysisService analysisService;
 
     @Mock
     private HttpSession session;

@@ -1,10 +1,10 @@
 package VirusDecode.backend.service;
 
+import VirusDecode.backend.analysis.service.AnalysisService;
 import VirusDecode.backend.user.service.UserService;
 import VirusDecode.backend.bioinput.service.FastaFileService;
 import VirusDecode.backend.bioinput.service.BioInputService;
-import VirusDecode.backend.analysis.service.BioDataService;
-import VirusDecode.backend.common.python.BioPythonService;
+import VirusDecode.backend.common.biopython.BioPythonService;
 import VirusDecode.backend.history.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-public class BioInputServiceTest {
+public class MetaDataServiceTest {
 
     @Mock
     private BioPythonService bioPythonService;
@@ -24,7 +24,7 @@ public class BioInputServiceTest {
     private FastaFileService fastaFileService;
 
     @Mock
-    private BioDataService bioDataService;
+    private AnalysisService analysisService;
 
     @Mock
     private UserService userService;
