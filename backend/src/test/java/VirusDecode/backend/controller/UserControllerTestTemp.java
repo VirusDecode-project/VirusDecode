@@ -41,6 +41,37 @@ class UserControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
+
+    @Test
+    void 로그인_성공(){
+        // Given
+        // 테스트 유저 DTO
+        UserLoginDto loginDto = new UserLoginDto();
+        loginDto.setLoginId("testUser");
+        loginDto.setPassword("password");
+
+        // 테스트 유저
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setLoginId("testUser");
+        mockUser.setPassword("password");
+
+        // 테스트 유저 정보
+        UserInfoDto mockUserInfo = new UserInfoDto("testUser", "testName");
+
+        when(userService.login("testUser", "password")).thenReturn(mockUserInfo);
+        when(userService.getUserIdByLoginId("testUser")).thenReturn(1L);
+
+        // When
+        ResponseEntity<?> response = userController.login(loginDto, session);
+
+        // Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockUserInfo, response.getBody());
+        verify(session).setAttribute("userId", mockUser.getId());
+    }
+
+
     @Test
     void testLogin_Success() {
         UserLoginDto loginDto = new UserLoginDto();

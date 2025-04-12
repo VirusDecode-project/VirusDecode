@@ -18,4 +18,12 @@ public class GuestLoginService {
         SignUpDto signupDto = new SignUpDto("Guest", "Guest", uniqueLoginId, "default_password");
         return userService.createUser(signupDto, "GUEST");
     }
+
+    public User loginOrCreateGuest(String uniqueLoginId){
+        User existingUser = userService.findUserByLoginId(uniqueLoginId);
+        if (existingUser != null) {
+            return existingUser;
+        }
+        return createGuestUser(uniqueLoginId);
+    }
 }
