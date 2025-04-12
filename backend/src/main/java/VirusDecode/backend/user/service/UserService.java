@@ -5,6 +5,9 @@ import VirusDecode.backend.user.dto.UserInfoDto;
 import VirusDecode.backend.history.entity.History;
 import VirusDecode.backend.analysis.entity.Analysis;
 import VirusDecode.backend.user.entity.User;
+import VirusDecode.backend.user.exception.DuplicateLoginIdException;
+import VirusDecode.backend.user.exception.InvalidLoginException;
+import VirusDecode.backend.user.exception.UserNotFoundException;
 import VirusDecode.backend.user.repository.UserRepository;
 import VirusDecode.backend.history.service.HistoryService;
 import VirusDecode.backend.analysis.service.AnalysisService;
@@ -14,11 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+
 @Log4j2
 @Service
 public class UserService {
@@ -37,27 +40,23 @@ public class UserService {
     }
 
     public UserInfoDto login(String loginId, String password){
-        try{
-            User user = findUserByLoginId(loginId);
-            if (checkPassword(user, password)) {
-                return new UserInfoDto(user.getLoginId(), user.getFirstName());
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        User user = findUserByLoginId(loginId);
+        if (!checkPassword(user, password)) {
+            throw new InvalidLoginException("유효하지 않는 회원 정보입니다.");
         }
-        return null;
+        return new UserInfoDto(user.getLoginId(), user.getFirstName());
     }
 
     public UserInfoDto fetchUserInfo(Long userId){
-        try{
-            User user = findUserByUserId(userId);
-            return new UserInfoDto(user.getLoginId(), user.getFirstName());
-        }catch (Exception e){
-            return null;
+        User user = findUserByUserId(userId);
+        if(user==null){
+            throw new UserNotFoundException("유저 이름을 찾을 수 없습니다.");
         }
+        return new UserInfoDto(user.getLoginId(), user.getFirstName());
     }
 
     public User findUserByLoginId(String loginId) {
+
         return userRepository.findByLoginId(loginId);
     }
 
@@ -65,13 +64,20 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
+
     @Transactional
     public User createUser(SignUpDto signUpDto, String role) {
+        String loginId = signUpDto.getLoginId();
+        if (findUserByLoginId(loginId) != null) {
+            throw new DuplicateLoginIdException("이미 존재하는 ID 입니다.");
+        }
+
         User newUser = new User(signUpDto.getFirstName(), signUpDto.getLastName(), signUpDto.getLoginId(), passwordEncoder.encode(signUpDto.getPassword()), role);
         userRepository.save(newUser);
         copySampleHistoriesToNewUser(newUser);
         return newUser;
     }
+
 
     public boolean checkPassword(User user, String password) {
         return passwordEncoder.matches(password, user.getPassword());
