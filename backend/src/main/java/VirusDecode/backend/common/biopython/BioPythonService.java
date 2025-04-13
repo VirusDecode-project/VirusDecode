@@ -52,7 +52,7 @@ public class BioPythonService {
                 return new BioPythonDto(exitCode, output.toString(), errorOutput.toString());
             } else {
                 String errorMessage = switch (exitCode) {
-                    case 1 -> "필요한 파이썬 환경이 제대로 설치되지 않았습니다.";
+                    case 1 -> "입력하신 Reference와 Variant 유전체 데이터를 확인하세요.";
                     case 11 -> "NCBI에 요청한 nucleotide ID가 존재하지 않습니다.";
                     case 21 -> "MUSCLE 다중 서열 정리에 문제가 발생하였습니다.";
                     case 22 -> "입력하신 서열 정보가 올바르지 않습니다. A, T, C, 그리고 G만 허용됩니다.";
@@ -67,7 +67,7 @@ public class BioPythonService {
             }
 
         } catch (Exception e) {
-            throw new BioPythonException("바이오 파이썬 실행 중 오류가 발생했습니다. " + e.getMessage());
+            throw new BioPythonException(e.getMessage());
         }
     }
 }
