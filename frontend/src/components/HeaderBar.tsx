@@ -48,12 +48,15 @@ const HeaderBar: React.FC<HeaderBarProps> = ({ show, isHome, handleShow, handleE
           setUserName(responseData.userName);
           setLoginId(responseData.loginId);
         } else {
-          const errorMessage = await nameResponse.text();
-          throw new Error(errorMessage);
+          setUserName(null);
+          setLoginId(null);
+          navigate("/");
+          // const errorMessage = await nameResponse.text();
+          // throw new Error(errorMessage);
         }
       } catch (error) {
-        setUserName(null);
-        setLoginId(null);
+        // setUserName(null);
+        // setLoginId(null);
       }
     };
     fetchName();
