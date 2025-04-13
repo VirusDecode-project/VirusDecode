@@ -4,13 +4,15 @@ import VirusDecode.backend.user.dto.SignUpDto;
 import VirusDecode.backend.user.dto.UserInfoDto;
 import VirusDecode.backend.user.dto.UserLoginDto;
 import VirusDecode.backend.user.entity.User;
-import VirusDecode.backend.user.exception.UnauthenticatedUserException;
+import VirusDecode.backend.common.exception.UnauthenticatedUserException;
 import VirusDecode.backend.user.service.GuestLoginService;
 import VirusDecode.backend.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpSession;
+
+import static VirusDecode.backend.util.UserSessionUtil.getAuthenticatedUserId;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -56,12 +58,7 @@ public class UserController {
 
     @PostMapping("/userinfo")
     public ResponseEntity<?> getUserInfo(HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-
-        // 세션에 아이디가 없습니다.
-        if (userId == null) {
-            throw new UnauthenticatedUserException("User not authenticated");
-        }
+        Long userId = getAuthenticatedUserId(session);
 
         // 세션 아이디로 유저를 찾아냅니다.
         UserInfoDto userInfo = userService.fetchUserInfo(userId);

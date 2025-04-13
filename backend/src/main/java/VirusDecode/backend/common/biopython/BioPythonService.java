@@ -1,5 +1,6 @@
 package VirusDecode.backend.common.biopython;
 
+import VirusDecode.backend.common.exception.BioPythonException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
@@ -46,12 +47,27 @@ public class BioPythonService {
             }
 
             int exitCode = process.waitFor();
-            return new BioPythonDto(exitCode, output.toString(), errorOutput.toString());
-
+            // 정상 실행
+            if (exitCode == 0) {
+                return new BioPythonDto(exitCode, output.toString(), errorOutput.toString());
+            } else {
+                String errorMessage = switch (exitCode) {
+                    case 1 -> "필요한 파이썬 환경이 제대로 설치되지 않았습니다.";
+                    case 11 -> "NCBI에 요청한 nucleotide ID가 존재하지 않습니다.";
+                    case 21 -> "MUSCLE 다중 서열 정리에 문제가 발생하였습니다.";
+                    case 22 -> "입력하신 서열 정보가 올바르지 않습니다. A, T, C, 그리고 G만 허용됩니다.";
+                    case 31 -> "서버 메모리 부족으로 LinearDesign 실행 중 문제가 발생하였습니다.";
+                    case 32 -> "LinearDesign 실행파일이 정상적으로 만들어지지 않았습니다.";
+                    case 33 -> "LinearDesign 디렉토리가 원하는 위치에 없습니다.";
+                    case 41 -> "PDB ID 검색 실패.";
+                    case 42 -> "3D viewer 데이터 로드 실패.";
+                    default -> "Unknown error (Exit Code: " + exitCode + "): " + errorOutput.toString();
+                };
+                throw new BioPythonException("바이오 파이썬 실행 중 오류가 발생했습니다.\n" + errorMessage);
+            }
 
         } catch (Exception e) {
-            log.error("알 수 없는 오류가 발생했습니다: {}", e.getMessage());
-            return new BioPythonDto(-1, "", e.getMessage());
+            throw new BioPythonException("바이오 파이썬 실행 중 오류가 발생했습니다. " + e.getMessage());
         }
     }
 }

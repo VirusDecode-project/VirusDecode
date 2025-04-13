@@ -1,6 +1,7 @@
 package VirusDecode.backend.history.service;
 
 import VirusDecode.backend.history.entity.History;
+import VirusDecode.backend.history.exception.HistoryNotFoundException;
 import VirusDecode.backend.history.repository.HistoryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,11 @@ public class HistoryService {
     }
 
     public History getHistory(String historyName, Long userId){
-        return historyRepository.findByHistoryNameAndUserId(historyName, userId);
+        History history = historyRepository.findByHistoryNameAndUserId(historyName, userId);
+        if(history==null){
+            throw new HistoryNotFoundException("There is no history");
+        }
+        return history;
     }
 
 
@@ -45,7 +50,7 @@ public class HistoryService {
     public String validateHistoryName(String historyName, Long userId) {
         String originalHistoryName = historyName;
         int counter = 1;
-        while (getHistory(historyName, userId) != null) {
+        while (historyRepository.findByHistoryNameAndUserId(historyName, userId) != null) {
             historyName = originalHistoryName + "_" + counter;
             counter++;
         }

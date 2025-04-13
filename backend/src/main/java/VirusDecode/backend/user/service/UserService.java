@@ -42,16 +42,13 @@ public class UserService {
     public UserInfoDto login(String loginId, String password){
         User user = findUserByLoginId(loginId);
         if (!checkPassword(user, password)) {
-            throw new InvalidLoginException("유효하지 않는 회원 정보입니다.");
+            throw new InvalidLoginException("등록되지 않는 회원 정보입니다.");
         }
         return new UserInfoDto(user.getLoginId(), user.getFirstName());
     }
 
     public UserInfoDto fetchUserInfo(Long userId){
-        User user = findUserByUserId(userId);
-        if(user==null){
-            throw new UserNotFoundException("유저 이름을 찾을 수 없습니다.");
-        }
+        User user = getUserById(userId);
         return new UserInfoDto(user.getLoginId(), user.getFirstName());
     }
 
@@ -60,9 +57,6 @@ public class UserService {
         return userRepository.findByLoginId(loginId);
     }
 
-    public User findUserByUserId(Long userId) {
-        return userRepository.findById(userId).orElse(null);
-    }
 
 
     @Transactional
@@ -84,8 +78,13 @@ public class UserService {
     }
 
     // userId로 유저 객체를 반환
-    public Optional<User> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    public User getUserById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if(userOptional.isPresent()){
+            return userOptional.get();
+        }else{
+            throw new UserNotFoundException("유저를 찾을 수 없습니다.");
+        }
     }
 
     public Long getUserIdByLoginId(String loginId) {
