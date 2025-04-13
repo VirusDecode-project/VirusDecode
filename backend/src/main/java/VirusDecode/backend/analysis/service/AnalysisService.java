@@ -1,5 +1,6 @@
 package VirusDecode.backend.analysis.service;
 
+import VirusDecode.backend.analysis.exception.*;
 import VirusDecode.backend.common.biopython.BioPythonDto;
 import VirusDecode.backend.analysis.repository.AnalysisRepository;
 import VirusDecode.backend.common.biopython.BioPythonService;
@@ -8,6 +9,7 @@ import VirusDecode.backend.history.service.HistoryService;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -39,28 +41,15 @@ public class AnalysisService {
 
         History history = historyService.getHistory(historyName, userId);
         Analysis analysis = getAnalysisData(history);
-        if (analysis == null) {
-            log.error("There is no history");
-            return null;
-        }
 
         String alignmentJson = analysis.getAlignment();
         String aminoAcidSequence = extractAminoAcidSequence(alignmentJson, gene, varientName, start, end);
 
-        if (aminoAcidSequence.length() == 0) {
-            log.error("선택된 구간에 유효한 서열이 없습니다.");
-            return null;
-        }
-
         BioPythonDto response = bioPythonService.executePythonScript("3", aminoAcidSequence);
-        if(response.isSuccess()){
-            String linearDesignJson = response.getOutput();
-            analysis.setLinearDesign(linearDesignJson);
-            saveAnalysisData(analysis);
-            return linearDesignJson;
-        }
-
-        return null;
+        String linearDesignJson = response.getOutput();
+        analysis.setLinearDesign(linearDesignJson);
+        saveAnalysisData(analysis);
+        return linearDesignJson;
     }
 
 
@@ -70,10 +59,6 @@ public class AnalysisService {
 
         History history = historyService.getHistory(historyName, userId);
         Analysis analysis = getAnalysisData(history);
-        if (analysis == null) {
-            log.error("There is no history");
-            return null;
-        }
 
         String referenceId = analysis.getReferenceId();
         String alignmentJson = analysis.getAlignment();
@@ -81,13 +66,10 @@ public class AnalysisService {
         String sequence = extractSequence(referenceId, alignmentJson, gene);
 
         BioPythonDto scriptResponse = bioPythonService.executePythonScript("4", sequence);
-        if(scriptResponse.isSuccess()){
-            String pdbJson = scriptResponse.getOutput();
-            analysis.setPdb(pdbJson);
-            saveAnalysisData(analysis);
-            return pdbJson;
-        }
-        return null;
+        String pdbJson = scriptResponse.getOutput();
+        analysis.setPdb(pdbJson);
+        saveAnalysisData(analysis);
+        return pdbJson;
     }
 
     
@@ -101,8 +83,11 @@ public class AnalysisService {
 
         JsonObject alignedSequences = jsonObject.getAsJsonObject("aligned_sequences");
         String sequence = alignedSequences.get(varientName).getAsString();
-
-        return sequence.substring(startIdx, endIdx).substring(start - 1, end).replace("-", "");
+        String aminoAcidSequence = sequence.substring(startIdx, endIdx).substring(start - 1, end).replace("-", "");
+        if(aminoAcidSequence.isEmpty()){
+            throw new InvalidSequenceRangeException("선택된 구간에 유효한 서열이 없습니다.");
+        }
+        return aminoAcidSequence;
     }
 
     public String extractSequence(String referenceId, String alignmentJson, String gene) {
@@ -119,17 +104,24 @@ public class AnalysisService {
         return sequence.substring(startIdx, endIdx).replace("-", "");
     }
 
-
-
     @Transactional
-    public Analysis saveAnalysisData(Analysis analysis) {
-        return analysisRepository.save(analysis);
+    public void saveAnalysisData(Analysis analysis) {
+        try {
+            analysisRepository.save(analysis);
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidAnalysisDataException("분석 데이터 저장에 실패했습니다: " + e.getMessage());
+        }
     }
 
     public Analysis getAnalysisData(History history) {
         Long historyId = history.getId();
-        return analysisRepository.findByHistoryId(historyId);
+        Analysis analysis = analysisRepository.findByHistoryId(historyId);
+        if(analysis == null){
+            throw new AnalysisNotFoundException("분석 정보를 찾을 수 없습니다.");
+        }
+        return analysis;
     }
+
     @Transactional
     public void deleteAnalysisData(History history){
         Long historyId = history.getId();

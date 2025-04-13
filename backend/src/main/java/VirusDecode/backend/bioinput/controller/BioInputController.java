@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static VirusDecode.backend.util.UserSessionUtil.getAuthenticatedUserId;
+
 @RestController
 @RequestMapping("/api/inputSeq")
 public class BioInputController {
@@ -24,28 +26,14 @@ public class BioInputController {
     @PostMapping("/metadata")
     public ResponseEntity<String> getMetadata(@RequestBody ReferenceDto referenceDto) {
         MetaData metaData = bioInputService.getMetadata(referenceDto);
-
-        if(metaData ==null){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("메타데이터를 불러오는데 실패하였습니다.");
-        }else{
-            return ResponseEntity.ok(metaData.getMetadata());
-        }
+        return ResponseEntity.ok(metaData.getMetadata());
     }
 
     @PostMapping("/alignment")
     public ResponseEntity<?> getAlignment(@RequestBody(required = false) VarientSequenceDto varientSequenceDto, HttpSession session) {
-        Long userId = (Long) session.getAttribute("userId");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
-        }
+        Long userId = getAuthenticatedUserId(session);
 
         AlignmentDto alignmentDto = bioInputService.processAlignment(varientSequenceDto, userId);
-        if(alignmentDto==null){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Fasta 파일 저장에 문제 발생하였습니다.");
-        }else{
-            return ResponseEntity.ok(alignmentDto);
-        }
+        return ResponseEntity.ok(alignmentDto);
     }
-
-
 }
