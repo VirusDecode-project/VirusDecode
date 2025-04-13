@@ -8,4 +8,11 @@ import lombok.Setter;
 @Setter
 public class ReferenceDto {
     private String sequenceId;
+
+    public ReferenceDto() {
+    }
+
+    public ReferenceDto(String sequenceId) {
+        this.sequenceId = sequenceId;
+    }
 }
