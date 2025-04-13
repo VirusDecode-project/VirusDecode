@@ -1,6 +1,5 @@
-package VirusDecode.backend.controller;
+package VirusDecode.backend.user.controller;
 
-import VirusDecode.backend.user.controller.UserController;
 import VirusDecode.backend.user.dto.SignUpDto;
 import VirusDecode.backend.user.dto.UserInfoDto;
 import VirusDecode.backend.user.dto.UserLoginDto;
@@ -8,6 +7,7 @@ import VirusDecode.backend.user.entity.User;
 import VirusDecode.backend.user.service.GuestLoginService;
 import VirusDecode.backend.user.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +33,7 @@ public class UserControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
+    @DisplayName("로그인 성공")
     void login_Success() throws Exception {
         UserLoginDto loginDto = new UserLoginDto("testuser", "password123");
         UserInfoDto userInfoDto = new UserInfoDto("testuser", "John");
@@ -49,6 +50,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("회원가입 성공")
     void signup_Success() throws Exception {
         SignUpDto signUpDto = new SignUpDto("John", "Doe", "newuser", "pass1234");
         User createdUser = new User();
@@ -65,6 +67,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("게스트 로그인 성공")
     void guestLogin_Success() throws Exception {
         User guestUser = new User();
         guestUser.setId(100L);
@@ -78,6 +81,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("유저 세션 정보 조회 성공")
     void getUserInfo_Authenticated() throws Exception {
         UserInfoDto userInfoDto = new UserInfoDto("testuser", "John");
 
@@ -91,6 +95,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("유저 세션 정보 조회 실패")
     void getUserInfo_Unauthenticated() throws Exception {
         mockMvc.perform(post("/api/auth/userinfo"))
                 .andExpect(status().isUnauthorized())
@@ -98,6 +103,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("로그아웃 성공")
     void logout_Success() throws Exception {
         mockMvc.perform(post("/api/auth/logout")
                         .sessionAttr("userId", 1L))
