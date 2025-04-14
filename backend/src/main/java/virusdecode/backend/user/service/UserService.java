@@ -41,7 +41,7 @@ public class UserService {
 
     public UserInfoDto login(String loginId, String password){
         User user = findUserByLoginId(loginId);
-        if (!checkPassword(user, password)) {
+        if (user==null || !checkPassword(user, password)) {
             throw new InvalidLoginException("등록되지 않는 회원 정보입니다.");
         }
         return new UserInfoDto(user.getLoginId(), user.getFirstName());
