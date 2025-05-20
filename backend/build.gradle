@@ -50,7 +50,7 @@ bootJar {
     archiveFileName = 'virusdecode.jar'
 	manifest {
         attributes(
-            'Start-Class': 'VirusDecode.backend.BackendApplication'
+            'Start-Class': 'virusdecode.backend.BackendApplication'
         )
     }
 }
